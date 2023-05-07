@@ -1,0 +1,11 @@
+.progress {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100px;
+    height: 100px;
+    margin: 400px auto;
+
+    transition: .4s ease-in-out;
+}
