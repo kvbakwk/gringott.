@@ -10,7 +10,10 @@ export default function WalletSaving({ saving, toDate, setToSavingOpen, setFromS
     return (
         <div className={styles.saving} >
             <div className={styles.progress}>
-                <CircularProgress variant="determinate" value={saving.amount / saving.goal * 100} size={150} color='warning' />
+                <CircularProgress
+                    variant="determinate"
+                    value={saving.amount / saving.goal * 100 > 100 ? 100 : saving.amount / saving.goal * 100}
+                    size={150} color='warning' />
                 <HailIcon />
             </div>
             <div className={styles.info}>

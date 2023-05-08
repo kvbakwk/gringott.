@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, InputAdornment, MenuItem } from '@mui/material';
 import styles from '../../styles/layout.module.css';
@@ -11,29 +11,46 @@ export default function LayoutFromSaving({ fromSavingOpen, setFromSavingOpen, wa
     const [savingId, setSavingId] = useState('')
     const [amount, setAmount] = useState('')
     const [error, setError] = useState(0)
+    const [errorMessage, setErrorMessage] = useState('')
 
     useEffect(() => {
         setSavingId(document.getElementById('savingId').value)
         setAmount(document.getElementById('amount').value)
     }, [])
+    useEffect(() => {
+        if (error != 0)
+            setError(0)
+    }, [savingId, amount])
 
     const handleClick = () => {
-        if (savingId == undefined || amount == 0) {
+        if (savingId == undefined) {
             setError(1)
+            setErrorMessage('Select saving.')
             return
-        } else
+        } else if (amount <= 0) {
+            setError(2)
+            setErrorMessage('Amount must be positive number.')
+            return
+        } else if (error == 3) {
+            return
+        } else {
             setError(0)
+        }
         axios({
             url: 'http://localhost:8080/api/fromSaving',
             method: 'put',
             data: {
-                savingId: savingId,
+                savingId: savingId.toString(),
                 amount: amount
             },
             withCredentials: true
-        }).then(() => {
-            setFromSavingOpen(false)
-            router.push(router.asPath)
+        }).then(data => {
+            if (!data.data) {
+                setError(3)
+                setErrorMessage('You don\'t have enough money.')
+            } else {
+                router.push(router.asPath)
+            }
         }).catch(() => {
 
         })
@@ -50,7 +67,8 @@ export default function LayoutFromSaving({ fromSavingOpen, setFromSavingOpen, wa
                     <TextField
                         fullWidth
                         id="savingId"
-                        error={error != 0 ? true : false}
+                        error={error == 1 ? true : false}
+                        helperText={error == 1 ? errorMessage : ' '}
                         select
                         label="Saving"
                         color='success'
@@ -68,7 +86,8 @@ export default function LayoutFromSaving({ fromSavingOpen, setFromSavingOpen, wa
                     </TextField>
                     <TextField
                         fullWidth
-                        error={error != 0 ? true : false}
+                        error={error == 2 || error == 3 ? true : false}
+                        helperText={error == 2 || error == 3 ? errorMessage : ' '}
                         id='amount'
                         label="Amount"
                         variant="standard"
