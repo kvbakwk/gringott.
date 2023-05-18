@@ -14,9 +14,19 @@ import LayoutTransaction from './LayoutTransaction';
 import LayoutSaving from './LayoutSaving';
 import LayoutToSaving from './LayoutToSaving';
 import LayoutFromSaving from './LayoutFromSaving';
+import LayoutDelete from './LayoutDelete';
 
 export default function Layout(
-    { children, userData, walletsData, site, setSite, walletOpen, setWalletOpen, transactionOpen, setTransactionOpen, savingOpen, setSavingOpen, toSavingOpen, setToSavingOpen, fromSavingOpen, setFromSavingOpen }
+    { children,
+        userData,
+        walletsData,
+        site, setSite,
+        walletOpen, setWalletOpen,
+        transactionOpen, setTransactionOpen,
+        savingOpen, setSavingOpen,
+        toSavingOpen, setToSavingOpen,
+        fromSavingOpen, setFromSavingOpen,
+        deleteOpen, setDeleteOpen }
 ) {
 
     const actions = [
@@ -32,11 +42,14 @@ export default function Layout(
         savingOpen ? setSavingOpen(false) : null
         toSavingOpen ? setToSavingOpen(false) : null
         fromSavingOpen ? setFromSavingOpen(false) : null
+        deleteOpen ? setDeleteOpen(false) : null
     }
 
     const handleClick = variant => {
         switch (variant) {
             case 0:
+                closeAll()
+                setDeleteOpen(true)
                 break
             case 1:
                 closeAll()
@@ -89,6 +102,11 @@ export default function Layout(
             <LayoutFromSaving
                 fromSavingOpen={fromSavingOpen}
                 setFromSavingOpen={setFromSavingOpen}
+                walletsData={walletsData}
+            />
+            <LayoutDelete
+                deleteOpen={deleteOpen}
+                setDeleteOpen={setDeleteOpen}
                 walletsData={walletsData}
             />
             <SpeedDial

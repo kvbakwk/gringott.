@@ -23,6 +23,7 @@ export default function Start() {
   const [savingOpen, setSavingOpen] = useState(false)
   const [toSavingOpen, setToSavingOpen] = useState(false)
   const [fromSavingOpen, setFromSavingOpen] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
 
   const [userData, setUserData] = useState({ userId: 0, username: "", fullname: "" })
   const [walletsData, setWalletsData] = useState([])
@@ -32,7 +33,7 @@ export default function Start() {
 
   useEffect(() => {
     axios({
-      url: 'http://localhost:8080/api/user/',
+      url: 'http://localhost:8080/api/users/session',
       method: "get",
       withCredentials: true
     }).then(res => {
@@ -83,6 +84,8 @@ export default function Start() {
         setToSavingOpen={setToSavingOpen}
         fromSavingOpen={fromSavingOpen}
         setFromSavingOpen={setFromSavingOpen}
+        deleteOpen={deleteOpen}
+        setDeleteOpen={setDeleteOpen}
       >
         {
           slug.length == 1 && slug[0] == userData.username

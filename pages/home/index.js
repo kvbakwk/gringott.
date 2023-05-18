@@ -15,7 +15,7 @@ export default function Index() {
 
   useEffect(() => {
     axios({
-      url: 'http://localhost:8080/api/user/',
+      url: 'http://localhost:8080/api/users/session',
       method: "get",
       withCredentials: true
     }).then(res => {

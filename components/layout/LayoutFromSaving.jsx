@@ -37,7 +37,7 @@ export default function LayoutFromSaving({ fromSavingOpen, setFromSavingOpen, wa
             setError(0)
         }
         axios({
-            url: 'http://localhost:8080/api/fromSaving',
+            url: 'http://localhost:8080/api/savings/from',
             method: 'put',
             data: {
                 savingId: savingId.toString(),

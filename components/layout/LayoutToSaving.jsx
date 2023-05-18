@@ -37,7 +37,7 @@ export default function LayoutToSaving({ toSavingOpen, setToSavingOpen, walletsD
             setError(0)
         }
         axios({
-            url: 'http://localhost:8080/api/toSaving',
+            url: 'http://localhost:8080/api/savings/to',
             method: 'put',
             data: {
                 savingId: savingId,

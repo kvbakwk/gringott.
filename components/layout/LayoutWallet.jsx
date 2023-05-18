@@ -21,7 +21,7 @@ export default function LayoutWallet({ userData, walletOpen, setWalletOpen }) {
         } else
             setWalletError(0)
         axios({
-            url: 'http://localhost:8080/api/newWallet',
+            url: 'http://localhost:8080/api/wallets/new',
             method: 'put',
             data: {
                 name: walletName,

@@ -28,7 +28,7 @@ export default function LayoutTransaction({ userData, walletsData, transactionOp
         } else
             setTransactionError(0)
         axios({
-            url: 'http://localhost:8080/api/newTransaction',
+            url: 'http://localhost:8080/api/transactions/new',
             method: 'put',
             data: {
                 title: transactionTitle,

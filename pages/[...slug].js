@@ -17,7 +17,7 @@ export default function Start() {
 
     useEffect(() => {
         axios({
-            url: 'http://localhost:8080/api/user/',
+            url: 'http://localhost:8080/api/users/session',
             method: "get",
             withCredentials: true
         }).then(res => {
@@ -77,7 +77,7 @@ export default function Start() {
                 setFail(number)
                 break;
             default:
-                setFailMessage("Something went wrong, we are sorry.")
+                setFailMessage("Something went wrong, try again later.")
                 setFail(number)
                 break;
         }
