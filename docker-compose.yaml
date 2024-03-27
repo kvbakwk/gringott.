@@ -1,0 +1,52 @@
+services:
+  www:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - "80:3000"
+    volumes:
+      - ./src/app:/www/src/app
+      - ./src/components:/www/src/components
+      - ./public:/www/public
+      - ./next.config.js:/www/next.config.js
+      - ./tailwind.config.js:/www/tailwind.config.js
+      - ./tsconfig.json:/www/tsconfig.json
+      - ./node_modules:/www/node_modules
+    environment:
+      - PGHOST=postgresql
+      - PGDATABASE=gringott
+      - PGUSER=root
+      - PGPASSWORD=root
+      - PGPORT=5432
+    networks:
+      - internal
+    restart: unless-stopped
+  postgresql:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: root
+      POSTGRES_DB: gringott
+    volumes:
+      - ./docker/dump.sql:/docker-entrypoint-initdb.d/dump.sql
+    networks:
+      - internal
+    restart: unless-stopped
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "8080:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: jakubkawka2005@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    volumes:
+      - ./docker/pgadmin.json:/pgadmin4/servers.json
+    links:
+      - postgresql
+    networks:
+      - internal
+    restart: unless-stopped
+networks:
+  internal:
+    driver: bridge
