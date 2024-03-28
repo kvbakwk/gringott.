@@ -1,8 +1,10 @@
+import "@app/utils/globals.css";
+
 export const metadata = {
   title: "gringott",
 };
 
-export default function RootLayout({ children }) {
+export default function Layout({ children }) {
   return (
     <html lang="pl">
       <head></head>
