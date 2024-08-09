@@ -9,7 +9,7 @@ services:
       - ./src/app:/www/src/app
       - ./src/components:/www/src/components
       - ./public:/www/public
-      - ./next.config.mjs:/www/next.config.mjs
+      - ./next.config.js:/www/next.config.js
       - ./tailwind.config.js:/www/tailwind.config.js
       - ./tsconfig.json:/www/tsconfig.json
       - ./node_modules:/www/node_modules
