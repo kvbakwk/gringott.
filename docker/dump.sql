@@ -5,9 +5,9 @@ create table public.user (
     password varchar(255) not null
 );
 
-insert into public.user (name, email, password) values ('kuba', 'kuba@gmail.com', 'kuba205');
-insert into public.user (name, email, password) values ('ola', 'ola@gmail.com', 'kuba205');
-insert into public.user (name, email, password) values ('iza', 'iza@gmail.com', 'kuba205');
+insert into public.user (name, email, password) values ('kuba', 'kuba@gmail.com', 'zaq1@WSX');
+insert into public.user (name, email, password) values ('ola', 'ola@gmail.com', 'zaq1@WSX');
+insert into public.user (name, email, password) values ('iza', 'iza@gmail.com', 'zaq1@WSX');
 
 create table public.wallet (
     id serial primary key,
