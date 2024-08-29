@@ -1,15 +1,18 @@
-create table public.user (
+create table if not exists public.user (
     id serial primary key,
     name varchar(255) not null,
     email varchar(255) not null,
     password varchar(255) not null
 );
 
-insert into public.user (name, email, password) values ('kuba', 'kuba@gmail.com', 'zaq1@WSX');
-insert into public.user (name, email, password) values ('ola', 'ola@gmail.com', 'zaq1@WSX');
-insert into public.user (name, email, password) values ('iza', 'iza@gmail.com', 'zaq1@WSX');
+create table if not exists public.user_device (
+    user_id integer NOT NULL,
+    device_id VARCHAR(100) NOT NULL,
+    expire_date TIMESTAMP NOT NULL,
+    foreign key (user_id) references public.user(id)
+);
 
-create table public.wallet (
+create table if not exists public.wallet (
     id serial primary key,
     user_id integer not null,
     name varchar(255),
@@ -18,14 +21,58 @@ create table public.wallet (
     foreign key (user_id) references public.user(id)
 );
 
-insert into public.wallet (user_id, balance, cash) values (1, 10, true);
-insert into public.wallet (user_id, name, balance, cash) values (1, 'mBank', 100, false);
-insert into public.wallet (user_id, name, balance, cash) values (1, 'iPKO', 0, false);
-
-create table public.super_category (
+create table if not exists public.super_category (
     id serial primary key,
     name varchar(255) not null
 );
+
+create table if not exists public.category (
+    id serial primary key,
+    name varchar(255) not null,
+    super_category_id integer not null,
+    foreign key (super_category_id) references public.super_category(id)
+);
+
+create table if not exists public.transaction (
+    id serial primary key,
+    description varchar(255),
+    income boolean not null,
+    amount numeric(10, 2) not null,
+    date timestamp not null,
+    important boolean not null,
+    wallet_id integer not null,
+    category_id integer not null,
+    foreign key (wallet_id) references public.wallet(id),
+    foreign key (category_id) references public.category(id)
+);
+
+create table if not exists public.future_transaction (
+    id serial primary key,
+    income boolean not null,
+    amount numeric(10, 2) not null,
+    date timestamp,
+    wallet_id integer not null,
+    category_id integer not null,
+    foreign key (wallet_id) references public.wallet(id),
+    foreign key (category_id) references public.category(id)
+);
+
+create table if not exists public.product (
+    id serial primary key,
+    name varchar(255) not null,
+    price integer not null
+);
+
+create table if not exists public.shop (
+    id serial primary key,
+    name varchar(255) not null,
+    price integer not null
+);
+
+
+insert into public.user (name, email, password) values ('kuba', 'kuba@gmail.com', 'zaq1@WSX');
+insert into public.user (name, email, password) values ('ola', 'ola@gmail.com', 'zaq1@WSX');
+insert into public.user (name, email, password) values ('iza', 'iza@gmail.com', 'zaq1@WSX');
 
 insert into public.super_category (name) values ('osobiste');
 insert into public.super_category (name) values ('codzienne');
@@ -38,12 +85,9 @@ insert into public.super_category (name) values ('transport');
 insert into public.super_category (name) values ('wpływy');
 insert into public.super_category (name) values ('inne');
 
-create table public.category (
-    id serial primary key,
-    name varchar(255) not null,
-    super_category_id integer not null,
-    foreign key (super_category_id) references public.super_category(id)
-);
+insert into public.wallet (user_id, balance, cash) values (1, 10, true);
+insert into public.wallet (user_id, name, balance, cash) values (1, 'mBank', 100, false);
+insert into public.wallet (user_id, name, balance, cash) values (1, 'iPKO', 0, false);
 
 insert into public.category (name, super_category_id) values ('rozwój', 1);
 insert into public.category (name, super_category_id) values ('elektronika', 1);
@@ -112,42 +156,5 @@ insert into public.category (name, super_category_id) values ('kredyt', 9);
 insert into public.category (name, super_category_id) values ('kieszonkowe', 9);
 insert into public.category (name, super_category_id) values ('inne', 9);
 
-create table public.transaction (
-    id serial primary key,
-    description varchar(255),
-    income boolean not null,
-    amount numeric(10, 2) not null,
-    date timestamp not null,
-    important boolean not null,
-    wallet_id integer not null,
-    category_id integer not null,
-    foreign key (wallet_id) references public.wallet(id),
-    foreign key (category_id) references public.category(id)
-);
-
 insert into public.transaction (description, income, amount, date, important, wallet_id, category_id) values ('kieszonkowe', true, 10, '2023-01-01 12:00:00', true, 1, 57);
 insert into public.transaction (description, income, amount, date, important, wallet_id, category_id) values ('kieszonkowe', true, 100, '2023-01-01 12:00:00', true, 2, 57);
-
-create table public.future_transaction (
-    id serial primary key,
-    income boolean not null,
-    amount numeric(10, 2) not null,
-    date timestamp,
-    wallet_id integer not null,
-    category_id integer not null,
-    foreign key (wallet_id) references public.wallet(id),
-    foreign key (category_id) references public.category(id)
-);
-
-create table public.product (
-    id serial primary key,
-    name varchar(255) not null,
-    price integer not null
-);
-
-create table public.shop (
-    id serial primary key,
-    name varchar(255) not null,
-    price integer not null
-);
-
