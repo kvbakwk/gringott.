@@ -1,3 +1,5 @@
+import RegisterPage from "@components/RegisterPage";
+
 export const metadata = {
   title: "gringott | rejestracja",
 };
@@ -5,7 +7,7 @@ export const metadata = {
 export default function Page() {
   return (
     <div>
-      rejestracja
+      <RegisterPage />
     </div>
   );
 }
