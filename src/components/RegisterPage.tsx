@@ -8,7 +8,7 @@ export default function LoginPage() {
         <input type="text" name="name" id="name" /> <br />
         <input type="text" name="surname" id="surname" /> <br />
         <input type="checkbox" name="policy" id="policy" /> <br />
-        <label htmlFor="policy">regulamin</label>
+        <label htmlFor="policy">regulamin</label> <br />
         <input type="submit" value="zarejestruj się" /> <br />
       </form>
     </div>
