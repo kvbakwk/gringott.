@@ -38,8 +38,8 @@ export default function LoginPage() {
   return (
     <div>
       <form action={handleSubmit}>
-        <input type="text" name="email" id="email" /> <br />
-        <input type="password" name="password" id="password" /> <br />
+        <input type="text" name="email" id="email" placeholder="twój e-mail" /> <br />
+        <input type="password" name="password" id="password" placeholder="twoje hasło" /> <br />
         <input type="checkbox" name="remember" id="remember" /> <label htmlFor="remember">zapamietaj mnie</label><br />
         <input type="submit" value="zaloguj się" /> <br />
         {(emailErr || passwordErr || accountErr) ? <span>niepoprawne dane</span> : <></>} 
