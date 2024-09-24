@@ -5,7 +5,12 @@ import { Pool, QueryResult } from "pg";
 import { v4 as uuid } from "uuid";
 import { cookies } from "next/headers";
 
-import { validateEmail, validatePassword } from "@app/utils/validator";
+import {
+  validateEmail,
+  validateFullname,
+  validatePassword,
+  validatePasswords,
+} from "@app/utils/validator";
 
 interface loginAPIResponse {
   login: boolean;
@@ -102,4 +107,59 @@ export async function logout(): Promise<void> {
     ]);
   }
   await client.end();
+}
+
+interface registerAPIResponse {
+  register: boolean;
+  fullnameErr: boolean;
+  emailErr: boolean;
+  passwordErr: boolean;
+  passwordsErr: boolean;
+  rulesErr: boolean;
+  accountErr: boolean;
+}
+
+export async function registerAPI(
+  fullname: string,
+  email: string,
+  password: string,
+  passwordValid: string,
+  rules: boolean
+): Promise<registerAPIResponse> {
+  const validateAccount = async (email: string): Promise<boolean> => {
+    const client: Pool = new Pool();
+    const res: QueryResult = await client.query(
+      "SELECT id FROM public.user WHERE email = $1;",
+      [email]
+    );
+    await client.end();
+    return res.rowCount === 1;
+  };
+
+  const isValid =
+    validateFullname(fullname) &&
+    validateEmail(email) &&
+    validatePassword(password) &&
+    validatePasswords(password, passwordValid) &&
+    rules &&
+    !(await validateAccount(email));
+
+  if (isValid) {
+    const client: Pool = new Pool();
+    await client.query(
+      "INSERT INTO public.user (name, email, password) VALUES ($1, $2, $3);",
+      [fullname, email, password]
+    );
+    await client.end();
+  }
+
+  return {
+    register: isValid,
+    fullnameErr: !validateFullname(fullname),
+    emailErr: !validateEmail(email),
+    passwordErr: !validatePassword(password),
+    passwordsErr: !validatePasswords(password, passwordValid),
+    rulesErr: !rules,
+    accountErr: !validateEmail(email) || (await validateAccount(email)),
+  };
 }

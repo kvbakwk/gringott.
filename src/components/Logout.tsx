@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-import { logout } from "@app/api/login";
+import { logout } from "@app/api/auth";
 
 export default async function Logout() {
     const router = useRouter();
