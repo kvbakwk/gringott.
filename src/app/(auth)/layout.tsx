@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 
-import { loginCheck } from "@app/api/login";
+import { loginCheck } from "@app/api/auth";
 import "@app/utils/globals.css";
 
 export const metadata = {

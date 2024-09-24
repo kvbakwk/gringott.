@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import login from "@app/api/login";
+import login from "@app/api/auth";
 import { validateEmail, validatePassword } from "@app/utils/validator";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -44,6 +45,8 @@ export default function LoginPage() {
         <input type="submit" value="zaloguj się" /> <br />
         {(emailErr || passwordErr || accountErr) ? <span>niepoprawne dane</span> : <></>} 
       </form>
+      <br />
+      <Link href="/rejestracja">zarejestruj się</Link>
     </div>
   );
 }

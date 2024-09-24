@@ -2,7 +2,7 @@ import "@app/utils/globals.css";
 
 import { redirect } from "next/navigation";
 
-import { loginCheck } from "@app/api/login";
+import { loginCheck } from "@app/api/auth";
 
 export const metadata = {
   title: "gringott",
