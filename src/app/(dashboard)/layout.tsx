@@ -6,6 +6,7 @@ import { loginCheck } from "@app/api/auth";
 import getUser from "@app/api/user/get";
 
 import Logout from "@components/Logout";
+import Link from "next/link";
 
 export const metadata = {
   title: "gringott",
@@ -21,7 +22,14 @@ export default async function Layout({ children }) {
     <html lang="pl">
       <head></head>
       <body>
-        cześć {user.name} <Logout /><br /><br />
+        <Link href="/">gringott</Link>
+        <br />
+        cześć {user.name} 
+        <br />
+        <Link href="/transakcje">transakcje</Link>
+        <br />
+        <Logout />
+        <br /><br /><hr /><br />
         {children}
       </body>
     </html>

@@ -10,23 +10,20 @@ export default async function Page() {
   const user = await getUser();
   const cashWallet = await getCashWallet(user.id);
   const bankWallets = await getBankWallets(user.id);
-  const bankBalance = bankWallets
-    .reduce((a, b) => parseFloat(a.balance) + parseFloat(b.balance))
-    .toFixed(2);
+  const bankBalance =
+    bankWallets
+      .reduce((a, b) => parseFloat(a.balance) + parseFloat(b.balance))
+      .toFixed(2) ?? 0;
 
   return (
     <>
-      {((await isUserHaveWallet(user.id, true)) && (
-        <>
-          gotówka: {cashWallet.balance} zł
-          <br />
-        </>
-      )) || (
-        <>
-          skonfiguruj swój pierwszy portfel
-          <br />
-        </>
-      )}
+        STAN
+        <br />
+        {(parseFloat(cashWallet.balance) + parseFloat(bankBalance)).toFixed(2)} zł
+        <br />
+        <br />
+        gotówka: {cashWallet.balance} zł
+        <br />
       {((await isUserHaveWallet(user.id, false)) && (
         <>
           konta: {bankBalance} zł

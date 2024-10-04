@@ -1,5 +1,3 @@
-"use server";
-
 import { cookies } from "next/headers";
 
 import { getUserByUuid } from "@app/utils/db-actions/user";
