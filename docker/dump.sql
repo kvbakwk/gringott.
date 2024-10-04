@@ -70,9 +70,9 @@ create table if not exists public.shop (
 );
 
 
-insert into public.user (name, email, password) values ('kuba', 'kuba@gmail.com', 'zaq1@WSX');
-insert into public.user (name, email, password) values ('ola', 'ola@gmail.com', 'zaq1@WSX');
-insert into public.user (name, email, password) values ('iza', 'iza@gmail.com', 'zaq1@WSX');
+insert into public.user (name, email, password) values ('Jakub Kawka', 'kuba@gmail.com', 'zaq1@WSX');
+insert into public.user (name, email, password) values ('Ola Kawka', 'ola@gmail.com', 'zaq1@WSX');
+insert into public.user (name, email, password) values ('Iza Kawka', 'iza@gmail.com', 'zaq1@WSX');
 
 insert into public.super_category (name) values ('osobiste');
 insert into public.super_category (name) values ('codzienne');
