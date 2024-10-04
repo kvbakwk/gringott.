@@ -26,7 +26,7 @@ export default async function Layout({ children }) {
         <br />
         cześć {user.name} 
         <br />
-        <Link href="/transakcje">transakcje</Link>
+        <Link href="/przychody">przychody</Link>
         <br />
         <Logout />
         <br /><br /><hr /><br />
