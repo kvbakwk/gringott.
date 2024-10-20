@@ -33,6 +33,11 @@ create table if not exists public.category (
     foreign key (super_category_id) references public.super_category(id)
 );
 
+create table if not exists public.method (
+    id serial primary key,
+    name varchar(255) not null
+);
+
 create table if not exists public.transaction (
     id serial primary key,
     description varchar(255),
@@ -42,8 +47,10 @@ create table if not exists public.transaction (
     important boolean not null,
     wallet_id integer not null,
     category_id integer not null,
+    method_id integer not null,
     foreign key (wallet_id) references public.wallet(id),
-    foreign key (category_id) references public.category(id)
+    foreign key (category_id) references public.category(id),
+    foreign key (method_id) references public.method(id)
 );
 
 create table if not exists public.future_transaction (
@@ -73,6 +80,7 @@ create table if not exists public.shop (
 insert into public.user (name, email, password) values ('Jakub Kawka', 'kuba@gmail.com', 'zaq1@WSX');
 insert into public.user (name, email, password) values ('Ola Kawka', 'ola@gmail.com', 'zaq1@WSX');
 insert into public.user (name, email, password) values ('Iza Kawka', 'iza@gmail.com', 'zaq1@WSX');
+insert into public.user (name, email, password) values ('Olaf Konieczny', 'olaf@gmail.com', 'zaq1@WSX');
 
 insert into public.super_category (name) values ('osobiste');
 insert into public.super_category (name) values ('codzienne');
@@ -88,6 +96,8 @@ insert into public.super_category (name) values ('inne');
 insert into public.wallet (user_id, balance, cash) values (1, 10, true);
 insert into public.wallet (user_id, name, balance, cash) values (1, 'mBank', 100, false);
 insert into public.wallet (user_id, name, balance, cash) values (1, 'iPKO', 0, false);
+insert into public.wallet (user_id, balance, cash) values (4, 3, true);
+insert into public.wallet (user_id, name, balance, cash) values (4, 'mBank', 4, false);
 
 insert into public.category (name, super_category_id) values ('rozwój', 1);
 insert into public.category (name, super_category_id) values ('elektronika', 1);
@@ -156,5 +166,9 @@ insert into public.category (name, super_category_id) values ('kredyt', 9);
 insert into public.category (name, super_category_id) values ('kieszonkowe', 9);
 insert into public.category (name, super_category_id) values ('inne', 9);
 
-insert into public.transaction (description, income, amount, date, important, wallet_id, category_id) values ('kieszonkowe', true, 10, '2023-01-01 12:00:00', true, 1, 57);
-insert into public.transaction (description, income, amount, date, important, wallet_id, category_id) values ('kieszonkowe', true, 100, '2023-01-01 12:00:00', true, 2, 57);
+insert into public.method (name) values ('do ręki');
+insert into public.method (name) values ('przelew');
+insert into public.method (name) values ('zbliżeniowo');
+
+insert into public.transaction (description, income, amount, date, important, wallet_id, category_id, method_id) values ('kieszonkowe', true, 10, '2023-01-01 12:00:00', true, 1, 57, 1);
+insert into public.transaction (description, income, amount, date, important, wallet_id, category_id, method_id) values ('kieszonkowe', true, 100, '2023-01-01 12:00:00', true, 2, 57, 2);

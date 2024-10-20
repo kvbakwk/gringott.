@@ -9,7 +9,8 @@ import {
   validatePassword,
   validatePasswords,
 } from "@app/utils/validator";
-import { registerAPI as register } from "@app/api/auth";
+import { register } from "@app/api/auth/register";
+
 import Link from "next/link";
 
 export default function RegisterPage() {

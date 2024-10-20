@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import login from "@app/api/auth";
+import { login } from "@app/api/auth/login";
 import { validateEmail, validatePassword } from "@app/utils/validator";
+
 import Link from "next/link";
 
 export default function LoginPage() {

@@ -4,7 +4,7 @@ import { getTransactionsByUserId } from "@app/utils/db-actions/transaction";
 import { parseDate, parseMoney } from "@app/utils/parser";
 
 export const metadata = {
-  title: "gringott | przychody",
+  title: "gringott | rozchody",
 };
 
 export default async function Page() {
@@ -23,7 +23,7 @@ export default async function Page() {
           <th>metoda</th>
           <th>kategoria</th>
         </tr>
-        {transactions.filter(transaction => transaction.income).map((transaction) => (
+        {transactions.filter(transaction => !transaction.income).map((transaction) => (
           <tr key={transaction.id}>
             <td>
               {parseDate(transaction.date, false)}
