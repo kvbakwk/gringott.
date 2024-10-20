@@ -1,33 +1,86 @@
 import { Pool, QueryResult } from "pg";
 
-export async function isUserHaveWalletByUserId(user_id: number, cash: boolean) {
-    const client: Pool = new Pool();
-    const res: QueryResult = await client.query(
-      "SELECT id FROM public.wallet WHERE user_id = $1 AND cash = $2;",
-      [user_id, cash]
-    );
-    await client.end();
-    return res.rows.length > 0;
+export interface WalletIdT {
+  id: number;
 }
 
-export async function getCashWalletByUserId(user_id: number) {
-    const client: Pool = new Pool();
-    const res: QueryResult = await client.query(
-      "SELECT id, balance FROM public.wallet WHERE user_id = $1 AND cash = TRUE;",
-      [user_id]
-    );
-    await client.end();
-
-    return res.rows[0];
+export interface CashWalletT {
+  id: number;
+  balance: number;
 }
 
-export async function getBankWalletsByUserId(user_id: number) {
-    const client: Pool = new Pool();
-    const res: QueryResult = await client.query(
-      "SELECT id, name, balance FROM public.wallet WHERE user_id = $1 AND cash = FALSE;",
-      [user_id]
-    );
-    await client.end();
+export interface BankWalletT {
+  id: number;
+  name: string;
+  balance: number;
+}
 
-    return res.rows;
+export async function isWalletByUserId(
+  user_id: number,
+  cash: boolean
+): Promise<boolean> {
+  const client: Pool = new Pool();
+  const res: QueryResult = await client.query(
+    "SELECT id FROM public.wallet WHERE user_id = $1 AND cash = $2;",
+    [user_id, cash]
+  );
+  await client.end();
+  return res.rows.length > 0;
+}
+
+export async function getCashWalletByUserId(
+  user_id: number
+): Promise<CashWalletT> {
+  const client: Pool = new Pool();
+  const res: QueryResult = await client.query(
+    "SELECT id, balance FROM public.wallet WHERE user_id = $1 AND cash = TRUE;",
+    [user_id]
+  );
+  await client.end();
+
+  return {
+    id: parseInt(res.rows[0].id),
+    balance: parseInt(res.rows[0].balance),
+  };
+}
+
+export async function getBankWalletsByUserId(
+  user_id: number
+): Promise<BankWalletT[]> {
+  const client: Pool = new Pool();
+  const res: QueryResult = await client.query(
+    "SELECT id, name, balance FROM public.wallet WHERE user_id = $1 AND cash = FALSE;",
+    [user_id]
+  );
+  await client.end();
+
+  return res.rows.map((wallet) => ({
+    id: parseInt(wallet.id),
+    name: wallet.name,
+    balance: parseInt(wallet.balance),
+  }));
+}
+
+export async function getWalletsIdsByUserId(
+  user_id: number
+): Promise<WalletIdT[]> {
+  const client: Pool = new Pool();
+  const res: QueryResult = await client.query(
+    "SELECT id FROM public.wallet WHERE user_id = $1;",
+    [user_id]
+  );
+  await client.end();
+  return res.rows.map((wallet) => ({
+    id: parseInt(wallet.id),
+  }));
+}
+
+export async function isCashWallet(id: number) {
+  const client: Pool = new Pool();
+  const res: QueryResult = await client.query(
+    "SELECT id FROM public.wallet WHERE id = $1 AND cash = TRUE;",
+    [id]
+  );
+  await client.end();
+  return res.rows.length > 0;
 }

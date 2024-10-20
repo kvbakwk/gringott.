@@ -33,20 +33,20 @@ services:
     networks:
       - internal
     restart: unless-stopped
-  # pgadmin:
-  #   image: dpage/pgadmin4
-  #   ports:
-  #     - "8000:80"
-  #   environment:
-  #     PGADMIN_DEFAULT_EMAIL: jakubkawka2005@gmail.com
-  #     PGADMIN_DEFAULT_PASSWORD: root
-  #   volumes:
-  #     - ./docker/pgadmin.json:/pgadmin4/servers.json
-  #   links:
-  #     - postgresql
-  #   networks:
-  #     - internal
-  #   restart: unless-stopped
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "8000:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: jakubkawka2005@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    volumes:
+      - ./docker/pgadmin.json:/pgadmin4/servers.json
+    links:
+      - postgresql
+    networks:
+      - internal
+    restart: unless-stopped
 networks:
   internal:
     driver: bridge
