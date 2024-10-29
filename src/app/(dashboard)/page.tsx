@@ -13,6 +13,8 @@ export default async function Page() {
   const bankWallets = await getBankWallets(user.id);
   const bankBalance: number = bankWallets.reduce((a, b) => a + b.balance, 0);
 
+  console.log(cashWallet, bankWallets)
+
   return (
     <>
       STAN

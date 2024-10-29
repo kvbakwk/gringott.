@@ -15,8 +15,8 @@ create table if not exists public.user_device (
 create table if not exists public.wallet (
     id serial primary key,
     user_id integer not null,
-    name varchar(255),
-    balance numeric(10, 2) not null,
+    name varchar(20),
+    balance decimal(10, 2) not null,
     cash boolean not null,
     foreign key (user_id) references public.user(id)
 );
@@ -96,7 +96,7 @@ insert into public.super_category (name) values ('inne');
 insert into public.wallet (user_id, balance, cash) values (1, 10, true);
 insert into public.wallet (user_id, name, balance, cash) values (1, 'mBank', 100, false);
 insert into public.wallet (user_id, name, balance, cash) values (1, 'iPKO', 0, false);
-insert into public.wallet (user_id, balance, cash) values (4, 3, true);
+insert into public.wallet (user_id, balance, cash) values (4, 3.14, true);
 insert into public.wallet (user_id, name, balance, cash) values (4, 'mBank', 4, false);
 
 insert into public.category (name, super_category_id) values ('rozwój', 1);
