@@ -40,7 +40,7 @@ export async function getCashWalletByUserId(
 
   return {
     id: parseInt(res.rows[0].id),
-    balance: parseInt(res.rows[0].balance),
+    balance: parseFloat(res.rows[0].balance),
   };
 }
 
@@ -57,7 +57,7 @@ export async function getBankWalletsByUserId(
   return res.rows.map((wallet) => ({
     id: parseInt(wallet.id),
     name: wallet.name,
-    balance: parseInt(wallet.balance),
+    balance: parseFloat(wallet.balance),
   }));
 }
 
