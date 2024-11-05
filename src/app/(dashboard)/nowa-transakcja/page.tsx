@@ -1,7 +1,7 @@
-export default function NewTransactionPage() {
-    return (
-    <div>
-        nowa transakcja
-    </div>
-    )
+import NewTransactionForm from "@components/NewTransactionForm";
+
+export default async function NewTransactionPage() {
+    return (<>
+        < NewTransactionForm />
+    </>)
 } 
