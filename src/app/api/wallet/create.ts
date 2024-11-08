@@ -10,7 +10,6 @@ import {
 export async function createWallet(name, balance, user_id) {
   const isValid: boolean =
     validateWalletName(name) && validateWalletBalance(balance);
-    console.log(balance)    
   if (isValid) {
     const client: Pool = new Pool();
     const res: QueryResult = await client.query(

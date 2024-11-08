@@ -10,22 +10,35 @@ import { createWallet } from "@app/api/wallet/create";
 export default function NewWalletForm({ user_id }) {
   const [nameErr, setNameErr] = useState(false);
   const [balanceErr, setBalanceErr] = useState(false);
-  const [walletSuc, setWalletSuc] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(false);
 
   const handleSubmit = async (formData: FormData): Promise<void> => {
-    console.log(formData.get("balance").toString());
-    setNameErr(!validateWalletName(formData.get("name").toString()));
-    setBalanceErr(!validateWalletBalance(formData.get("balance").toString()));
     if (
       validateWalletName(formData.get("name").toString()) &&
       validateWalletBalance(formData.get("balance").toString())
     ) {
-      const res = await createWallet(
-        formData.get("name").toString(),
-        formData.get("balance").toString(),
-        user_id
-      );
-      setWalletSuc(res.createWallet)
+      try {
+        const res = await createWallet(
+          formData.get("name").toString(),
+          formData.get("balance").toString(),
+          user_id
+        );
+        setNameErr(res.nameErr);
+        setBalanceErr(res.balanceErr);
+        setSuccess(res.createWallet);
+        setError(false);
+      } catch (err) {
+        setNameErr(false);
+        setBalanceErr(false);
+        setSuccess(false);
+        setError(true);
+      }
+    } else {
+      setNameErr(!validateWalletName(formData.get("name").toString()));
+      setBalanceErr(!validateWalletBalance(formData.get("balance").toString()));
+      setError(false);
+      setSuccess(false);
     }
   };
 
@@ -34,13 +47,11 @@ export default function NewWalletForm({ user_id }) {
       <form action={handleSubmit}>
         <input type="text" name="name" id="name" placeholder="nazwa" />
         <br />
-        {nameErr ? (
+        {nameErr && (
           <>
             <span>nazwa portfela musi mieć od 1 do 20 znaków</span>
             <br />
           </>
-        ) : (
-          <></>
         )}
         <input
           type="number"
@@ -53,23 +64,22 @@ export default function NewWalletForm({ user_id }) {
         />{" "}
         zł
         <br />
-        {balanceErr ? (
+        {balanceErr && (
           <>
             <span>spróbuj wprowadzić dane jeszcze raz</span>
             <br />
           </>
-        ) : (
-          <></>
         )}
         <input type="submit" value="dodaj konto" />
-      </form>
-      {walletSuc ? (
-          <>
-            <div>Udało ci się utworzyć konto</div>
-          </>
-        ) : (
-          <></>
+        <br />
+        <br />
+        {success && <div>udało ci się utworzyć konto</div>}
+        {error && (
+          <div>
+            niestety nie udało się utworzyć konta, spróbuj ponownie później
+          </div>
         )}
+      </form>
     </>
   );
 }
