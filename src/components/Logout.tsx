@@ -1,10 +1,18 @@
-"use client"
+"use client";
 
 import { useRouter } from "next/navigation";
 
 import { logout } from "@app/api/auth/login";
 
-export default async function Logout() {
-    const router = useRouter();
-    return <input onClick={async () => {await logout(); router.refresh()}} type="button" value="wyloguj się" />
+export default function Logout() {
+  const router = useRouter();
+  return (
+    <input
+      onClick={() => {
+        logout().finally(() => router.refresh());
+      }}
+      type="button"
+      value="wyloguj się"
+    />
+  );
 }

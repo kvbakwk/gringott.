@@ -15,3 +15,4 @@ COPY ./tailwind.config.js .
 COPY ./.eslintrc.json .
 
 CMD npm run dev
+# CMD npm run lint
