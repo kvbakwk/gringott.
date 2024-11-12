@@ -3,6 +3,16 @@ export const validateWalletName = (name: string): boolean => {
   return pattern.test(name);
 }
 
+export const validateTransactionName = (name: string): boolean => {
+  const pattern = /^.{1,256}$/;
+  return pattern.test(name);
+}
+
+export const validateTranscationAmount = (balance: string): boolean => {
+  const pattern = /^\d+(?:.\d{1,2})?$/;
+  return pattern.test(balance);
+}
+
 export const validateWalletBalance = (balance: string): boolean => {
   const pattern = /^\d+(?:.\d{1,2})?$/;
   return pattern.test(balance);
