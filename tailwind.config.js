@@ -15,7 +15,15 @@ module.exports = {
         lg: "1240px",
         xl: "1440px",
       },
-      colors: {},
+      colors: {
+        'primary': '#79590C',
+        'surface': '#FFF8F3',
+        'surface-container': '#F7ECDF',
+        'on-surface-variant': '#4E4639'
+      },
+      fontSize: {
+        lg: "57px"
+      },
       boxShadow: {
         none: "0px 0px 0px 0px rgba(0, 0, 0, 0.1)",
         xs: "0px 4px 10px 0px rgba(0, 0, 0, 0.1)",

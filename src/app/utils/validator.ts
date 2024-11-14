@@ -3,16 +3,6 @@ export const validateWalletName = (name: string): boolean => {
   return pattern.test(name);
 }
 
-export const validateTransactionName = (name: string): boolean => {
-  const pattern = /^.{1,256}$/;
-  return pattern.test(name);
-}
-
-export const validateTranscationAmount = (balance: string): boolean => {
-  const pattern = /^\d+(?:.\d{1,2})?$/;
-  return pattern.test(balance);
-}
-
 export const validateWalletBalance = (balance: string): boolean => {
   const pattern = /^\d+(?:.\d{1,2})?$/;
   return pattern.test(balance);
@@ -40,3 +30,28 @@ export const validatePasswords = (
 ): boolean => {
   return password1 == password2;
 };
+
+export const validateTransactionDate = (date: string): boolean => {
+  const pattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
+  return pattern.test(date);
+}
+
+export const validateTransactionAmount = (amount: string): boolean => {
+  const pattern = /^\d+(?:.\d{1,2})?$/;
+  return pattern.test(amount);
+}
+
+export const validateTransactionDescription = (description: string): boolean => {
+  const pattern = /^.{1,256}$/;
+  return pattern.test(description);
+}
+
+export const validateTransactionCategory = (category: string): boolean => {
+  const category_ids = [1, 2, 3, 4, 5];
+  return category_ids.includes(parseInt(category));
+}
+
+export const validateTransactionReceiver = (receiver: string): boolean => {
+  const pattern = /^.{1,256}$/;
+  return pattern.test(receiver);
+}

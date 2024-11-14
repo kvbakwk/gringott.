@@ -40,13 +40,13 @@ create table if not exists public.method (
 
 create table if not exists public.transaction (
     id serial primary key,
-    description varchar(255),
     income boolean not null,
-    amount numeric(10, 2) not null,
     date timestamp not null,
+    amount numeric(10, 2) not null,
+    description varchar(255),
+    category_id integer not null,
     important boolean not null,
     wallet_id integer not null,
-    category_id integer not null,
     method_id integer not null,
     foreign key (wallet_id) references public.wallet(id),
     foreign key (category_id) references public.category(id),

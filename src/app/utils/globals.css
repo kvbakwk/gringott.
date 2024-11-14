@@ -8,3 +8,8 @@
 * {
   box-sizing: border-box;
 }
+
+.fill {
+  font-variation-settings:
+  'FILL' 1
+}
