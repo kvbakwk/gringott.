@@ -1,3 +1,5 @@
+'use server'
+
 import { Pool, QueryResult } from "pg";
 
 export interface WalletIdT {
@@ -25,6 +27,7 @@ export async function isWalletByUserId(
     [user_id, cash]
   );
   await client.end();
+
   return res.rows.length > 0;
 }
 

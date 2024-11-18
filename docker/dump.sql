@@ -23,7 +23,9 @@ create table if not exists public.wallet (
 
 create table if not exists public.super_category (
     id serial primary key,
-    name varchar(255) not null
+    name varchar(255) not null,
+    income boolean not null,
+    outcome boolean not null
 );
 
 create table if not exists public.category (
@@ -35,16 +37,18 @@ create table if not exists public.category (
 
 create table if not exists public.method (
     id serial primary key,
-    name varchar(255) not null
+    name varchar(255) not null,
+    cash boolean not null,
+    bank boolean not null
 );
 
 create table if not exists public.transaction (
     id serial primary key,
-    income boolean not null,
     date timestamp not null,
     amount numeric(10, 2) not null,
     description varchar(255),
     category_id integer not null,
+    income boolean not null,
     important boolean not null,
     wallet_id integer not null,
     method_id integer not null,
@@ -82,16 +86,16 @@ insert into public.user (name, email, password) values ('Ola Kawka', 'ola@gmail.
 insert into public.user (name, email, password) values ('Iza Kawka', 'iza@gmail.com', 'zaq1@WSX');
 insert into public.user (name, email, password) values ('Olaf Konieczny', 'olaf@gmail.com', 'zaq1@WSX');
 
-insert into public.super_category (name) values ('osobiste');
-insert into public.super_category (name) values ('codzienne');
-insert into public.super_category (name) values ('domowe');
-insert into public.super_category (name) values ('płatności');
-insert into public.super_category (name) values ('rozrywka');
-insert into public.super_category (name) values ('oszczędności');
-insert into public.super_category (name) values ('dzieci');
-insert into public.super_category (name) values ('transport');
-insert into public.super_category (name) values ('wpływy');
-insert into public.super_category (name) values ('inne');
+insert into public.super_category (name, income, outcome) values ('osobiste', false, true);
+insert into public.super_category (name, income, outcome) values ('codzienne', false, true);
+insert into public.super_category (name, income, outcome) values ('domowe', false, true);
+insert into public.super_category (name, income, outcome) values ('płatności', false, true);
+insert into public.super_category (name, income, outcome) values ('rozrywka', false, true);
+insert into public.super_category (name, income, outcome) values ('oszczędności', true, true);
+insert into public.super_category (name, income, outcome) values ('dzieci', false, true);
+insert into public.super_category (name, income, outcome) values ('transport', false, true);
+insert into public.super_category (name, income, outcome) values ('wpływy', true, false);
+insert into public.super_category (name, income, outcome) values ('inne', true, true);
 
 insert into public.wallet (user_id, balance, cash) values (1, 10, true);
 insert into public.wallet (user_id, name, balance, cash) values (1, 'mBank', 100, false);
@@ -166,9 +170,12 @@ insert into public.category (name, super_category_id) values ('kredyt', 9);
 insert into public.category (name, super_category_id) values ('kieszonkowe', 9);
 insert into public.category (name, super_category_id) values ('inne', 9);
 
-insert into public.method (name) values ('do ręki');
-insert into public.method (name) values ('przelew');
-insert into public.method (name) values ('zbliżeniowo');
+insert into public.method (name, cash, bank) values ('do ręki', true, false);
+insert into public.method (name, cash, bank) values ('poczta', true, false);
+insert into public.method (name, cash, bank) values ('przelew', false, true);
+insert into public.method (name, cash, bank) values ('na telefon', false, true);
+insert into public.method (name, cash, bank) values ('zbliżeniowo', false, true);
+insert into public.method (name, cash, bank) values ('blik', false, true);
 
 insert into public.transaction (description, income, amount, date, important, wallet_id, category_id, method_id) values ('kieszonkowe', true, 10, '2023-01-01 12:00:00', true, 1, 57, 1);
 insert into public.transaction (description, income, amount, date, important, wallet_id, category_id, method_id) values ('kieszonkowe', true, 100, '2023-01-01 12:00:00', true, 2, 57, 2);

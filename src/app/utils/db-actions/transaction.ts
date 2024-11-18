@@ -44,7 +44,7 @@ export async function getTransactionsByWalletId(
 ): Promise<TransactionT[]> {
   const client: Pool = new Pool();
   const res: QueryResult = await client.query(
-    "SELECT public.transaction.id, description, income, amount, date, important, wallet_id, public.super_category.name as super_category, public.category.name as category, public.category.name as category, public.method.name as method FROM public.transaction JOIN public.category ON public.transaction.category_id = public.category.id JOIN public.method ON public.transaction.method_id = public.method.id JOIN public.super_category ON public.category.super_category_id = public.super_category.id WHERE wallet_id = $1;",
+    "SELECT public.transaction.id, public.transaction.description, public.transaction.income, public.transaction.amount, public.transaction.date, public.transaction.important, public.transaction.wallet_id, public.super_category.name as super_category, public.category.name as category, public.method.name as method FROM public.transaction JOIN public.category ON public.transaction.category_id = public.category.id JOIN public.method ON public.transaction.method_id = public.method.id JOIN public.super_category ON public.category.super_category_id = public.super_category.id WHERE wallet_id = $1;",
     [id]
   );
   await client.end();
