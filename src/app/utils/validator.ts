@@ -1,12 +1,16 @@
+import { isIncomeCategory, isOutcomeCategory } from "./db-actions/category";
+import { isBankMethod, isCashMethod } from "./db-actions/method";
+import { getWalletsIdsByUserId, isCashWallet } from "./db-actions/wallet";
+
 export const validateWalletName = (name: string): boolean => {
   const pattern = /^.{1,256}$/;
   return pattern.test(name);
-}
+};
 
 export const validateWalletBalance = (balance: string): boolean => {
   const pattern = /^\d+(?:.\d{1,2})?$/;
   return pattern.test(balance);
-}
+};
 
 export const validateFullname = (fullname: string): boolean => {
   const pattern =
@@ -29,4 +33,61 @@ export const validatePasswords = (
   password2: string
 ): boolean => {
   return password1 == password2;
+};
+
+export const validateTransactionDate = (date: string): boolean => {
+  const pattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
+  return pattern.test(date);
+};
+
+export const validateTransactionAmount = (amount: number): boolean => {
+  const pattern = /^\d+(?:.\d{1,2})?$/;
+  return pattern.test(amount.toString());
+};
+
+export const validateTransactionDescription = (
+  description: string
+): boolean => {
+  const pattern = /^.{1,256}$/;
+  return pattern.test(description);
+};
+
+export const validateTransactionReceiver = (receiver: string): boolean => {
+  const pattern = /^.{1,256}$/;
+  return pattern.test(receiver);
+};
+
+export const validateTransactionWalletId = async (
+  walletId: number,
+  userId: number
+): Promise<boolean> => {
+  return (
+    !isNaN(walletId) &&
+    !isNaN(userId) &&
+    (await getWalletsIdsByUserId(userId))
+      .map((wallet) => wallet.id)
+      .includes(walletId)
+  );
+};
+
+export const validateTransactionMethodId = async (
+  methodId: number,
+  walletId: number
+): Promise<boolean> => {
+  return (
+    !isNaN(methodId) &&
+    !isNaN(walletId) &&
+    (((await isCashWallet(walletId)) && (await isCashMethod(methodId))) ||
+      (!(await isCashWallet(walletId)) && (await isBankMethod(methodId))))
+  );
+};
+
+export const validateTransactionCategoryId = async (
+  categoryId: number,
+  income: boolean
+): Promise<boolean> => {
+  return (
+    !isNaN(categoryId) && (((await isIncomeCategory(categoryId)) && income) ||
+    ((await isOutcomeCategory(categoryId)) && !income))
+  );
 };

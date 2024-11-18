@@ -57,7 +57,6 @@ export default function NewWalletForm({ user_id }) {
           type="number"
           name="balance"
           id="balance"
-          defaultValue="0"
           step="0.01"
           min="0"
           placeholder="stan konta"

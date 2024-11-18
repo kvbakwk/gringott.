@@ -35,6 +35,8 @@ export default async function Layout({ children }) {
         <Link href="/rozchody">rozchody</Link>
         <br />
         <Link href="/nowe-konto">nowe konto</Link>
+        <br />
+        <Link href="/nowa-transakcja">nowa transakcja</Link>
         <br /><br /><hr /><br />
         {children}
       </body>

@@ -27,6 +27,9 @@ export default async function Page() {
       {((await isWallet(user.id, false)) && (
         <>
           konta: {parseMoney(bankBalance)} zł
+          {bankWallets.map(bankWallet => (
+            <div key={bankWallet.id}> - {bankWallet.name}: {parseMoney(bankWallet.balance)} zł</div>
+          ))}
           <br />
         </>
       )) || (
