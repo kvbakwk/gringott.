@@ -1,4 +1,4 @@
-import LoginPage from "@components/LoginPage";
+import LoginForm from "@components/LoginForm";
 
 export const metadata = {
   title: "gringott | logowanie",
@@ -6,8 +6,8 @@ export const metadata = {
 
 export default function Page() {
   return (
-    <div>
-      <LoginPage />
-    </div>
+    <>
+      <LoginForm />
+    </>
   );
 }

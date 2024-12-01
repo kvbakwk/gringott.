@@ -19,7 +19,10 @@ module.exports = {
         'primary': '#79590C',
         'surface': '#FFF8F3',
         'surface-container': '#F7ECDF',
-        'on-surface-variant': '#4E4639'
+        'on-surface-variant': '#4E4639',
+        'error-container': '#FFDAD6',
+        'on-error-container': '#410002',
+        'outline': '#7F7667'
       },
       fontSize: {
         lg: "57px"

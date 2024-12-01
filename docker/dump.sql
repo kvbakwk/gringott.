@@ -46,8 +46,9 @@ create table if not exists public.transaction (
     id serial primary key,
     date timestamp not null,
     amount numeric(10, 2) not null,
-    description varchar(255),
+    description varchar(255) not null,
     category_id integer not null,
+    across_person varchar(255) not null,
     income boolean not null,
     important boolean not null,
     wallet_id integer not null,
@@ -59,13 +60,18 @@ create table if not exists public.transaction (
 
 create table if not exists public.future_transaction (
     id serial primary key,
-    income boolean not null,
-    amount numeric(10, 2) not null,
     date timestamp,
+    amount numeric(10, 2) not null,
+    description varchar(255) not null,
+    across_person varchar(255) not null,
+    income boolean not null,
+    important boolean not null,
     wallet_id integer not null,
     category_id integer not null,
+    method_id integer not null,
     foreign key (wallet_id) references public.wallet(id),
-    foreign key (category_id) references public.category(id)
+    foreign key (category_id) references public.category(id),
+    foreign key (method_id) references public.method(id)
 );
 
 create table if not exists public.product (
@@ -177,5 +183,5 @@ insert into public.method (name, cash, bank) values ('na telefon', false, true);
 insert into public.method (name, cash, bank) values ('zbliżeniowo', false, true);
 insert into public.method (name, cash, bank) values ('blik', false, true);
 
-insert into public.transaction (description, income, amount, date, important, wallet_id, category_id, method_id) values ('kieszonkowe', true, 10, '2023-01-01 12:00:00', true, 1, 57, 1);
-insert into public.transaction (description, income, amount, date, important, wallet_id, category_id, method_id) values ('kieszonkowe', true, 100, '2023-01-01 12:00:00', true, 2, 57, 2);
+insert into public.transaction (date, amount, description, category_id, across_person, income, important, wallet_id, method_id) values ('2023-01-01 12:00:00', 10, 'kieszonkowe', 57, 'tata', true, true, 1, 1);
+insert into public.transaction (date, amount, description, category_id, across_person, income, important, wallet_id, method_id) values ('2023-01-01 12:00:00', 100, 'kieszonkowe', 57, 'tata', true, true, 2, 2);

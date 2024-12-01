@@ -7,9 +7,9 @@ export const validateWalletName = (name: string): boolean => {
   return pattern.test(name);
 };
 
-export const validateWalletBalance = (balance: string): boolean => {
+export const validateWalletBalance = (balance: number): boolean => {
   const pattern = /^\d+(?:.\d{1,2})?$/;
-  return pattern.test(balance);
+  return pattern.test(balance.toString());
 };
 
 export const validateFullname = (fullname: string): boolean => {
@@ -52,7 +52,7 @@ export const validateTransactionDescription = (
   return pattern.test(description);
 };
 
-export const validateTransactionReceiver = (receiver: string): boolean => {
+export const validateTransactionAcrossPerson = (receiver: string): boolean => {
   const pattern = /^.{1,256}$/;
   return pattern.test(receiver);
 };

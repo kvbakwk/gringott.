@@ -1,11 +1,11 @@
 "use client";
 
+import { createBankWallet } from "@app/api/wallet/create";
 import {
   validateWalletBalance,
   validateWalletName,
 } from "@app/utils/validator";
 import { useState } from "react";
-import { createWallet } from "@app/api/wallet/create";
 
 export default function NewWalletForm({ user_id }) {
   const [nameErr, setNameErr] = useState(false);
@@ -16,12 +16,12 @@ export default function NewWalletForm({ user_id }) {
   const handleSubmit = async (formData: FormData): Promise<void> => {
     if (
       validateWalletName(formData.get("name").toString()) &&
-      validateWalletBalance(formData.get("balance").toString())
+      validateWalletBalance(parseFloat(formData.get("balance").toString()))
     ) {
       try {
-        const res = await createWallet(
+        const res = await createBankWallet(
           formData.get("name").toString(),
-          formData.get("balance").toString(),
+          parseFloat(formData.get("balance").toString()),
           user_id
         );
         setNameErr(res.nameErr);
@@ -36,7 +36,7 @@ export default function NewWalletForm({ user_id }) {
       }
     } else {
       setNameErr(!validateWalletName(formData.get("name").toString()));
-      setBalanceErr(!validateWalletBalance(formData.get("balance").toString()));
+      setBalanceErr(!validateWalletBalance(parseFloat(formData.get("balance").toString())));
       setError(false);
       setSuccess(false);
     }

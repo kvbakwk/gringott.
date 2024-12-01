@@ -1,3 +1,4 @@
+import { createCashWallet } from "@app/api/wallet/create";
 import { Pool, QueryResult } from "pg";
 
 export interface UserT {
@@ -37,8 +38,8 @@ export async function validateUser(
 export async function isUserByEmail(email: string): Promise<boolean> {
   const client: Pool = new Pool();
   const res: QueryResult<UserIdT> = await client.query(
-    "SELECT id FROM public.user WHERE name = $1;",
-    [name]
+    "SELECT id FROM public.user WHERE email = $1;",
+    [email]
   );
   await client.end();
   return res.rowCount === 1;
@@ -46,9 +47,10 @@ export async function isUserByEmail(email: string): Promise<boolean> {
 
 export async function createUser(name: string, email: string, password: string): Promise<void> {
   const client: Pool = new Pool();
-  await client.query(
-    "INSERT INTO public.user (name, email, password) VALUES ($1, $2, $3);",
+  const res: QueryResult = await client.query(
+    "INSERT INTO public.user (name, email, password) VALUES ($1, $2, $3) RETURNING id;",
     [name, email, password]
   );
+  await createCashWallet(0, res.rows[0].id);
   await client.end();
 }

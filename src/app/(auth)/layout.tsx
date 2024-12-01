@@ -3,6 +3,8 @@ import "@app/utils/globals.css";
 import { redirect } from "next/navigation";
 
 import { loginCheck } from "@app/api/auth/login";
+import Link from "next/link";
+import AuthNav from "@components/AuthNav";
 
 export const metadata = {
   title: "gringott",
@@ -23,25 +25,14 @@ export default async function Layout({
             <div className="text-primary text-lg leading-[64px] text-center w-[250px] h-[70px]">
               gringott
             </div>
-            <div className="text-on-surface-variant flex flex-col gap-[10px] w-[270px] h-fit p-[10px]">
-              <div className="flex items-center gap-[18px] h-[70px] px-[19px] py-[18px] bg-surface rounded-[16px] shadow-md">
-                <span className="material-symbols-outlined fill">
-                  account_circle
-                </span>
-                <div className="font-extralight text-[22px]">logowanie</div>
-              </div>
-              <div className="flex items-center gap-[18px] h-[70px] px-[19px] py-[18px]">
-                <span className="material-symbols-outlined">person_add</span>
-                <div className="font-extralight text-[22px]">rejestracja</div>
-              </div>
-            </div>
+            <AuthNav />
           </div>
-          <div className="flex justify-center items-center w-full h-full">{children}</div>
+          <div className="flex flex-col justify-center items-center w-full h-full">{children}</div>
           <div className="text-on-surface-variant flex flex-col justify-center items-center w-full h-full">
             <div className="text-on-surface-variant flex flex-col gap-[10px] w-[270px] h-fit p-[10px]">
               <div className="flex items-center gap-[18px] h-[70px] px-[19px] py-[18px] bg-surface rounded-[16px] shadow-md">
                 <span className="material-symbols-outlined fill">book_5</span>
-                <div className="font-extralight text-[22px]">rejestracja</div>
+                <div className="font-extralight text-[22px]">regulamin</div>
               </div>
             </div>
           </div>

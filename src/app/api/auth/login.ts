@@ -32,8 +32,8 @@ export async function login(
     (userId !== 0 ? true : false);
 
   if (isValid) {
-    if (!cookies().has("device_id"))
-      cookies().set("device_id", uuid(), { secure: true, path: "/" });
+    if (!(await cookies()).has("device_id"))
+      (await cookies()).set("device_id", uuid(), { secure: true, path: "/" });
 
     const expireDate: Date = new Date();
     remember
@@ -42,7 +42,7 @@ export async function login(
 
     await createUserDevice(
       userId,
-      cookies().get("device_id").value,
+      (await cookies()).get("device_id").value,
       expireDate
     );
   }
@@ -59,13 +59,13 @@ export async function login(
 }
 
 export async function loginCheck(): Promise<boolean> {
-  if (cookies().has("device_id")) {
+  if ((await cookies()).has("device_id")) {
     const userDevicesDates = await getUserDeviceByDeviceId(
-      cookies().get("device_id").value
+      (await cookies()).get("device_id").value
     );
     if (userDevicesDates.length > 0) {
       if (new Date(userDevicesDates[0].expireDate) < new Date()) {
-        await deleteUserDeviceByDeviceId(cookies().get("device_id").value);
+        await deleteUserDeviceByDeviceId((await cookies()).get("device_id").value);
         return false;
       }
       return true;
@@ -75,6 +75,6 @@ export async function loginCheck(): Promise<boolean> {
 }
 
 export async function logout(): Promise<void> {
-  if (cookies().has("device_id"))
-    await deleteUserDeviceByDeviceId(cookies().get("device_id").value);
+  if ((await cookies()).has("device_id"))
+    await deleteUserDeviceByDeviceId((await cookies()).get("device_id").value);
 }

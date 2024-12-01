@@ -1,4 +1,4 @@
-import RegisterPage from "@components/RegisterPage";
+import RegisterPage from "@components/RegisterForm";
 
 export const metadata = {
   title: "gringott | rejestracja",

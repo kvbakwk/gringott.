@@ -11,9 +11,11 @@ import {
 } from "@app/utils/validator";
 import { register } from "@app/api/auth/register";
 
-import Link from "next/link";
+import { TextFieldOutlined } from "./TextField";
+import { Checkbox } from "./Checkbox";
+import { Button } from "./Button";
 
-export default function RegisterPage() {
+export default function RegisterForm() {
   const router = useRouter();
 
   const [fullnameErr, setFullnameErr] = useState<boolean>(false);
@@ -23,7 +25,12 @@ export default function RegisterPage() {
   const [rulesErr, setRulesErr] = useState<boolean>(false);
   const [accountErr, setAccountErr] = useState<boolean>(false);
 
-  const handleSubmit = async (formData: FormData): Promise<void> => {
+  const handleSubmit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+
     if (
       validateFullname(formData.get("fullname").toString()) &&
       validateEmail(formData.get("email").toString()) &&
@@ -68,85 +75,52 @@ export default function RegisterPage() {
   };
 
   return (
-    <div>
-      <form action={handleSubmit}>
-        <input
-          type="text"
+    <form
+      className="flex flex-col justify-center items-center gap-[40px] w-[500px] h-fit py-[70px] bg-surface rounded-2xl shadow-md"
+      onSubmit={handleSubmit}
+    >
+      <div className="flex flex-col justify-center items-center gap-[25px] w-[320px] px-[10px] py-[20px]">
+        <TextFieldOutlined
+          className="w-full"
+          label="twoje imię i nazwisko"
           name="fullname"
-          id="fullname"
-          placeholder="twoje imię i nazwisko"
+          error={fullnameErr}
+          errorText="wpisane imię i nazwisko są niepoprawne"
         />
-        <br />
-        {fullnameErr ? (
-          <>
-            <span>wpisz swoje poprawne imię i nazwisko</span>
-            <br />
-          </>
-        ) : (
-          <></>
-        )}
-        <input type="text" name="email" id="email" placeholder="twój e-mail" />{" "}
-        <br />
-        {emailErr ? (
-          <>
-            <span>wpisz poprawny adres e-mail</span>
-            <br />
-          </>
-        ) : (
-          <></>
-        )}
-        <input
-          type="password"
+        <TextFieldOutlined
+          className="w-full"
+          label="twój e-mail"
+          name="email"
+          error={emailErr || accountErr}
+          errorText="wpisany adres e-mail jest niepoprawny lub zajęty"
+        />
+        <TextFieldOutlined
+          className="w-full"
+          label="twoje hasło"
           name="password"
-          id="password"
-          placeholder="twoje hasło"
-        />
-        <br />
-        {passwordErr ? (
-          <>
-            <span>wpisz hasło spełniające wymogi bezpieczeństwa</span>
-            <br />
-          </>
-        ) : (
-          <></>
-        )}
-        <input
           type="password"
-          name="passwordValid"
-          id="passwordValid"
-          placeholder="powtórz hasło"
+          error={passwordErr}
+          errorText="wymagane: 8+ znaków, duża litera, liczba i znak"
         />
-        <br />
-        {passwordsErr ? (
-          <>
-            <span>wpisz hasło takie samo jak wyżej</span>
-            <br />
-          </>
-        ) : (
-          <></>
-        )}
-        <input type="checkbox" name="rules" id="rules" />{" "}
-        <label htmlFor="rules">regulamin</label> <br />
-        {rulesErr ? (
-          <>
-            <span>przeczytaj i zaakceptuj regulamin</span>
-            <br />
-          </>
-        ) : (
-          <></>
-        )}
-        <input type="submit" value="zarejestruj się" /> <br />
-        {accountErr ? (
-          <>
-            <span>konto z podanym adresem e-mail już istnieje</span>
-            <br />
-          </>
-        ) : (
-          <></>
-        )}
-      </form>
-      <br />
-      <Link href="/logowanie">zaloguj się</Link>
-    </div>
+        <TextFieldOutlined
+          className="w-full"
+          label="powtórz hasło"
+          name="passwordValid"
+          type="password"
+          error={passwordsErr}
+          errorText="wpisane hasła nie są identyczne"
+        />
+      </div>
+      <div className="flex justify-center items-center gap-[40px] pr-[10px]">
+        <label
+          className="flex justify-center items-center text-[16px] text-outline tracking-wider"
+          htmlFor="rules"
+        >
+          <Checkbox className="m-[15px]" name="rules" id="rules" required />
+          akceptuję regulamin
+        </label>
+        <Button>zarejestuj się</Button>
+      </div>
+    </form>
   );
 }

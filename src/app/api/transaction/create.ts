@@ -4,7 +4,7 @@ import {
   validateTransactionDate,
   validateTransactionAmount,
   validateTransactionDescription,
-  validateTransactionReceiver,
+  validateTransactionAcrossPerson,
   validateTransactionWalletId,
   validateTransactionMethodId,
   validateTransactionCategoryId,
@@ -19,7 +19,7 @@ export async function createTransaction(
   amount: number,
   description: string,
   categoryId: number,
-  receiver: string,
+  acrossPerson: string,
   important: boolean,
   userId: number
 ) {
@@ -30,17 +30,18 @@ export async function createTransaction(
     validateTransactionAmount(amount) &&
     validateTransactionDescription(description) &&
     (await validateTransactionCategoryId(categoryId, income)) &&
-    validateTransactionReceiver(receiver);
+    validateTransactionAcrossPerson(acrossPerson);
 
   if (isValid) {
     const client: Pool = new Pool();
     await client.query(
-      `INSERT INTO public.transaction (date, amount, description, category_id, income, important, wallet_id, method_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8);`,
+      `INSERT INTO public.transaction (date, amount, description, category_id, across_person, income, important, wallet_id, method_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`,
       [
         date,
         amount,
         description,
         categoryId,
+        acrossPerson,
         income,
         important,
         walletId,
@@ -62,6 +63,6 @@ export async function createTransaction(
     amountErr: !validateTransactionAmount(amount),
     descriptionErr: !validateTransactionDescription(description),
     categoryIdErr: !(await validateTransactionCategoryId(categoryId, income)),
-    receiverErr: !validateTransactionReceiver(receiver),
+    acrossPersonErr: !validateTransactionAcrossPerson(acrossPerson),
   };
 }

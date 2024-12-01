@@ -4,22 +4,22 @@ import { useEffect, useState } from "react";
 import { createTransaction } from "@app/api/transaction/create";
 import { getCategories } from "@app/utils/db-actions/category";
 import { getSuperCategories } from "@app/utils/db-actions/super_category";
-import { getBankWallets, getCashWallet } from "@app/api/wallet/get";
+import { getWallets } from "@app/api/wallet/get";
 import { getMethods } from "@app/utils/db-actions/method";
 import {
   validateTransactionAmount,
   validateTransactionDate,
   validateTransactionDescription,
-  validateTransactionReceiver,
+  validateTransactionAcrossPerson,
 } from "@app/utils/validator";
+import { WalletT } from "@app/utils/db-actions/wallet";
 
 export default function NewTransactionForm({ user_id }: { user_id: number }) {
   const [income, setIncome] = useState(0);
   const [superCategoryId, setSuperCategoryId] = useState(0);
   const [walletId, setWalletId] = useState(0);
 
-  const [cashWallet, setCashWallet] = useState(null);
-  const [bankWallets, setBankWallets] = useState([]);
+  const [wallets, setWallets] = useState<WalletT[]>([]);
   const [methods, setMethods] = useState([]);
   const [categories, setCategories] = useState([]);
   const [superCategories, setSuperCategories] = useState([]);
@@ -31,15 +31,13 @@ export default function NewTransactionForm({ user_id }: { user_id: number }) {
   const [amountErr, setAmountErr] = useState(false);
   const [descriptionErr, setDescriptionErr] = useState(false);
   const [categoryIdErr, setCategoryIdErr] = useState(false);
-  const [receiverErr, setReceiverErr] = useState(false);
+  const [acrossPersonErr, setAcrossPersonErr] = useState(false);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    getCashWallet(user_id).then((res) => {
-      setCashWallet(res);
-    });
-    getBankWallets(user_id).then((res) => {
-      setBankWallets(res);
+    getWallets(user_id).then((res) => {
+      setWallets(res);
+      setWalletId(res[0].id)
     });
   }, []);
   useEffect(() => {
@@ -47,8 +45,8 @@ export default function NewTransactionForm({ user_id }: { user_id: number }) {
       setMethods(
         res.filter(
           (method) =>
-            (method.cash === true && cashWallet?.id == walletId) ||
-            (method.bank === true && cashWallet?.id != walletId)
+            (walletId !== 0 && method.cash === true && wallets.filter(wallet => wallet.id === walletId)[0].cash) ||
+            (walletId !== 0 && method.bank === true && !wallets.filter(wallet => wallet.id === walletId)[0].cash)
         )
       );
     });
@@ -80,7 +78,7 @@ export default function NewTransactionForm({ user_id }: { user_id: number }) {
         parseFloat(formData.get("amount").toString())
       ) &&
       validateTransactionDescription(formData.get("description").toString()) &&
-      validateTransactionReceiver(formData.get("receiver").toString())
+      validateTransactionAcrossPerson(formData.get("acrossPerson").toString())
     ) {
       createTransaction(
         parseInt(formData.get("walletId")?.toString()),
@@ -90,7 +88,7 @@ export default function NewTransactionForm({ user_id }: { user_id: number }) {
         parseFloat(formData.get("amount").toString()),
         formData.get("description").toString(),
         parseInt(formData.get("categoryId")?.toString()),
-        formData.get("receiver").toString(),
+        formData.get("acrossPerson").toString(),
         Boolean(formData.get("important")?.toString()),
         user_id
       )
@@ -102,7 +100,7 @@ export default function NewTransactionForm({ user_id }: { user_id: number }) {
           setAmountErr(res.amountErr);
           setDescriptionErr(res.descriptionErr);
           setCategoryIdErr(res.categoryIdErr);
-          setReceiverErr(res.receiverErr);
+          setAcrossPersonErr(res.acrossPersonErr);
           setError(false);
         })
         .catch(() => {
@@ -113,7 +111,7 @@ export default function NewTransactionForm({ user_id }: { user_id: number }) {
           setAmountErr(false);
           setDescriptionErr(false);
           setCategoryIdErr(false);
-          setReceiverErr(false);
+          setAcrossPersonErr(false);
           setError(true);
         });
     } else {
@@ -130,8 +128,8 @@ export default function NewTransactionForm({ user_id }: { user_id: number }) {
         !validateTransactionDescription(formData.get("description").toString())
       );
       setCategoryIdErr(false);
-      setReceiverErr(
-        !validateTransactionReceiver(formData.get("receiver").toString())
+      setAcrossPersonErr(
+        !validateTransactionAcrossPerson(formData.get("acrossPerson").toString())
       );
       setError(false);
     }
@@ -147,10 +145,9 @@ export default function NewTransactionForm({ user_id }: { user_id: number }) {
           <option value={0} disabled>
             PORTFEL
           </option>
-          <option value={cashWallet?.id}>gotówka</option>
-          {bankWallets.map((bankWallet) => (
-            <option key={bankWallet.id} value={bankWallet.id}>
-              {bankWallet.name}
+          {wallets.map((wallet) => (
+            <option key={wallet.id} value={wallet.id}>
+              {wallet.name ?? "gotówka"}
             </option>
           ))}
         </select>
@@ -211,8 +208,8 @@ export default function NewTransactionForm({ user_id }: { user_id: number }) {
           ))}
         </select>
         {categoryIdErr && <span>wybierz poprawną podkategorię</span>}
-        <input type="text" name="receiver" placeholder="adresat" />
-        {receiverErr && <span>wpisz adresata</span>}
+        <input type="text" name="acrossPerson" placeholder="adresat" />
+        {acrossPersonErr && <span>wpisz adresata</span>}
         <input
           type="checkbox"
           name="important"

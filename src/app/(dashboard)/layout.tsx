@@ -30,9 +30,7 @@ export default async function Layout({ children }) {
         <Logout />
         <br />
         <br />
-        <Link href="/przychody">przychody</Link>
-        <br />
-        <Link href="/rozchody">rozchody</Link>
+        <Link href="/historia">historia</Link>
         <br />
         <Link href="/nowe-konto">nowe konto</Link>
         <br />

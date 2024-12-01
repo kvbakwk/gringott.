@@ -1,6 +1,5 @@
 import { getUser } from "@app/api/user/get";
-import { getBankWallets, getCashWallet } from "@app/api/wallet/get";
-import { isWallet } from "@app/api/wallet/is";
+import { getWallets } from "@app/api/wallet/get";
 import { parseMoney } from "@app/utils/parser";
 
 export const metadata = {
@@ -9,35 +8,31 @@ export const metadata = {
 
 export default async function Page() {
   const user = await getUser();
-  const cashWallet = await getCashWallet(user.id);
-  const bankWallets = await getBankWallets(user.id);
-  const bankBalance: number = bankWallets.reduce((a, b) => a + b.balance, 0);
-
-  console.log(cashWallet, bankWallets)
+  const wallets = await getWallets(user.id);
+  const cashBalance: number = wallets.filter((wallet) => wallet.cash)[0]
+    .balance;
+  const bankBalance: number = wallets
+    .filter((wallet) => !wallet.cash)
+    .reduce((a, b) => a + b.balance, 0);
 
   return (
     <>
       STAN
       <br />
-      {parseMoney(+cashWallet.balance + +bankBalance)} zł
+      {parseMoney(+cashBalance + +bankBalance)} zł
       <br />
       <br />
-      gotówka: {parseMoney(cashWallet.balance)} zł
+      gotówka: {parseMoney(cashBalance)} zł
       <br />
-      {((await isWallet(user.id, false)) && (
-        <>
-          konta: {parseMoney(bankBalance)} zł
-          {bankWallets.map(bankWallet => (
-            <div key={bankWallet.id}> - {bankWallet.name}: {parseMoney(bankWallet.balance)} zł</div>
+      konta: {parseMoney(bankBalance)} zł
+      {wallets.filter((wallet) => !wallet.cash).length &&
+        wallets
+          .filter((wallet) => !wallet.cash)
+          .map((bankWallet) => (
+            <div key={bankWallet.id}>
+              - {bankWallet.name}: {parseMoney(bankWallet.balance)} zł
+            </div>
           ))}
-          <br />
-        </>
-      )) || (
-        <>
-          skonfiguruj swoje pierwsze konto bankowe
-          <br />
-        </>
-      )}
     </>
   );
 }
