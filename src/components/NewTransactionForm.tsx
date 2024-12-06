@@ -10,7 +10,7 @@ import {
   validateTransactionAmount,
   validateTransactionDate,
   validateTransactionDescription,
-  validateTransactionAcrossPerson,
+  validateTransactionCounterparty,
 } from "@app/utils/validator";
 import { WalletT } from "@app/utils/db-actions/wallet";
 
@@ -31,13 +31,13 @@ export default function NewTransactionForm({ user_id }: { user_id: number }) {
   const [amountErr, setAmountErr] = useState(false);
   const [descriptionErr, setDescriptionErr] = useState(false);
   const [categoryIdErr, setCategoryIdErr] = useState(false);
-  const [acrossPersonErr, setAcrossPersonErr] = useState(false);
+  const [counterpartyErr, setCounterpartyErr] = useState(false);
   const [error, setError] = useState(false);
 
   useEffect(() => {
     getWallets(user_id).then((res) => {
       setWallets(res);
-      setWalletId(res[0].id)
+      setWalletId(res[0].id);
     });
   }, []);
   useEffect(() => {
@@ -45,8 +45,12 @@ export default function NewTransactionForm({ user_id }: { user_id: number }) {
       setMethods(
         res.filter(
           (method) =>
-            (walletId !== 0 && method.cash === true && wallets.filter(wallet => wallet.id === walletId)[0].cash) ||
-            (walletId !== 0 && method.bank === true && !wallets.filter(wallet => wallet.id === walletId)[0].cash)
+            (walletId !== 0 &&
+              method.cash === true &&
+              wallets.filter((wallet) => wallet.id === walletId)[0].cash) ||
+            (walletId !== 0 &&
+              method.bank === true &&
+              !wallets.filter((wallet) => wallet.id === walletId)[0].cash)
         )
       );
     });
@@ -78,7 +82,7 @@ export default function NewTransactionForm({ user_id }: { user_id: number }) {
         parseFloat(formData.get("amount").toString())
       ) &&
       validateTransactionDescription(formData.get("description").toString()) &&
-      validateTransactionAcrossPerson(formData.get("acrossPerson").toString())
+      validateTransactionCounterparty(formData.get("acrossPerson").toString())
     ) {
       createTransaction(
         parseInt(formData.get("walletId")?.toString()),
@@ -100,7 +104,7 @@ export default function NewTransactionForm({ user_id }: { user_id: number }) {
           setAmountErr(res.amountErr);
           setDescriptionErr(res.descriptionErr);
           setCategoryIdErr(res.categoryIdErr);
-          setAcrossPersonErr(res.acrossPersonErr);
+          setCounterpartyErr(res.counterpartyErr);
           setError(false);
         })
         .catch(() => {
@@ -111,7 +115,7 @@ export default function NewTransactionForm({ user_id }: { user_id: number }) {
           setAmountErr(false);
           setDescriptionErr(false);
           setCategoryIdErr(false);
-          setAcrossPersonErr(false);
+          setCounterpartyErr(false);
           setError(true);
         });
     } else {
@@ -128,8 +132,10 @@ export default function NewTransactionForm({ user_id }: { user_id: number }) {
         !validateTransactionDescription(formData.get("description").toString())
       );
       setCategoryIdErr(false);
-      setAcrossPersonErr(
-        !validateTransactionAcrossPerson(formData.get("acrossPerson").toString())
+      setCounterpartyErr(
+        !validateTransactionCounterparty(
+          formData.get("acrossPerson").toString()
+        )
       );
       setError(false);
     }
@@ -209,7 +215,7 @@ export default function NewTransactionForm({ user_id }: { user_id: number }) {
         </select>
         {categoryIdErr && <span>wybierz poprawną podkategorię</span>}
         <input type="text" name="acrossPerson" placeholder="adresat" />
-        {acrossPersonErr && <span>wpisz adresata</span>}
+        {counterpartyErr && <span>wpisz adresata</span>}
         <input
           type="checkbox"
           name="important"

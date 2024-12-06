@@ -8,7 +8,7 @@ import { validateEmail, validatePassword } from "@app/utils/validator";
 
 import { TextFieldOutlined } from "@components/TextField";
 import { Checkbox } from "@components/Checkbox";
-import { Button } from "@components/Button";
+import { FilledButton } from "@components/Button";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -74,7 +74,7 @@ export default function LoginForm() {
           <Checkbox className="m-[15px]" name="remember" id="remember" />
           zapamiętaj
         </label>
-        <Button>zaloguj się</Button>
+        <FilledButton>zaloguj się</FilledButton>
       </div>
     </form>
   );

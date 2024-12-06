@@ -52,7 +52,7 @@ export const validateTransactionDescription = (
   return pattern.test(description);
 };
 
-export const validateTransactionAcrossPerson = (receiver: string): boolean => {
+export const validateTransactionCounterparty = (receiver: string): boolean => {
   const pattern = /^.{1,256}$/;
   return pattern.test(receiver);
 };

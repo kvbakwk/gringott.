@@ -10,21 +10,7 @@ export interface WalletT {
   id: number;
   name: string;
   balance: number;
-  cash: boolean;
-}
-
-export async function isWalletByUserId(
-  user_id: number,
-  cash: boolean
-): Promise<boolean> {
-  const client: Pool = new Pool();
-  const res: QueryResult = await client.query(
-    "SELECT id FROM public.wallet WHERE user_id = $1 AND cash = $2;",
-    [user_id, cash]
-  );
-  await client.end();
-
-  return res.rows.length > 0;
+  wallet_type_id: number;
 }
 
 export async function getWalletsByUserId(
@@ -32,7 +18,7 @@ export async function getWalletsByUserId(
 ): Promise<WalletT[]> {
   const client: Pool = new Pool();
   const res: QueryResult = await client.query(
-    "SELECT id, name, balance, cash FROM public.wallet WHERE user_id = $1",
+    "SELECT id, name, balance, wallet_type_id FROM public.wallet WHERE user_id = $1",
     [user_id]
   );
   await client.end();
@@ -41,7 +27,7 @@ export async function getWalletsByUserId(
     id: parseInt(wallet.id),
     name: wallet.name,
     balance: parseFloat(wallet.balance),
-    cash: Boolean(wallet.cash)
+    wallet_type_id: parseInt(wallet.wallet_type_id)
   }));
 }
 

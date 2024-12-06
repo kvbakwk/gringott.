@@ -13,7 +13,7 @@ import { register } from "@app/api/auth/register";
 
 import { TextFieldOutlined } from "./TextField";
 import { Checkbox } from "./Checkbox";
-import { Button } from "./Button";
+import { FilledButton } from "./Button";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -119,7 +119,7 @@ export default function RegisterForm() {
           <Checkbox className="m-[15px]" name="rules" id="rules" required />
           akceptuję regulamin
         </label>
-        <Button>zarejestuj się</Button>
+        <FilledButton>zarejestuj się</FilledButton>
       </div>
     </form>
   );

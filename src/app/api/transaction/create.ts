@@ -4,7 +4,7 @@ import {
   validateTransactionDate,
   validateTransactionAmount,
   validateTransactionDescription,
-  validateTransactionAcrossPerson,
+  validateTransactionCounterparty,
   validateTransactionWalletId,
   validateTransactionMethodId,
   validateTransactionCategoryId,
@@ -19,7 +19,7 @@ export async function createTransaction(
   amount: number,
   description: string,
   categoryId: number,
-  acrossPerson: string,
+  counterparty: string,
   important: boolean,
   userId: number
 ) {
@@ -30,28 +30,33 @@ export async function createTransaction(
     validateTransactionAmount(amount) &&
     validateTransactionDescription(description) &&
     (await validateTransactionCategoryId(categoryId, income)) &&
-    validateTransactionAcrossPerson(acrossPerson);
+    validateTransactionCounterparty(counterparty);
 
   if (isValid) {
     const client: Pool = new Pool();
     await client.query(
-      `INSERT INTO public.transaction (date, amount, description, category_id, across_person, income, important, wallet_id, method_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`,
+      `INSERT INTO public.transaction (date, amount, description, category_id, counterparty, income, important, wallet_id, method_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`,
       [
         date,
         amount,
         description,
         categoryId,
-        acrossPerson,
+        counterparty,
         income,
         important,
         walletId,
         methodId,
       ]
     );
-    await client.query(
-      "UPDATE public.wallet SET balance = balance + $1 WHERE id = $2",
-      [amount, walletId]
-    );
+    income
+      ? await client.query(
+          "UPDATE public.wallet SET balance = balance + $1 WHERE id = $2",
+          [amount, walletId]
+        )
+      : await client.query(
+          "UPDATE public.wallet SET balance = balance - $1 WHERE id = $2",
+          [amount, walletId]
+        );
     await client.end();
   }
 
@@ -63,6 +68,6 @@ export async function createTransaction(
     amountErr: !validateTransactionAmount(amount),
     descriptionErr: !validateTransactionDescription(description),
     categoryIdErr: !(await validateTransactionCategoryId(categoryId, income)),
-    acrossPersonErr: !validateTransactionAcrossPerson(acrossPerson),
+    counterpartyErr: !validateTransactionCounterparty(counterparty),
   };
 }

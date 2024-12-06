@@ -8,7 +8,7 @@ export interface TransactionT {
   description: string;
   super_category: string;
   category: string;
-  across_person: string;
+  counterparty: string;
   income: boolean;
   important: boolean;
   wallet_id: number;
@@ -22,7 +22,7 @@ export interface TransactionIdT {
 export async function getTransactionById(id: number): Promise<TransactionT> {
   const client: Pool = new Pool();
   const res: QueryResult = await client.query(
-    "SELECT public.transaction.id, date, amount, description, public.super_category.name as super_category, public.category.name as category, across_person, income, important, wallet_id, public.method.name as method FROM public.transaction JOIN public.category ON public.transaction.category_id = public.category.id JOIN public.method ON public.transaction.method_id = public.method.id JOIN public.super_category ON public.category.super_category_id = public.super_category.id  WHERE public.transaction.id = $1;",
+    "SELECT public.transaction.id, date, amount, description, public.super_category.name as super_category, public.category.name as category, counterparty, income, important, wallet_id, public.method.name as method FROM public.transaction JOIN public.category ON public.transaction.category_id = public.category.id JOIN public.method ON public.transaction.method_id = public.method.id JOIN public.super_category ON public.category.super_category_id = public.super_category.id  WHERE public.transaction.id = $1;",
     [id]
   );
   await client.end();
@@ -33,7 +33,7 @@ export async function getTransactionById(id: number): Promise<TransactionT> {
     description: res.rows[0].description,
     super_category: res.rows[0].super_category,
     category: res.rows[0].category,
-    across_person: res.rows[0].across_person,
+    counterparty: res.rows[0].counterparty,
     income: Boolean(res.rows[0].income),
     important: Boolean(res.rows[0].important),
     wallet_id: parseInt(res.rows[0].wallet_id),
@@ -46,7 +46,7 @@ export async function getTransactionsByWalletId(
 ): Promise<TransactionT[]> {
   const client: Pool = new Pool();
   const res: QueryResult = await client.query(
-    "SELECT public.transaction.id, public.transaction.date, public.transaction.amount, public.transaction.description, public.super_category.name as super_category, public.category.name as category, public.transaction.across_person, public.transaction.income, public.transaction.important, public.transaction.wallet_id, public.method.name as method FROM public.transaction JOIN public.category ON public.transaction.category_id = public.category.id JOIN public.method ON public.transaction.method_id = public.method.id JOIN public.super_category ON public.category.super_category_id = public.super_category.id WHERE wallet_id = $1;",
+    "SELECT public.transaction.id, public.transaction.date, public.transaction.amount, public.transaction.description, public.super_category.name as super_category, public.category.name as category, public.transaction.counterparty, public.transaction.income, public.transaction.important, public.transaction.wallet_id, public.method.name as method FROM public.transaction JOIN public.category ON public.transaction.category_id = public.category.id JOIN public.method ON public.transaction.method_id = public.method.id JOIN public.super_category ON public.category.super_category_id = public.super_category.id WHERE wallet_id = $1;",
     [id]
   );
   await client.end();
@@ -57,7 +57,7 @@ export async function getTransactionsByWalletId(
     description: wallet.description,
     super_category: wallet.super_category,
     category: wallet.category,
-    across_person: wallet.across_person,
+    counterparty: wallet.counterparty,
     income: Boolean(wallet.income),
     important: Boolean(wallet.important),
     wallet_id: parseInt(wallet.wallet_id),

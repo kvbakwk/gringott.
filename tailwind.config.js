@@ -7,6 +7,7 @@ module.exports = {
   theme: {
     fontFamily: {
       roboto: ["Roboto", "sans-serif"],
+      noto: ["Noto Sans", "sans-serif"],
     },
     extend: {
       screens: {
