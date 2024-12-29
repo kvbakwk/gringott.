@@ -6,9 +6,9 @@ import { useRouter } from "next/navigation";
 import { login } from "@app/api/auth/login";
 import { validateEmail, validatePassword } from "@app/utils/validator";
 
-import { TextFieldOutlined } from "@components/TextField";
-import { Checkbox } from "@components/Checkbox";
-import { FilledButton } from "@components/Button";
+import { TextFieldOutlined } from "@components/material/TextField";
+import { Checkbox } from "@components/material/Checkbox";
+import { FilledButton } from "@components/material/Button";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -20,6 +20,7 @@ export default function LoginForm() {
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
+    console.log("xdd");
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     if (
@@ -68,7 +69,7 @@ export default function LoginForm() {
       </div>
       <div className="flex justify-center items-center gap-[70px] pr-[10px]">
         <label
-          className="flex justify-center items-center text-[16px] text-outline tracking-wider"
+          className="flex justify-center items-center text-[14px] text-outline tracking-wider"
           htmlFor="remember"
         >
           <Checkbox className="m-[15px]" name="remember" id="remember" />

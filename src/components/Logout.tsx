@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 
 import { logout } from "@app/api/auth/login";
-import { TextButton } from "./Button";
+import { TextButton } from "./material/Button";
 
 export default function Logout() {
   const router = useRouter();

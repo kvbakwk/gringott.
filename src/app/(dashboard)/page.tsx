@@ -1,13 +1,17 @@
+import { loginCheck } from "@app/api/auth/login";
 import { getUser } from "@app/api/user/get";
 import { getWallets } from "@app/api/wallet/get";
 import { getTransactionsByUserId } from "@app/utils/db-actions/transaction";
 import { parseMoney } from "@app/utils/parser";
+import { redirect } from "next/navigation";
 
 export const metadata = {
   title: "gringott | strona główna",
 };
 
 export default async function Page() {
+  if (!(await loginCheck())) redirect("/logowanie");
+
   const user = await getUser();
   const wallets = await getWallets(user.id);
   const transactions = await getTransactionsByUserId(user.id);
@@ -28,7 +32,7 @@ export default async function Page() {
   function getWeekStartEnd() {
     const today = new Date();
     const day = today.getDay();
-    const diff = today.getDate() - day + (day === 0 ? -6 : 1); // Adjust for Sunday
+    const diff = today.getDate() - day + (day === 0 ? -6 : 1);
     const startOfWeek = new Date(today.setDate(diff));
     const endOfWeek = new Date(startOfWeek);
     endOfWeek.setDate(endOfWeek.getDate() + 6);
@@ -49,7 +53,6 @@ export default async function Page() {
     const endOfYear = new Date(year + 1, 0, 0);
     return { startOfYear, endOfYear };
   }
-
   const { startOfWeek, endOfWeek } = getWeekStartEnd();
   const { startOfMonth, endOfMonth } = getMonthStartEnd();
   const { startOfYear, endOfYear } = getYearStartEnd();

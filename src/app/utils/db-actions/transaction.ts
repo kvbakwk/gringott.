@@ -13,6 +13,7 @@ export interface TransactionT {
   important: boolean;
   wallet_id: number;
   method: string;
+  transaction_type_id: number;
 }
 
 export interface TransactionIdT {
@@ -22,7 +23,7 @@ export interface TransactionIdT {
 export async function getTransactionById(id: number): Promise<TransactionT> {
   const client: Pool = new Pool();
   const res: QueryResult = await client.query(
-    "SELECT public.transaction.id, date, amount, description, public.super_category.name as super_category, public.category.name as category, counterparty, income, important, wallet_id, public.method.name as method FROM public.transaction JOIN public.category ON public.transaction.category_id = public.category.id JOIN public.method ON public.transaction.method_id = public.method.id JOIN public.super_category ON public.category.super_category_id = public.super_category.id  WHERE public.transaction.id = $1;",
+    "SELECT public.transaction.id, date, amount, description, public.super_category.name as super_category, public.category.name as category, counterparty, income, important, wallet_id, public.method.name as method, transaction_type_id FROM public.transaction JOIN public.category ON public.transaction.category_id = public.category.id JOIN public.method ON public.transaction.method_id = public.method.id JOIN public.super_category ON public.category.super_category_id = public.super_category.id  WHERE public.transaction.id = $1;",
     [id]
   );
   await client.end();
@@ -37,7 +38,8 @@ export async function getTransactionById(id: number): Promise<TransactionT> {
     income: Boolean(res.rows[0].income),
     important: Boolean(res.rows[0].important),
     wallet_id: parseInt(res.rows[0].wallet_id),
-    method: res.rows[0].method
+    method: res.rows[0].method,
+    transaction_type_id: parseInt(res.rows[0].transaction_type_id)
   };
 }
 
@@ -46,7 +48,7 @@ export async function getTransactionsByWalletId(
 ): Promise<TransactionT[]> {
   const client: Pool = new Pool();
   const res: QueryResult = await client.query(
-    "SELECT public.transaction.id, public.transaction.date, public.transaction.amount, public.transaction.description, public.super_category.name as super_category, public.category.name as category, public.transaction.counterparty, public.transaction.income, public.transaction.important, public.transaction.wallet_id, public.method.name as method FROM public.transaction JOIN public.category ON public.transaction.category_id = public.category.id JOIN public.method ON public.transaction.method_id = public.method.id JOIN public.super_category ON public.category.super_category_id = public.super_category.id WHERE wallet_id = $1;",
+    "SELECT public.transaction.id, public.transaction.date, public.transaction.amount, public.transaction.description, public.super_category.name as super_category, public.category.name as category, public.transaction.counterparty, public.transaction.income, public.transaction.important, public.transaction.wallet_id, public.method.name as method, transaction_type_id FROM public.transaction JOIN public.category ON public.transaction.category_id = public.category.id JOIN public.method ON public.transaction.method_id = public.method.id JOIN public.super_category ON public.category.super_category_id = public.super_category.id WHERE wallet_id = $1;",
     [id]
   );
   await client.end();
@@ -61,7 +63,8 @@ export async function getTransactionsByWalletId(
     income: Boolean(wallet.income),
     important: Boolean(wallet.important),
     wallet_id: parseInt(wallet.wallet_id),
-    method: wallet.method
+    method: wallet.method,
+    transaction_type_id: parseInt(wallet.transaction_type_id)
   }));
 }
 

@@ -11,9 +11,9 @@ import {
 } from "@app/utils/validator";
 import { register } from "@app/api/auth/register";
 
-import { TextFieldOutlined } from "./TextField";
-import { Checkbox } from "./Checkbox";
-import { FilledButton } from "./Button";
+import { TextFieldOutlined } from "../material/TextField";
+import { Checkbox } from "../material/Checkbox";
+import { FilledButton } from "../material/Button";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -76,10 +76,10 @@ export default function RegisterForm() {
 
   return (
     <form
-      className="flex flex-col justify-center items-center gap-[40px] w-[500px] h-fit py-[70px] bg-surface rounded-2xl shadow-md"
+      className="flex flex-col justify-center items-center gap-[40px] w-[540px] h-fit py-[70px] bg-surface rounded-2xl shadow-md"
       onSubmit={handleSubmit}
     >
-      <div className="flex flex-col justify-center items-center gap-[25px] w-[320px] px-[10px] py-[20px]">
+      <div className="flex flex-col justify-center items-center gap-[25px] w-[370px] px-[10px] py-[20px]">
         <TextFieldOutlined
           className="w-full"
           label="twoje imię i nazwisko"
@@ -113,7 +113,7 @@ export default function RegisterForm() {
       </div>
       <div className="flex justify-center items-center gap-[40px] pr-[10px]">
         <label
-          className="flex justify-center items-center text-[16px] text-outline tracking-wider"
+          className="flex justify-center items-center text-[14px] text-outline tracking-wider"
           htmlFor="rules"
         >
           <Checkbox className="m-[15px]" name="rules" id="rules" required />

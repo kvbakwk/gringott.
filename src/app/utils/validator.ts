@@ -35,9 +35,8 @@ export const validatePasswords = (
   return password1 == password2;
 };
 
-export const validateTransactionDate = (date: string): boolean => {
-  const pattern = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
-  return pattern.test(date);
+export const validateTransactionDate = (date: Date): boolean => {
+  return date instanceof Date && !isNaN(date.getTime());
 };
 
 export const validateTransactionAmount = (amount: number): boolean => {

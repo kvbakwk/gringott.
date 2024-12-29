@@ -15,13 +15,14 @@ export async function createTransaction(
   walletId: number,
   income: boolean,
   methodId: number,
-  date: string,
+  date: Date,
   amount: number,
   description: string,
   categoryId: number,
   counterparty: string,
   important: boolean,
-  userId: number
+  userId: number,
+  transactionTypeId: number
 ) {
   const isValid: boolean =
     (await validateTransactionWalletId(walletId, userId)) &&
@@ -35,7 +36,7 @@ export async function createTransaction(
   if (isValid) {
     const client: Pool = new Pool();
     await client.query(
-      `INSERT INTO public.transaction (date, amount, description, category_id, counterparty, income, important, wallet_id, method_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);`,
+      `INSERT INTO public.transaction (date, amount, description, category_id, counterparty, income, important, wallet_id, method_id, transaction_type_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`,
       [
         date,
         amount,
@@ -46,6 +47,7 @@ export async function createTransaction(
         important,
         walletId,
         methodId,
+        transactionTypeId
       ]
     );
     income

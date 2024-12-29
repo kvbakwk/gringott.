@@ -16,3 +16,5 @@ COPY ./.eslintrc.json .
 
 CMD npm run dev
 # CMD npm run lint
+# CMD npm run build
+# CMD npm run start

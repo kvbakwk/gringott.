@@ -48,7 +48,7 @@ export async function getWalletsIdsByUserId(
 export async function isCashWallet(id: number) {
   const client: Pool = new Pool();
   const res: QueryResult = await client.query(
-    "SELECT id FROM public.wallet WHERE id = $1 AND cash = TRUE;",
+    "SELECT id FROM public.wallet WHERE id = $1 AND wallet_type_id = 1;",
     [id]
   );
   await client.end();

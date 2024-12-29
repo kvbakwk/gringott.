@@ -1,4 +1,4 @@
-import { createCashWallet } from "@app/api/wallet/create";
+import { createWallet } from "@app/api/wallet/create";
 import { Pool, QueryResult } from "pg";
 
 export interface UserT {
@@ -51,6 +51,8 @@ export async function createUser(name: string, email: string, password: string):
     "INSERT INTO public.user (name, email, password) VALUES ($1, $2, $3) RETURNING id;",
     [name, email, password]
   );
-  await createCashWallet(0, res.rows[0].id);
+  await createWallet(null, 0, res.rows[0].id, 1, new Date());
+  await createWallet(null, 0, res.rows[0].id, 3, new Date());
+  await createWallet(null, 0, res.rows[0].id, 4, new Date());
   await client.end();
 }

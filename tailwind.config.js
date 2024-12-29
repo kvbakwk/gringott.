@@ -25,9 +25,6 @@ module.exports = {
         'on-error-container': '#410002',
         'outline': '#7F7667'
       },
-      fontSize: {
-        lg: "57px"
-      },
       boxShadow: {
         none: "0px 0px 0px 0px rgba(0, 0, 0, 0.1)",
         xs: "0px 4px 10px 0px rgba(0, 0, 0, 0.1)",
