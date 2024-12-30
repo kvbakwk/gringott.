@@ -47,18 +47,19 @@ export async function createTransaction(
         important,
         walletId,
         methodId,
-        transactionTypeId
+        transactionTypeId,
       ]
     );
-    income
-      ? await client.query(
-          "UPDATE public.wallet SET balance = balance + $1 WHERE id = $2",
-          [amount, walletId]
-        )
-      : await client.query(
-          "UPDATE public.wallet SET balance = balance - $1 WHERE id = $2",
-          [amount, walletId]
-        );
+    if (income)
+      await client.query(
+        "UPDATE public.wallet SET balance = balance + $1 WHERE id = $2",
+        [amount, walletId]
+      );
+    else
+      await client.query(
+        "UPDATE public.wallet SET balance = balance - $1 WHERE id = $2",
+        [amount, walletId]
+      );
     await client.end();
   }
 

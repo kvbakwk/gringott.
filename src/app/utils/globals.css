@@ -110,6 +110,7 @@
   --md-sys-typescale-body-large: 400 1rem system-ui;
   --md-outlined-text-field-label-text-color: #79590C;
   --md-outlined-text-field-input-text-color: #79590C;
+  --md-icon-size: 24px;
 }
 
 md-outlined-select::part(menu) {
@@ -120,6 +121,15 @@ md-outlined-select::part(menu) {
 .fill {
   font-variation-settings:
   'FILL' 1
+}
+
+.mini {
+  --md-icon-size: 20px;
+  --md-circular-progress-size: 24px;
+}
+
+.medium {
+  --md-circular-progress-size: 30px;
 }
 
 .scroll-none {

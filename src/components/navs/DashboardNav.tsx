@@ -12,7 +12,7 @@ export default function DashboardNav() {
       <DashboardNavItem icon="history" text="historia" path="/historia" />
       <DashboardNavItem icon="list" text="transakcje" path="/transakcje" />
       <DashboardNavItem icon="bar_chart" text="statystyki" path="/statystyki" />
-      <DashboardNavItem icon="calculate" text="kalkulator" path="/statystyki" />
+      <DashboardNavItem icon="calculate" text="kalkulator" path="/kalkulator" />
     </div>
   );
 }

@@ -1,8 +1,9 @@
-import {
-  WalletT,
-  getWalletsByUserId,
-} from "@app/utils/db-actions/wallet";
+"use server";
 
-export async function getWallets(user_id: number): Promise<WalletT[]> {
-  return await getWalletsByUserId(user_id);
+import { WalletT } from "@app/utils/db-actions/wallet";
+
+import { getWalletsByUserId } from "@app/utils/db-actions/wallet";
+
+export async function getWallets(userId: number): Promise<WalletT[]> {
+  return await getWalletsByUserId(userId);
 }

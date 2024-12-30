@@ -14,12 +14,12 @@ export interface WalletT {
 }
 
 export async function getWalletsByUserId(
-  user_id: number
+  userId: number
 ): Promise<WalletT[]> {
   const client: Pool = new Pool();
   const res: QueryResult = await client.query(
     "SELECT id, name, balance, wallet_type_id FROM public.wallet WHERE user_id = $1",
-    [user_id]
+    [userId]
   );
   await client.end();
 
@@ -32,12 +32,12 @@ export async function getWalletsByUserId(
 }
 
 export async function getWalletsIdsByUserId(
-  user_id: number
+  userId: number
 ): Promise<WalletIdT[]> {
   const client: Pool = new Pool();
   const res: QueryResult = await client.query(
     "SELECT id FROM public.wallet WHERE user_id = $1;",
-    [user_id]
+    [userId]
   );
   await client.end();
   return res.rows.map((wallet) => ({
@@ -45,11 +45,11 @@ export async function getWalletsIdsByUserId(
   }));
 }
 
-export async function isCashWallet(id: number) {
+export async function isCashWallet(walletId: number) {
   const client: Pool = new Pool();
   const res: QueryResult = await client.query(
     "SELECT id FROM public.wallet WHERE id = $1 AND wallet_type_id = 1;",
-    [id]
+    [walletId]
   );
   await client.end();
   return res.rows.length > 0;

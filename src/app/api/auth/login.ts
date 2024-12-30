@@ -27,9 +27,7 @@ export async function login(
   const userId = await validateUser(email, password);
 
   const isValid: boolean =
-    validateEmail(email) &&
-    validatePassword(password) &&
-    (userId !== 0 ? true : false);
+    validateEmail(email) && validatePassword(password) && userId !== 0;
 
   if (isValid) {
     if (!(await cookies()).has("device_id"))
@@ -65,7 +63,9 @@ export async function loginCheck(): Promise<boolean> {
     );
     if (userDevicesDates.length > 0) {
       if (new Date(userDevicesDates[0].expireDate) < new Date()) {
-        await deleteUserDeviceByDeviceId((await cookies()).get("device_id").value);
+        await deleteUserDeviceByDeviceId(
+          (await cookies()).get("device_id").value
+        );
         return false;
       }
       return true;

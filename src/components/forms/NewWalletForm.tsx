@@ -9,15 +9,15 @@ import {
   validateWalletName,
 } from "@app/utils/validator";
 import { TextFieldOutlined } from "../material/TextField";
-import { FilledButton } from "../material/Button";
+import { FilledButton, OutlinedButton } from "../material/Button";
 
-export default function NewWalletForm({ user_id }) {
-  const router = useRouter()
+export default function NewWalletForm({ userId }: { userId: number }) {
+  const router = useRouter();
 
-  const [nameErr, setNameErr] = useState(false);
-  const [balanceErr, setBalanceErr] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
+  const [success, setSuccess] = useState<boolean>(false);
+  const [nameErr, setNameErr] = useState<boolean>(false);
+  const [balanceErr, setBalanceErr] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
 
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>
@@ -25,36 +25,24 @@ export default function NewWalletForm({ user_id }) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
-    if (
-      validateWalletName(formData.get("name").toString()) &&
-      validateWalletBalance(parseFloat(formData.get("balance").toString()))
-    ) {
-      try {
-        const res = await createWallet(
-          formData.get("name").toString(),
-          parseFloat(formData.get("balance").toString()),
-          user_id,
-          2
-        );
-        setNameErr(res.nameErr);
-        setBalanceErr(res.balanceErr);
-        setSuccess(res.createWallet);
-        setError(false);
-        if(res.createWallet)
-          router.back()
-      } catch (err) {
-        setNameErr(false);
-        setBalanceErr(false);
-        setSuccess(false);
-        setError(true);
-      }
+    const name: string = formData.get("name").toString();
+    const balance: number = parseFloat(formData.get("balance").toString());
+
+    if (validateWalletName(name) && validateWalletBalance(balance)) {
+      createWallet(name, balance, userId, 2)
+        .then((res) => {
+          setSuccess(res.createWallet);
+          setNameErr(res.nameErr);
+          setBalanceErr(res.balanceErr);
+          setError(false);
+          if (res.createWallet) router.back();
+        })
+        .catch(() => setError(true));
     } else {
-      setNameErr(!validateWalletName(formData.get("name").toString()));
-      setBalanceErr(
-        !validateWalletBalance(parseFloat(formData.get("balance").toString()))
-      );
-      setError(false);
       setSuccess(false);
+      setNameErr(!validateWalletName(name));
+      setBalanceErr(!validateWalletBalance(balance));
+      setError(false);
     }
   };
 
@@ -83,7 +71,10 @@ export default function NewWalletForm({ user_id }) {
           suffixText="zł"
         />
       </div>
-      <div className="flex justify-end items-center w-[320px] pr-[10px]">
+      <div className="flex justify-end items-center gap-[10px] w-[320px] pr-[10px]">
+        <OutlinedButton type="button" onClick={() => router.back()}>
+          anuluj
+        </OutlinedButton>
         <FilledButton>dodaj konto</FilledButton>
       </div>
     </form>

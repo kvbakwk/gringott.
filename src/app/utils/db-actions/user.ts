@@ -51,8 +51,8 @@ export async function createUser(name: string, email: string, password: string):
     "INSERT INTO public.user (name, email, password) VALUES ($1, $2, $3) RETURNING id;",
     [name, email, password]
   );
-  await createWallet(null, 0, res.rows[0].id, 1, new Date());
-  await createWallet(null, 0, res.rows[0].id, 3, new Date());
-  await createWallet(null, 0, res.rows[0].id, 4, new Date());
+  await createWallet(null, 0, res.rows[0].id, 1);
+  await createWallet(null, 0, res.rows[0].id, 3);
+  await createWallet(null, 0, res.rows[0].id, 4);
   await client.end();
 }

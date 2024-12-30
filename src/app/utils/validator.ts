@@ -86,7 +86,8 @@ export const validateTransactionCategoryId = async (
   income: boolean
 ): Promise<boolean> => {
   return (
-    !isNaN(categoryId) && (((await isIncomeCategory(categoryId)) && income) ||
-    ((await isOutcomeCategory(categoryId)) && !income))
+    !isNaN(categoryId) &&
+    (((await isIncomeCategory(categoryId)) && income) ||
+      ((await isOutcomeCategory(categoryId)) && !income))
   );
 };

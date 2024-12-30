@@ -1,16 +1,18 @@
 import "@app/utils/globals.css";
 
-import { Suspense } from "react";
 import { redirect } from "next/navigation";
 
 import { loginCheck } from "@app/api/auth/login";
-
-import Loading from "@components/Loading";
-import AuthOtherNav from "@components/navs/AuthOtherNav";
 import AuthMainNav from "@components/navs/AuthMainNav";
+import AuthOtherNav from "@components/navs/AuthOtherNav";
 
 export const metadata = {
   title: "gringott",
+  icons: {
+    icon: "/favicon.png",
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
 };
 
 export default async function Layout({
@@ -31,7 +33,7 @@ export default async function Layout({
             <AuthMainNav />
           </div>
           <div className="flex flex-col justify-center items-center w-full h-full">
-            <Suspense fallback={<Loading />}>{children}</Suspense>
+            {children}
           </div>
           <div className="text-on-surface-variant flex flex-col justify-center items-center w-full h-full">
             <AuthOtherNav />

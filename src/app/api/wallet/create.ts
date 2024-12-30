@@ -26,8 +26,7 @@ export async function createWallet(
     );
     await client.end();
 
-    const now = new Date((new Date()).getTime() + (60 * 60 * 1000))
-    console.log(now)
+    const now = new Date((new Date()).getTime())
     if (balance > 0)
       await createTransaction(
         res.rows[0].id,

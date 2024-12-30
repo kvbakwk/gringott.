@@ -1,14 +1,14 @@
 import { Pool, QueryResult } from "pg";
 
-interface UserDevicesDatesT {
+interface UserDeviceDateT {
   expireDate: Date;
 }
 
 export async function getUserDeviceByDeviceId(
   id: string
-): Promise<UserDevicesDatesT[]> {
+): Promise<UserDeviceDateT[]> {
   const client: Pool = new Pool();
-  const res: QueryResult<UserDevicesDatesT> = await client.query(
+  const res: QueryResult<UserDeviceDateT> = await client.query(
     "SELECT expire_date FROM public.user_device WHERE device_id = $1;",
     [id]
   );

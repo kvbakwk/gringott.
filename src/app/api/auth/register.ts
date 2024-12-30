@@ -33,8 +33,7 @@ export async function register(
     rules &&
     !(await isUserByEmail(email));
 
-  if (isValid) 
-    await createUser(name, email, password);
+  if (isValid) await createUser(name, email, password);
 
   return {
     register: isValid,

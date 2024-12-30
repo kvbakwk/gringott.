@@ -1,18 +1,27 @@
-import { getUser } from "@app/api/user/get";
-import { getWallets } from "@app/api/wallet/get";
-import { getTransactionsByUserId } from "@app/utils/db-actions/transaction";
+"use client";
+
+import { WalletT } from "@app/utils/db-actions/wallet";
+import { TransactionT } from "@app/utils/db-actions/transaction";
+
+import { useRouter } from "next/navigation";
+
 import { parseDate, parseMoney, parseTime } from "@app/utils/parser";
-import AddTransactionFab from "@components/AddTransactionFab";
-import { Fab } from "@components/material/Fab";
+import { CircularProgress } from "./material/Progress";
+import { Fab } from "./material/Fab";
+import { Icon } from "./material/Icon";
 
-export const metadata = {
-  title: "gringott | transakcje",
-};
-
-export default async function TransactionsPage() {
-  const user = await getUser();
-  const wallets = await getWallets(user.id);
-  const transactions = await getTransactionsByUserId(user.id);
+export default function TransactionsPage({
+  wallets,
+  transactions,
+  walletsReady,
+  transactionsReady,
+}: {
+  wallets: WalletT[];
+  transactions: TransactionT[];
+  walletsReady: boolean;
+  transactionsReady: boolean;
+}) {
+  const router = useRouter();
 
   return (
     <div className="flex flex-col w-full h-full bg-surface rounded-tl-2xl shadow-sm">
@@ -26,12 +35,18 @@ export default async function TransactionsPage() {
         <div className="flex justify-center items-center w-[200px]">
           KATEGORIA
         </div>
-        <div className="flex justify-center items-center w-[100px]">
+        <div className="flex justify-center items-center w-[120px]">
           PORTFEL
         </div>
         <div className="flex justify-center items-center w-[150px]">METODA</div>
       </div>
-      <div className="flex flex-col w-full h-[calc(100vh-160px)] pb-[30px] overflow-y-auto scroll-none">
+      <div
+        className={`flex w-full h-[calc(100vh-160px)] pb-[30px] overflow-y-auto scroll-none ${
+          walletsReady && transactionsReady
+            ? "flex-col"
+            : "justify-center items-center"
+        }`}
+      >
         {transactions
           .sort((a, b) => b.date.getTime() - a.date.getTime())
           .map((transaction) => (
@@ -50,18 +65,18 @@ export default async function TransactionsPage() {
               >
                 {parseMoney(transaction.amount)} zł
               </div>
-              <div className="flex justify-center items-center w-[200px]">
+              <div className="flex justify-center items-center truncate w-[200px]">
                 {transaction.description}
               </div>
-              <div className="flex justify-center items-center w-[200px]">
+              <div className="flex justify-center items-center truncate w-[200px]">
                 {transaction.counterparty}
               </div>
-              <div className="flex justify-center items-center w-[200px]">
+              <div className="flex justify-center items-center truncate w-[200px]">
                 {transaction.category}
               </div>
-              <div className="flex justify-center items-center w-[100px]">
+              <div className="flex justify-center items-center truncate w-[120px]">
                 {wallets.filter(
-                  (wallet) => wallet.id === transaction.wallet_id
+                  (wallet: WalletT) => wallet.id === transaction.wallet_id
                 )[0].name ?? "gotówka"}
               </div>
               <div className="flex justify-center items-center w-[150px]">
@@ -69,9 +84,14 @@ export default async function TransactionsPage() {
               </div>
             </div>
           ))}
+        <div className={`${walletsReady && transactionsReady && " hidden"}`}>
+          <CircularProgress indeterminate />
+        </div>
       </div>
       <div className="absolute bottom-10 right-10">
-        <AddTransactionFab />
+        <Fab lowered onClick={() => router.push("/nowa-transakcja")}>
+          <Icon slot="icon">add</Icon>
+        </Fab>
       </div>
     </div>
   );

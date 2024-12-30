@@ -1,10 +1,17 @@
 "use server";
 
-import { Pool } from "pg";
+import { Pool, QueryResult } from "pg";
 
-export async function getSuperCategories() {
-  const client = new Pool();
-  const res = await client.query(
+export interface SuperCategoryT {
+  id: number;
+  name: string;
+  income: boolean;
+  outcome: boolean;
+}
+
+export async function getSuperCategories(): Promise<SuperCategoryT[]> {
+  const client: Pool = new Pool();
+  const res: QueryResult = await client.query(
     "SELECT id, name, income, outcome FROM public.super_category;"
   );
   await client.end();
