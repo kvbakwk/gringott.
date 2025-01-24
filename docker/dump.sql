@@ -103,15 +103,15 @@ insert into public.super_category (name, income, outcome) values
 ('inne', true, true);
 
 insert into public.category (name, super_category_id) values 
-('rozwój', 1), ('elektronika', 1), ('multimedia', 1), ('odzież i obuwie', 1), ('prezenty i wsparcie', 1), ('zdrowie i uroda', 1), ('inne', 1),
-('jedzenie poza domem', 2), ('zwierzęta', 2), ('żywność', 2), ('chemia domowa', 2), ('inne', 2),
-('wyposażenie', 3), ('remont', 3), ('ubezpieczenie', 3), ('usługi', 3), ('inne', 3),
-('czynsz', 4), ('woda i kanalizacja', 4), ('gaz', 4), ('prąd', 4), ('ogrzewanie', 4), ('telewizja', 4), ('internet', 4), ('telefon', 4), ('opłaty', 4), ('podatki', 4), ('raty', 4), ('ubezpieczenia', 4), ('inne', 4),
-('podróż', 5), ('wyjazd', 5), ('sport', 5), ('hobby', 5), ('wyjście', 5), ('wydarzenie', 5), ('inne', 5),
-('fundusz', 6), ('giełda', 6), ('lokata', 6), ('zakład', 6), ('inne', 6), 
-('zabawki', 7), ('przedszkole', 7), ('szkoła', 7), ('zajęcia', 7), ('inne', 7),
-('paliwo', 8), ('parking', 8), ('przejazd', 8), ('serwis', 8), ('sprzątanie', 8), ('ubezpieczenie', 8), ('inne', 8),
-('premia', 9), ('wynagrodzenie', 9), ('kredyt', 9), ('kieszonkowe', 9), ('inne', 9),
+('rozwój', 1), ('elektronika', 1), ('multimedia', 1), ('odzież i obuwie', 1), ('prezenty i wsparcie', 1), ('zdrowie i uroda', 1),
+('jedzenie poza domem', 2), ('zwierzęta', 2), ('żywność', 2), ('chemia domowa', 2),
+('wyposażenie', 3), ('remont', 3), ('ubezpieczenie', 3), ('usługi', 3),
+('czynsz', 4), ('woda i kanalizacja', 4), ('gaz', 4), ('prąd', 4), ('ogrzewanie', 4), ('telewizja', 4), ('internet', 4), ('telefon', 4), ('opłaty', 4), ('podatki', 4), ('raty', 4), ('ubezpieczenia', 4),
+('podróż', 5), ('wyjazd', 5), ('sport', 5), ('hobby', 5), ('wyjście', 5), ('wydarzenie', 5),
+('fundusz', 6), ('giełda', 6), ('lokata', 6), ('zakład', 6), 
+('zabawki', 7), ('przedszkole', 7), ('szkoła', 7), ('zajęcia', 7),
+('paliwo', 8), ('parking', 8), ('przejazd', 8), ('serwis', 8), ('sprzątanie', 8), ('ubezpieczenie', 8),
+('premia', 9), ('wynagrodzenie', 9), ('kredyt', 9), ('kieszonkowe', 9),
 ('automatyczne', 10);
 
 insert into public.wallet_type (name) values 
@@ -142,5 +142,5 @@ insert into public.transaction_type (name) values
 ('wstępna');
 
 insert into public.transaction (date, amount, description, category_id, counterparty, income, important, wallet_id, method_id, transaction_type_id) values 
-('2024-12-01 12:00:00', 10, 'kieszonkowe', 57, 'tata', true, true, 1, 1, 1),
-('2024-12-01 12:00:00', 100, 'kieszonkowe', 57, 'tata', true, true, 4, 2, 1);
+('2024-12-01 12:00:00', 10, 'kieszonkowe', 50, 'tata', true, true, 1, 1, 1),
+('2024-12-01 12:00:00', 100, 'kieszonkowe', 50, 'tata', true, true, 4, 4, 1);

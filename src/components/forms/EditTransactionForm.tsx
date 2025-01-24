@@ -1,18 +1,20 @@
 "use client";
 
 import { WalletT } from "@app/utils/db-actions/wallet";
+import { TransactionT } from "@app/utils/db-actions/transaction";
+import { SuperCategoryT } from "@app/utils/db-actions/super_category";
+import { CategoryT } from "@app/utils/db-actions/category";
+import { MethodT } from "@app/utils/db-actions/method";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { createTransaction } from "@app/api/transaction/create";
+import { getTransaction } from "@app/api/transaction/get";
+import { editTransaction } from "@app/api/transaction/edit";
 import { getWallets } from "@app/api/wallet/get";
-import { CategoryT, getCategories } from "@app/utils/db-actions/category";
-import {
-  SuperCategoryT,
-  getSuperCategories,
-} from "@app/utils/db-actions/super_category";
-import { MethodT, getMethods } from "@app/utils/db-actions/method";
+import { getCategories } from "@app/utils/db-actions/category";
+import { getSuperCategories } from "@app/utils/db-actions/super_category";
+import { getMethods } from "@app/utils/db-actions/method";
 import {
   validateTransactionAmount,
   validateTransactionDate,
@@ -25,13 +27,22 @@ import { Checkbox } from "../material/Checkbox";
 import { FilledButton, OutlinedButton } from "../material/Button";
 import { Icon } from "@components/material/Icon";
 
-export default function NewTransactionForm({ userId }: { userId: number }) {
+export default function EditTransactionForm({
+  userId,
+  transactionId,
+}: {
+  userId: number;
+  transactionId: number;
+}) {
   const router = useRouter();
 
   const [income, setIncome] = useState<boolean>(false);
   const [walletId, setWalletId] = useState<number>(0);
   const [superCategoryId, setSuperCategoryId] = useState<number>(0);
+  const [categoryId, setCategoryId] = useState<number>(0);
+  const [methodId, setMethodId] = useState<number>(0);
 
+  const [transaction, setTransaction] = useState<TransactionT>(null);
   const [wallets, setWallets] = useState<WalletT[]>([]);
   const [methods, setMethods] = useState<MethodT[]>([]);
   const [categories, setCategories] = useState<CategoryT[]>([]);
@@ -48,6 +59,14 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
+    getTransaction(transactionId).then((res) => {
+      setTransaction(res);
+      setWalletId(res.wallet_id);
+      setIncome(res.income);
+      setSuperCategoryId(res.super_category.id);
+      setCategoryId(res.category.id);
+      setMethodId(res.method.id);
+    });
     getWallets(userId).then((res) => {
       setWallets(
         res.filter(
@@ -57,22 +76,23 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
     });
   }, []);
   useEffect(() => {
-    getMethods().then((res) => {
-      setMethods(
-        res.filter(
-          (method) =>
-            (walletId !== 0 &&
-              method.cash === true &&
-              wallets.filter((wallet) => wallet.id === walletId)[0]
-                .wallet_type_id === 1) ||
-            (walletId !== 0 &&
-              method.bank === true &&
-              wallets.filter((wallet) => wallet.id === walletId)[0]
-                .wallet_type_id === 2)
-        )
-      );
-    });
-  }, [walletId]);
+    if (wallets.length)
+      getMethods().then((res) => {
+        setMethods(
+          res.filter(
+            (method) =>
+              (walletId !== 0 &&
+                method.cash === true &&
+                wallets.filter((wallet) => wallet.id === walletId)[0]
+                  .wallet_type_id === 1) ||
+              (walletId !== 0 &&
+                method.bank === true &&
+                wallets.filter((wallet) => wallet.id === walletId)[0]
+                  .wallet_type_id === 2)
+          )
+        );
+      });
+  }, [wallets, walletId]);
   useEffect(() => {
     getSuperCategories().then((res) => {
       setSuperCategories(
@@ -82,7 +102,6 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
             superCategory.outcome === !income
         )
       );
-      setSuperCategoryId(0);
     });
   }, [income]);
   useEffect(() => {
@@ -99,8 +118,8 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
-    const walletId: number = parseInt(formData.get("walletId")?.toString());
-    const income: boolean = Boolean(parseInt(formData.get("income").toString()));
+    const walletId: number = transaction.wallet_id;
+    const income: boolean = transaction.income;
     const methodId: number = parseInt(formData.get("methodId")?.toString());
     const date: Date = new Date(formData.get("date").toString());
     const amount: number = parseFloat(formData.get("amount").toString());
@@ -115,7 +134,8 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
       validateTransactionDescription(description) &&
       validateTransactionCounterparty(counterparty)
     ) {
-      createTransaction(
+      editTransaction(
+        transactionId,
         walletId,
         income,
         methodId,
@@ -164,11 +184,12 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
           className="w-full"
           label="portfel"
           name="walletId"
-          onChange={(e) => setWalletId(parseInt(e.currentTarget.value))}
           error={walletIdErr}
           errorText="wybierz poprawny portfel"
+          value={walletId.toString()}
+          disabled
         >
-          <Icon slot="leading-icon">wallet</Icon>
+        <Icon slot="leading-icon">wallet</Icon>
           {wallets
             .sort((a, b) => a.wallet_type_id - b.wallet_type_id)
             .map((wallet) => (
@@ -181,11 +202,10 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
           className="w-full"
           label="rodzaj"
           name="income"
-          onChange={(e) =>
-            setIncome(parseInt(e.currentTarget.value) ? true : false)
-          }
+          value={income ? "1" : "0"}
+          disabled
         >
-          <Icon slot="leading-icon">swap_vert</Icon>
+        <Icon slot="leading-icon">swap_vert</Icon>
           <SelectOption value="1">
             <div slot="headline">przychód</div>
           </SelectOption>
@@ -197,10 +217,12 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
           className="w-full"
           label="metoda"
           name="methodId"
+          onChange={(e) => setMethodId(parseInt(e.currentTarget.value))}
           error={methodIdErr}
           errorText="wybierz poprawną metodę"
+          value={methodId.toString()}
         >
-          <Icon slot="leading-icon">tactic</Icon>
+        <Icon slot="leading-icon">tactic</Icon>
           {methods.map((method) => (
             <SelectOption key={method.id} value={method.id.toString()}>
               <div slot="headline">{method.name}</div>
@@ -216,12 +238,15 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
           type="datetime-local"
           error={dateErr}
           errorText="wybierz datę"
-          value={new Date(new Date().getTime() + 1000 * 60 * 60)
-            .toISOString()
-            .slice(0, 16)}
+          value={
+            transaction
+              ? new Date(transaction.date.getTime() + 1000 * 60 * 60)
+                  .toISOString()
+                  .slice(0, 16)
+              : ""
+          }
         >
-          <Icon slot="leading-icon">event</Icon>
-        </TextFieldOutlined>
+        <Icon slot="leading-icon">event</Icon></TextFieldOutlined>
         <TextFieldOutlined
           className="w-full"
           label="kwota"
@@ -232,37 +257,38 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
           error={amountErr}
           errorText="wpisz poprawną kwotę"
           suffixText="zł"
+          value={transaction ? transaction.amount.toString() : ""}
         >
-          <Icon slot="leading-icon">toll</Icon>
-        </TextFieldOutlined>
+        <Icon slot="leading-icon">toll</Icon></TextFieldOutlined>
         <TextFieldOutlined
           className="w-full"
           label="opis"
           name="description"
           error={descriptionErr}
           errorText="wpisz opis"
+          value={transaction ? transaction.description : ""}
         >
-          <Icon slot="leading-icon">reorder</Icon>
-        </TextFieldOutlined>
+        <Icon slot="leading-icon">reorder</Icon></TextFieldOutlined>
         <TextFieldOutlined
           className="w-full"
           label="druga strona"
           name="counterparty"
           error={counterpartyErr}
           errorText="wpisz drugą stronę"
+          value={transaction ? transaction.counterparty : ""}
         >
-          <Icon slot="leading-icon">group</Icon>
-        </TextFieldOutlined>
+        <Icon slot="leading-icon">group</Icon></TextFieldOutlined>
       </div>
       <div className="flex flex-col justify-center items-center gap-[25px] w-[320px] px-[10px] py-[10px]">
         <SelectOutlined
           className="w-full"
           label="kategoria"
           onChange={(e) => setSuperCategoryId(parseInt(e.currentTarget.value))}
+          value={superCategoryId.toString()}
         >
-          <Icon className="fill" slot="leading-icon">
-            category
-          </Icon>
+        <Icon className="fill" slot="leading-icon">
+          category
+        </Icon>
           {superCategories.map((superCategory) => (
             <SelectOption
               key={superCategory.id}
@@ -276,10 +302,12 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
           className="w-full"
           label="podkategoria"
           name="categoryId"
+          onChange={(e) => setCategoryId(parseInt(e.currentTarget.value))}
           error={categoryIdErr}
           errorText="wybierz poprawną podkategorię"
+          value={categoryId.toString()}
         >
-          <Icon slot="leading-icon">category</Icon>
+        <Icon slot="leading-icon">category</Icon>
           {categories.map((category) => (
             <SelectOption key={category.id} value={category.id.toString()}>
               <div slot="headline">{category.name}</div>
@@ -294,7 +322,7 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
             className="m-[15px]"
             name="important"
             id="important"
-            checked
+            checked={transaction ? transaction.important : true}
           />
           istotna
         </label>
@@ -302,7 +330,7 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
           <OutlinedButton type="button" onClick={() => router.back()}>
             anuluj
           </OutlinedButton>
-          <FilledButton>dodaj transakcję</FilledButton>
+          <FilledButton>zapisz zmiany</FilledButton>
         </div>
       </div>
     </form>

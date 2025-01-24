@@ -20,6 +20,7 @@ module.exports = {
         'primary': '#79590C',
         'surface': '#FFF8F3',
         'surface-container': '#F7ECDF',
+        'on-surface': '#201b13',
         'on-surface-variant': '#4E4639',
         'error-container': '#FFDAD6',
         'on-error-container': '#410002',

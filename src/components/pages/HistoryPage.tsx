@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 import { parseDate, parseMoney } from "@app/utils/parser";
 import { getAllDaysFromOldestTransactionToToday } from "@app/utils/time";
-import { CircularProgress } from "./material/Progress";
+import { CircularProgress } from "../material/Progress";
 
 export default function HistoryPage({
   wallets,

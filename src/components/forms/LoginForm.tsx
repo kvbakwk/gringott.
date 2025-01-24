@@ -20,24 +20,22 @@ export default function LoginForm() {
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
-    console.log("xdd");
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     if (
       validateEmail(formData.get("email").toString()) &&
       validatePassword(formData.get("password").toString())
     ) {
-      const response = await login(
+      const res = await login(
         formData.get("email").toString(),
         formData.get("password").toString(),
         formData.get("remember") ? true : false
       );
-      if (!response.login) {
-        setEmailErr(response.emailErr);
-        setPasswordErr(response.passwordErr);
-        setAccountErr(response.accountErr);
-      } else {
-        router.push("/");
+      if (res.login) router.push("/");
+      else {
+        setEmailErr(res.emailErr);
+        setPasswordErr(res.passwordErr);
+        setAccountErr(res.accountErr);
       }
     } else {
       setEmailErr(!validateEmail(formData.get("email").toString()));

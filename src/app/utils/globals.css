@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
-@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200");
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL@20..48,100..700,0..1");
 
 @tailwind base;
 @tailwind components;
@@ -105,12 +105,15 @@
   --md-outlined-select-text-field-outline-color: #79590C;
   --md-outlined-select-text-field-container-shape: 8px;
   --md-outlined-select-text-field-input-text-color: #79590C;
+  --md-outlined-select-text-field-leading-icon-color: #79590C;
 
   --md-outlined-text-field-container-shape: 8px;
   --md-sys-typescale-body-large: 400 1rem system-ui;
   --md-outlined-text-field-label-text-color: #79590C;
   --md-outlined-text-field-input-text-color: #79590C;
+  --md-outlined-text-field-leading-icon-color: #79590C;
   --md-icon-size: 24px;
+  --md-icon-font: "Material Symbols Rounded";
 }
 
 md-outlined-select::part(menu) {
@@ -124,8 +127,24 @@ md-outlined-select::part(menu) {
 }
 
 .mini {
+  --md-icon-button-icon-size: 20px;
+  --md-icon-button-state-layer-width: 30px;
+  --md-icon-button-state-layer-height: 30px;
   --md-icon-size: 20px;
   --md-circular-progress-size: 24px;
+  --md-outlined-icon-button-container-width: 30px;
+  --md-outlined-icon-button-container-height: 30px;
+  --md-outlined-icon-button-icon-size: 20px;
+  --md-outlined-icon-button-outline-color: var(--md-sys-color-error);
+}
+
+.error {
+  --md-icon-button-icon-color: var(--md-sys-color-error);
+  --md-icon-button-hover-icon-color: var(--md-sys-color-error);
+  --md-icon-button-hover-state-layer-color: var(--md-sys-color-error);
+  --md-icon-button-focus-icon-color: var(--md-sys-color-error);
+  --md-icon-button-focus-state-layer-color: var(--md-sys-color-error);
+  --md-sys-color-primary: var(--md-sys-color-error);
 }
 
 .medium {

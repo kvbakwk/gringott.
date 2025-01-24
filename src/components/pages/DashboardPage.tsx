@@ -8,14 +8,16 @@ import { useEffect, useState } from "react";
 
 import { getWallets } from "@app/api/wallet/get";
 import { getTransactions } from "@app/api/transaction/get";
-import WalletsList from "./WalletsList";
+import WalletsList from "../WalletsList";
 import HomePage from "./HomePage";
 import HistoryPage from "./HistoryPage";
 import TransactionsPage from "./TransactionsPage";
-import NewTransactionForm from "./forms/NewTransactionForm";
-import NewWalletForm from "./forms/NewWalletForm";
+import NewTransactionForm from "../forms/NewTransactionForm";
+import EditTransactionForm from "@components/forms/EditTransactionForm";
+import NewWalletForm from "../forms/NewWalletForm";
+import DeleteTransactionForm from "@components/forms/DeleteTransactionForm";
 
-export default function Dashboard({
+export default function DashboardPage({
   slug,
   user,
 }: {
@@ -55,7 +57,7 @@ export default function Dashboard({
           transactionsReady={transactionsReady}
         />
       )}
-      {slug && slug[0] === "transakcje" && (
+      {slug && slug[0] === "transakcje" && slug[1] === undefined  && (
         <TransactionsPage
           wallets={wallets}
           transactions={transactions}
@@ -63,9 +65,19 @@ export default function Dashboard({
           transactionsReady={transactionsReady}
         />
       )}
-      {slug && slug[0] === "nowa-transakcja" && (
+      {slug && slug[0] === "transakcje" && slug[1] === "nowa" && (
         <div className="flex justify-center items-center w-full h-full bg-surface rounded-tl-2xl shadow-sm">
           <NewTransactionForm userId={user.id} />
+        </div>
+      )}
+      {slug && slug[0] === "transakcje" && slug[1] === "edycja" && !isNaN(parseInt(slug[2])) && (
+        <div className="flex justify-center items-center w-full h-full bg-surface rounded-tl-2xl shadow-sm">
+          <EditTransactionForm userId={user.id} transactionId={parseInt(slug[2])} />
+        </div>
+      )}
+      {slug && slug[0] === "transakcje" && slug[1] === "usuwanie" && !isNaN(parseInt(slug[2])) && (
+        <div className="flex justify-center items-center w-full h-full bg-surface rounded-tl-2xl shadow-sm">
+          <DeleteTransactionForm userId={user.id} transactionId={parseInt(slug[2])} />
         </div>
       )}
       {slug && slug[0] === "nowe-konto" && (

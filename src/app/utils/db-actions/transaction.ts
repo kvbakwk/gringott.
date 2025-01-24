@@ -1,3 +1,9 @@
+"use server";
+
+import { SuperCategoryT } from "./super_category";
+import { CategoryT } from "./category";
+import { MethodT } from "./method";
+
 import { Pool, QueryResult } from "pg";
 
 export interface TransactionT {
@@ -5,13 +11,22 @@ export interface TransactionT {
   date: Date;
   amount: number;
   description: string;
-  super_category: string;
-  category: string;
+  super_category: {
+    id: number;
+    name: string;
+  };
+  category: {
+    id: number;
+    name: string;
+  };
   counterparty: string;
   income: boolean;
   important: boolean;
   wallet_id: number;
-  method: string;
+  method: {
+    id: number;
+    name: string;
+  };
   transaction_type_id: number;
 }
 
@@ -22,7 +37,23 @@ export interface TransactionIdT {
 export async function getTransactionById(id: number): Promise<TransactionT> {
   const client: Pool = new Pool();
   const res: QueryResult = await client.query(
-    "SELECT public.transaction.id, date, amount, description, public.super_category.name as super_category, public.category.name as category, counterparty, income, important, wallet_id, public.method.name as method, transaction_type_id FROM public.transaction JOIN public.category ON public.transaction.category_id = public.category.id JOIN public.method ON public.transaction.method_id = public.method.id JOIN public.super_category ON public.category.super_category_id = public.super_category.id  WHERE public.transaction.id = $1;",
+    `SELECT 
+      public.transaction.id, date, amount, description, 
+      public.super_category.id as super_category_id, 
+      public.super_category.name as super_category_name, 
+      public.category.id as category_id, 
+      public.category.name as category_name, counterparty, 
+      public.transaction.income, important, wallet_id, 
+      public.method.id as method_id, 
+      public.method.name as method_name, transaction_type_id 
+      FROM public.transaction 
+      JOIN public.category 
+        ON public.transaction.category_id = public.category.id 
+      JOIN public.method 
+        ON public.transaction.method_id = public.method.id 
+      JOIN public.super_category 
+        ON public.category.super_category_id = public.super_category.id 
+      WHERE public.transaction.id = $1;`,
     [id]
   );
   await client.end();
@@ -31,13 +62,22 @@ export async function getTransactionById(id: number): Promise<TransactionT> {
     date: new Date(res.rows[0].date),
     amount: parseFloat(res.rows[0].amount),
     description: res.rows[0].description,
-    super_category: res.rows[0].super_category,
-    category: res.rows[0].category,
+    super_category: {
+      id: parseInt(res.rows[0].super_category_id),
+      name: res.rows[0].super_category_name,
+    },
+    category: {
+      id: parseInt(res.rows[0].category_id),
+      name: res.rows[0].category_name,
+    },
     counterparty: res.rows[0].counterparty,
     income: Boolean(res.rows[0].income),
     important: Boolean(res.rows[0].important),
     wallet_id: parseInt(res.rows[0].wallet_id),
-    method: res.rows[0].method,
+    method: {
+      id: parseInt(res.rows[0].method_id),
+      name: res.rows[0].method_name,
+    },
     transaction_type_id: parseInt(res.rows[0].transaction_type_id),
   };
 }
@@ -47,23 +87,48 @@ export async function getTransactionsByWalletId(
 ): Promise<TransactionT[]> {
   const client: Pool = new Pool();
   const res: QueryResult = await client.query(
-    "SELECT public.transaction.id, public.transaction.date, public.transaction.amount, public.transaction.description, public.super_category.name as super_category, public.category.name as category, public.transaction.counterparty, public.transaction.income, public.transaction.important, public.transaction.wallet_id, public.method.name as method, transaction_type_id FROM public.transaction JOIN public.category ON public.transaction.category_id = public.category.id JOIN public.method ON public.transaction.method_id = public.method.id JOIN public.super_category ON public.category.super_category_id = public.super_category.id WHERE wallet_id = $1;",
+    `SELECT 
+      public.transaction.id, date, amount, description, 
+      public.super_category.id as super_category_id, 
+      public.super_category.name as super_category_name, 
+      public.category.id as category_id, 
+      public.category.name as category_name, counterparty, 
+      public.transaction.income, important, wallet_id, 
+      public.method.id as method_id, 
+      public.method.name as method_name, transaction_type_id 
+      FROM public.transaction 
+      JOIN public.category 
+        ON public.transaction.category_id = public.category.id 
+      JOIN public.method 
+        ON public.transaction.method_id = public.method.id 
+      JOIN public.super_category 
+        ON public.category.super_category_id = public.super_category.id 
+      WHERE wallet_id = $1;`,
     [id]
   );
   await client.end();
-  return res.rows.map((wallet) => ({
-    id: parseInt(wallet.id),
-    date: new Date(wallet.date),
-    amount: parseFloat(wallet.amount),
-    description: wallet.description,
-    super_category: wallet.super_category,
-    category: wallet.category,
-    counterparty: wallet.counterparty,
-    income: Boolean(wallet.income),
-    important: Boolean(wallet.important),
-    wallet_id: parseInt(wallet.wallet_id),
-    method: wallet.method,
-    transaction_type_id: parseInt(wallet.transaction_type_id),
+  return res.rows.map((transaction) => ({
+    id: parseInt(transaction.id),
+    date: new Date(transaction.date),
+    amount: parseFloat(transaction.amount),
+    description: transaction.description,
+    super_category: {
+      id: parseInt(transaction.super_category_id),
+      name: transaction.super_category_name,
+    },
+    category: {
+      id: parseInt(transaction.category_id),
+      name: transaction.category_name,
+    },
+    counterparty: transaction.counterparty,
+    income: Boolean(transaction.income),
+    important: Boolean(transaction.important),
+    wallet_id: parseInt(transaction.wallet_id),
+    method: {
+      id: parseInt(transaction.method_id),
+      name: transaction.method_name,
+    },
+    transaction_type_id: parseInt(transaction.transaction_type_id),
   }));
 }
 
@@ -72,23 +137,50 @@ export async function getTransactionsByUserId(
 ): Promise<TransactionT[]> {
   const client: Pool = new Pool();
   const res: QueryResult = await client.query(
-    "SELECT public.transaction.id, public.transaction.date, public.transaction.amount, public.transaction.description, public.super_category.name as super_category, public.category.name as category, public.transaction.counterparty, public.transaction.income, public.transaction.important, public.transaction.wallet_id, public.method.name as method, transaction_type_id FROM public.transaction JOIN public.wallet ON public.transaction.wallet_id = public.wallet.id JOIN public.category ON public.transaction.category_id = public.category.id JOIN public.method ON public.transaction.method_id = public.method.id JOIN public.super_category ON public.category.super_category_id = public.super_category.id WHERE public.wallet.user_id = $1;",
+    `SELECT 
+      public.transaction.id, date, amount, description, 
+      public.super_category.id as super_category_id, 
+      public.super_category.name as super_category_name, 
+      public.category.id as category_id, 
+      public.category.name as category_name, counterparty, 
+      public.transaction.income, important, wallet_id, 
+      public.method.id as method_id, 
+      public.method.name as method_name, transaction_type_id 
+    FROM public.transaction 
+    JOIN public.wallet 
+      ON public.transaction.wallet_id = public.wallet.id 
+    JOIN public.category 
+      ON public.transaction.category_id = public.category.id 
+    JOIN public.method 
+      ON public.transaction.method_id = public.method.id 
+    JOIN public.super_category 
+      ON public.category.super_category_id = public.super_category.id 
+    WHERE public.wallet.user_id = $1;`,
     [id]
   );
   await client.end();
-  return res.rows.map((row) => ({
-    id: parseInt(row.id),
-    date: new Date(row.date),
-    amount: parseFloat(row.amount),
-    description: row.description,
-    super_category: row.super_category,
-    category: row.category,
-    counterparty: row.counterparty,
-    income: Boolean(row.income),
-    important: Boolean(row.important),
-    wallet_id: parseInt(row.wallet_id),
-    method: row.method,
-    transaction_type_id: parseInt(row.transaction_type_id),
+  return res.rows.map((transaction) => ({
+    id: parseInt(transaction.id),
+    date: new Date(transaction.date),
+    amount: parseFloat(transaction.amount),
+    description: transaction.description,
+    super_category: {
+      id: parseInt(transaction.super_category_id),
+      name: transaction.super_category_name,
+    },
+    category: {
+      id: parseInt(transaction.category_id),
+      name: transaction.category_name,
+    },
+    counterparty: transaction.counterparty,
+    income: Boolean(transaction.income),
+    important: Boolean(transaction.important),
+    wallet_id: parseInt(transaction.wallet_id),
+    method: {
+      id: parseInt(transaction.method_id),
+      name: transaction.method_name,
+    },
+    transaction_type_id: parseInt(transaction.transaction_type_id),
   }));
 }
 

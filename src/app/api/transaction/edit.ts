@@ -11,7 +11,8 @@ import {
 } from "@app/utils/validator";
 import { Pool } from "pg";
 
-export async function createTransaction(
+export async function editTransaction(
+  transactionId: number,
   walletId: number,
   income: boolean,
   methodId: number,
@@ -33,34 +34,40 @@ export async function createTransaction(
     (await validateTransactionCategoryId(categoryId, income)) &&
     validateTransactionCounterparty(counterparty);
 
-  console.log(categoryId, income, await validateTransactionCategoryId(categoryId, income))
-
   if (isValid) {
     const client: Pool = new Pool();
+    const oldAmount = (await client.query(
+      "SELECT amount FROM public.transaction WHERE id = $1",
+      [transactionId]
+    )).rows[0].amount;
     await client.query(
-      `INSERT INTO public.transaction (date, amount, description, category_id, counterparty, income, important, wallet_id, method_id, transaction_type_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`,
+      `UPDATE public.transaction 
+      SET 
+        date = $1, amount = $2, description = $3, category_id = $4, 
+        counterparty = $5, important = $6, method_id = $7, 
+        transaction_type_id = $8 
+      WHERE id = $9;`,
       [
         date,
         amount,
         description,
         categoryId,
         counterparty,
-        income,
         important,
-        walletId,
         methodId,
         transactionTypeId,
+        transactionId,
       ]
     );
     if (income)
       await client.query(
         "UPDATE public.wallet SET balance = balance + $1 WHERE id = $2",
-        [amount, walletId]
+        [amount - oldAmount, walletId]
       );
     else
       await client.query(
         "UPDATE public.wallet SET balance = balance - $1 WHERE id = $2",
-        [amount, walletId]
+        [amount - oldAmount, walletId]
       );
     await client.end();
   }

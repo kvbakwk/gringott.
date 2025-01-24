@@ -4,6 +4,7 @@
   packages = [
     pkgs.docker
     pkgs.nodejs_latest
+    pkgs.xvfb_run
   ];
   idx.extensions = [
     "bradlc.vscode-tailwindcss"
