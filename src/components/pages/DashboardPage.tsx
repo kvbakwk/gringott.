@@ -16,6 +16,7 @@ import NewTransactionForm from "../forms/NewTransactionForm";
 import EditTransactionForm from "@components/forms/EditTransactionForm";
 import NewWalletForm from "../forms/NewWalletForm";
 import DeleteTransactionForm from "@components/forms/DeleteTransactionForm";
+import CounterpartiesPage from "./CounterpartiesPage";
 
 export default function DashboardPage({
   slug,
@@ -78,6 +79,11 @@ export default function DashboardPage({
       {slug && slug[0] === "transakcje" && slug[1] === "usuwanie" && !isNaN(parseInt(slug[2])) && (
         <div className="flex justify-center items-center w-full h-full bg-surface rounded-tl-2xl shadow-sm">
           <DeleteTransactionForm userId={user.id} transactionId={parseInt(slug[2])} />
+        </div>
+      )}
+      {slug && slug[0] === "transakcje" && slug[1] === "podmioty" && (
+        <div className="flex justify-center items-center w-full h-full bg-surface rounded-tl-2xl shadow-sm">
+          <CounterpartiesPage userId={user.id} />
         </div>
       )}
       {slug && slug[0] === "nowe-konto" && (

@@ -71,6 +71,13 @@ create table if not exists public.transaction (
     foreign key (transaction_type_id) references public.transaction_type(id)
 );
 
+create table if not exists public.counterparty (
+    id serial primary key,
+    user_id integer not null,
+    name varchar(255) not null,
+    foreign key (user_id) references public.user(id)
+);
+
 create table if not exists public.product (
     id serial primary key,
     name varchar(255) not null,
@@ -144,3 +151,5 @@ insert into public.transaction_type (name) values
 insert into public.transaction (date, amount, description, category_id, counterparty, income, important, wallet_id, method_id, transaction_type_id) values 
 ('2024-12-01 12:00:00', 10, 'kieszonkowe', 50, 'tata', true, true, 1, 1, 1),
 ('2024-12-01 12:00:00', 100, 'kieszonkowe', 50, 'tata', true, true, 4, 4, 1);
+
+insert into public.counterparty (user_id, name) values (1, 'Tata'), (1, 'Mama'), (1, 'Ola Kawka');

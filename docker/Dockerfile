@@ -14,8 +14,7 @@ COPY ./postcss.config.js .
 COPY ./tailwind.config.js .
 COPY ./.eslintrc.json .
 
-CMD npm run cypress:open
-# CMD npm run dev
+CMD npm run dev
 # CMD npm run lint
 # CMD npm run build
 # CMD npm run start

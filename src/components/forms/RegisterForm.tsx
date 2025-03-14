@@ -79,7 +79,7 @@ export default function RegisterForm() {
       className="flex flex-col justify-center items-center gap-[40px] w-[540px] h-fit py-[70px] bg-surface rounded-2xl shadow-md"
       onSubmit={handleSubmit}
     >
-      <div className="flex flex-col justify-center items-center gap-[25px] w-[370px] px-[10px] py-[20px]">
+      <div className="flex flex-col justify-center items-center gap-[25px] w-[360px] px-[10px] py-[20px]">
         <TextFieldOutlined
           className="w-full"
           label="twoje imię i nazwisko"

@@ -22,7 +22,7 @@ export default async function Layout({
 }: {
   children: React.ReactNode;
 }) {
-  if ((await loginCheck())) redirect("/logowanie");
+  if (await loginCheck()) redirect("/logowanie");
 
   return (
     <html lang="pl" className="font-noto">
@@ -37,8 +37,15 @@ export default async function Layout({
           <div className="flex justify-center items-center w-full h-full">
             {children}
           </div>
-          <div className="flex flex-col justify-center items-center text-on-surface-variant w-full h-full">
-            <AuthOtherNav />
+          <div className="grid grid-rows-[1fr_100px] w-full h-full">
+            <div className="flex flex-col justify-center items-center w-full h-full">
+              <AuthOtherNav />
+            </div>
+            <div className="flex justify-center items-center gap-[10px] text-primary w-full h-[70px] mb-[30px] py-[10px] select-none">
+              <span className="font-semibold">simple.</span>
+              <span className="font-light">@</span>
+              <span className="font-semibold">2025</span>
+            </div>
           </div>
         </div>
       </body>
