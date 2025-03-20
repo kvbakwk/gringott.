@@ -24,7 +24,7 @@ export default function CounterpartiesPage({ userId }: { userId: number }) {
   }, []);
 
   return (
-    <div className="flex flex-wrap justify-around gap-[36px] w-full h-full px-[40px] py-[30px] bg-surface rounded-tl-2xl shadow-sm">
+    <div className="self-start flex flex-wrap justify-start items-start gap-[36px] w-full px-[113px] py-[30px] ">
       {counterpartiesReady &&
         counterparties.map((counterparty) => (
           <Counterparty key={counterparty.id} counterparty={counterparty} />

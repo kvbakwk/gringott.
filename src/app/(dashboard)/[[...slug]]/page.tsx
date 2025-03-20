@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 
 import { getUser } from "@app/api/user/get";
 import { loginCheck } from "@app/api/auth/login";
-import Dashboard from "@components/pages/DashboardPage";
+import DashboardPage from "@components/pages/DashboardPage";
 
 export async function generateMetadata({ params }) {
   const path = await params;
@@ -44,5 +44,5 @@ export default async function Page({
 }) {
   if (!(await loginCheck())) redirect("/logowanie");
 
-  return <Dashboard slug={(await params).slug} user={await getUser()} />;
+  return <DashboardPage slug={(await params).slug} user={await getUser()} />;
 }

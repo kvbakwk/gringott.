@@ -51,9 +51,9 @@ export const validateTransactionDescription = (
   return pattern.test(description);
 };
 
-export const validateTransactionCounterparty = (receiver: string): boolean => {
+export const validateTransactionCounterparty = (counterparty: string): boolean => {
   const pattern = /^.{1,256}$/;
-  return pattern.test(receiver);
+  return pattern.test(counterparty);
 };
 
 export const validateTransactionWalletId = async (

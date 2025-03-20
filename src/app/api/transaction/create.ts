@@ -33,8 +33,6 @@ export async function createTransaction(
     (await validateTransactionCategoryId(categoryId, income)) &&
     validateTransactionCounterparty(counterparty);
 
-  console.log(categoryId, income, await validateTransactionCategoryId(categoryId, income))
-
   if (isValid) {
     const client: Pool = new Pool();
     await client.query(

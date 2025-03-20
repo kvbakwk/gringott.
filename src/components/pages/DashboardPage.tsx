@@ -17,6 +17,9 @@ import EditTransactionForm from "@components/forms/EditTransactionForm";
 import NewWalletForm from "../forms/NewWalletForm";
 import DeleteTransactionForm from "@components/forms/DeleteTransactionForm";
 import CounterpartiesPage from "./CounterpartiesPage";
+import NewCounterpartyForm from "@components/forms/NewCounterpartyForm";
+import EditCounterpartyForm from "@components/forms/EditCounterpartyForm";
+import DeleteCounterpartyForm from "@components/forms/DeleteCounterparty";
 
 export default function DashboardPage({
   slug,
@@ -81,9 +84,24 @@ export default function DashboardPage({
           <DeleteTransactionForm userId={user.id} transactionId={parseInt(slug[2])} />
         </div>
       )}
-      {slug && slug[0] === "transakcje" && slug[1] === "podmioty" && (
+      {slug && slug[0] === "transakcje" && slug[1] === "podmioty" && slug[2] === undefined && (
         <div className="flex justify-center items-center w-full h-full bg-surface rounded-tl-2xl shadow-sm">
           <CounterpartiesPage userId={user.id} />
+        </div>
+      )}
+      {slug && slug[0] === "transakcje" && slug[1] === "podmioty" && slug[2] === "nowy" && (
+        <div className="flex justify-center items-center w-full h-full bg-surface rounded-tl-2xl shadow-sm">
+          <NewCounterpartyForm userId={user.id} />
+        </div>
+      )}
+      {slug && slug[0] === "transakcje" && slug[1] === "podmioty" && slug[2] === "edycja" && !isNaN(parseInt(slug[3])) && (
+        <div className="flex justify-center items-center w-full h-full bg-surface rounded-tl-2xl shadow-sm">
+          <EditCounterpartyForm userId={user.id} counterpartyId={parseInt(slug[3])}/>
+        </div>
+      )}
+      {slug && slug[0] === "transakcje" && slug[1] === "podmioty" && slug[2] === "usuwanie" && !isNaN(parseInt(slug[3])) && (
+        <div className="flex justify-center items-center w-full h-full bg-surface rounded-tl-2xl shadow-sm">
+          <DeleteCounterpartyForm userId={user.id} counterpartyId={parseInt(slug[3])}/>
         </div>
       )}
       {slug && slug[0] === "nowe-konto" && (
