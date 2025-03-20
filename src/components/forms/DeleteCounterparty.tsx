@@ -26,9 +26,9 @@ export default function DeleteCounterpartyForm({
 
     deleteCounterparty(counterpartyId, userId)
       .then((res) => {
-        setSuccess(res.createTransaction);
+        setSuccess(res.success);
         setError(false);
-        if (res.createTransaction) router.back();
+        if (res.success) router.back();
       })
       .catch(() => setError(true));
   };
