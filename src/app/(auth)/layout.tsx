@@ -42,7 +42,7 @@ export default async function Layout({
               <AuthOtherNav />
             </div>
             <div className="flex justify-center items-center gap-[10px] text-primary w-full h-[70px] mb-[30px] py-[10px] select-none">
-              <span className="font-semibold">simple.</span>
+              <span className="font-semibold">proste.</span>
               <span className="font-light">@</span>
               <span className="font-semibold">2025</span>
             </div>

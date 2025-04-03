@@ -1,6 +1,7 @@
 "use client";
 
 import { WalletT } from "@app/utils/db-actions/wallet";
+import { CounterpartyT } from "@app/utils/db-actions/counterparty";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -24,6 +25,7 @@ import { TextFieldOutlined } from "../material/TextField";
 import { Checkbox } from "../material/Checkbox";
 import { FilledButton, OutlinedButton } from "../material/Button";
 import { Icon } from "@components/material/Icon";
+import { getCounterparties } from "@app/api/counterparty/get";
 
 export default function NewTransactionForm({ userId }: { userId: number }) {
   const router = useRouter();
@@ -36,6 +38,7 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
   const [methods, setMethods] = useState<MethodT[]>([]);
   const [categories, setCategories] = useState<CategoryT[]>([]);
   const [superCategories, setSuperCategories] = useState<SuperCategoryT[]>([]);
+  const [counterparties, setCounterparties] = useState<CounterpartyT[]>([]);
 
   const [success, setSuccess] = useState<boolean>(false);
   const [walletIdErr, setWalletIdErr] = useState<boolean>(false);
@@ -44,7 +47,7 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
   const [amountErr, setAmountErr] = useState<boolean>(false);
   const [descriptionErr, setDescriptionErr] = useState<boolean>(false);
   const [categoryIdErr, setCategoryIdErr] = useState<boolean>(false);
-  const [counterpartyErr, setCounterpartyErr] = useState<boolean>(false);
+  const [counterpartyIdErr, setCounterpartyIdErr] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
@@ -54,6 +57,9 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
           (wallet) => wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2
         )
       );
+    });
+    getCounterparties(userId).then((res) => {
+      setCounterparties(res.sort((a, b) => a.name.localeCompare(b.name)));
     });
   }, []);
   useEffect(() => {
@@ -100,20 +106,22 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
     const formData = new FormData(e.currentTarget);
 
     const walletId: number = parseInt(formData.get("walletId")?.toString());
-    const income: boolean = Boolean(parseInt(formData.get("income").toString()));
+    const income: boolean = Boolean(
+      parseInt(formData.get("income").toString())
+    );
     const methodId: number = parseInt(formData.get("methodId")?.toString());
     const date: Date = new Date(formData.get("date").toString());
     const amount: number = parseFloat(formData.get("amount").toString());
     const description: string = formData.get("description").toString();
     const categoryId: number = parseInt(formData.get("categoryId")?.toString());
-    const counterparty: string = formData.get("counterparty").toString();
+    const counterpartyId: number = parseInt(formData.get("counterpartyId").toString());
     const important: boolean = formData.get("important")?.toString() === "on";
 
     if (
       validateTransactionDate(date) &&
       validateTransactionAmount(amount) &&
       validateTransactionDescription(description) &&
-      validateTransactionCounterparty(counterparty)
+      validateTransactionCounterparty(counterpartyId)
     ) {
       createTransaction(
         walletId,
@@ -123,7 +131,7 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
         amount,
         description,
         categoryId,
-        counterparty,
+        counterpartyId,
         important,
         userId,
         1
@@ -136,7 +144,7 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
           setAmountErr(res.amountErr);
           setDescriptionErr(res.descriptionErr);
           setCategoryIdErr(res.categoryIdErr);
-          setCounterpartyErr(res.counterpartyErr);
+          setCounterpartyIdErr(res.counterpartyErr);
           setError(false);
           if (res.createTransaction) router.back();
         })
@@ -149,7 +157,7 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
       setAmountErr(!validateTransactionAmount(amount));
       setDescriptionErr(!validateTransactionDescription(description));
       setCategoryIdErr(false);
-      setCounterpartyErr(!validateTransactionCounterparty(counterparty));
+      setCounterpartyIdErr(!validateTransactionCounterparty(counterparty));
       setError(false);
     }
   };
@@ -244,15 +252,23 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
         >
           <Icon slot="leading-icon">reorder</Icon>
         </TextFieldOutlined>
-        <TextFieldOutlined
+        <SelectOutlined
           className="w-full"
           label="druga strona"
-          name="counterparty"
-          error={counterpartyErr}
-          errorText="wpisz drugą stronę"
+          name="counterpartyId"
+          error={counterpartyIdErr}
+          errorText="wybierz drugą stronę"
         >
           <Icon slot="leading-icon">group</Icon>
-        </TextFieldOutlined>
+          {counterparties.map((counterparty) => (
+            <SelectOption
+              key={counterparty.id}
+              value={counterparty.id.toString()}
+            >
+              <div slot="headline">{counterparty.name}</div>
+            </SelectOption>
+          ))}
+        </SelectOutlined>
       </div>
       <div className="flex flex-col justify-center items-center gap-[25px] w-[320px] px-[10px] py-[10px]">
         <SelectOutlined

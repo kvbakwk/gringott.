@@ -26,7 +26,7 @@ export default function CounterpartiesPage({ userId }: { userId: number }) {
   return (
     <div className="self-start flex flex-wrap justify-start items-start gap-[36px] w-full px-[113px] py-[30px] ">
       {counterpartiesReady &&
-        counterparties.map((counterparty) => (
+        counterparties.sort((a, b) => a.name.localeCompare(b.name)).map((counterparty) => (
           <Counterparty key={counterparty.id} counterparty={counterparty} />
         ))}
       <div className="absolute bottom-10 right-10">

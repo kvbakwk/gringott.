@@ -105,7 +105,7 @@ export function Transaction({
         {transaction.description}
       </div>
       <div className="flex justify-center items-center truncate w-[200px]">
-        {transaction.counterparty}
+        {transaction.counterparty.name}
       </div>
       <div className="flex justify-center items-center truncate w-[200px]">
         {transaction.category.name}
