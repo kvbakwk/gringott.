@@ -18,7 +18,7 @@ import {
   validateTransactionAmount,
   validateTransactionDate,
   validateTransactionDescription,
-  validateTransactionCounterparty,
+  validateTransactionCounterpartyId,
 } from "@app/utils/validator";
 import { SelectOption, SelectOutlined } from "../material/Select";
 import { TextFieldOutlined } from "../material/TextField";
@@ -121,7 +121,7 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
       validateTransactionDate(date) &&
       validateTransactionAmount(amount) &&
       validateTransactionDescription(description) &&
-      validateTransactionCounterparty(counterpartyId)
+      validateTransactionCounterpartyId(counterpartyId)
     ) {
       createTransaction(
         walletId,
@@ -144,7 +144,7 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
           setAmountErr(res.amountErr);
           setDescriptionErr(res.descriptionErr);
           setCategoryIdErr(res.categoryIdErr);
-          setCounterpartyIdErr(res.counterpartyErr);
+          setCounterpartyIdErr(res.counterpartyIdErr);
           setError(false);
           if (res.createTransaction) router.back();
         })
@@ -157,7 +157,7 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
       setAmountErr(!validateTransactionAmount(amount));
       setDescriptionErr(!validateTransactionDescription(description));
       setCategoryIdErr(false);
-      setCounterpartyIdErr(!validateTransactionCounterparty(counterparty));
+      setCounterpartyIdErr(!validateTransactionCounterpartyId(counterpartyId));
       setError(false);
     }
   };
@@ -224,7 +224,7 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
           type="datetime-local"
           error={dateErr}
           errorText="wybierz datę"
-          value={new Date(new Date().getTime() + 1000 * 60 * 60)
+          value={new Date(new Date().getTime() + 2000 * 60 * 60)
             .toISOString()
             .slice(0, 16)}
         >

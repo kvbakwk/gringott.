@@ -4,7 +4,7 @@ import {
   validateTransactionDate,
   validateTransactionAmount,
   validateTransactionDescription,
-  validateTransactionCounterparty,
+  validateTransactionCounterpartyId,
   validateTransactionWalletId,
   validateTransactionMethodId,
   validateTransactionCategoryId,
@@ -20,7 +20,7 @@ export async function editTransaction(
   amount: number,
   description: string,
   categoryId: number,
-  counterparty: string,
+  counterpartyId: number,
   important: boolean,
   userId: number,
   transactionTypeId: number
@@ -32,7 +32,7 @@ export async function editTransaction(
     validateTransactionAmount(amount) &&
     validateTransactionDescription(description) &&
     (await validateTransactionCategoryId(categoryId, income)) &&
-    validateTransactionCounterparty(counterparty);
+    validateTransactionCounterpartyId(counterpartyId);
 
   if (isValid) {
     const client: Pool = new Pool();
@@ -44,7 +44,7 @@ export async function editTransaction(
       `UPDATE public.transaction 
       SET 
         date = $1, amount = $2, description = $3, category_id = $4, 
-        counterparty = $5, important = $6, method_id = $7, 
+        counterparty_id = $5, important = $6, method_id = $7, 
         transaction_type_id = $8 
       WHERE id = $9;`,
       [
@@ -52,7 +52,7 @@ export async function editTransaction(
         amount,
         description,
         categoryId,
-        counterparty,
+        counterpartyId,
         important,
         methodId,
         transactionTypeId,
@@ -80,6 +80,6 @@ export async function editTransaction(
     amountErr: !validateTransactionAmount(amount),
     descriptionErr: !validateTransactionDescription(description),
     categoryIdErr: !(await validateTransactionCategoryId(categoryId, income)),
-    counterpartyErr: !validateTransactionCounterparty(counterparty),
+    counterpartyErr: !validateTransactionCounterpartyId(counterpartyId),
   };
 }

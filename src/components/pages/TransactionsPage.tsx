@@ -84,7 +84,7 @@ export function Transaction({
 
   return (
     <div
-      className={`flex justify-center items-center gap-[20px] font-normal text-on-surface-variant text-base w-full h-[30px]`}
+      className={`flex justify-center items-center gap-[20px] font-normal text-on-surface-variant text-base w-full h-[30px] ${!transaction.important && 'opacity-100'}`}
       key={transaction.id}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
@@ -97,7 +97,7 @@ export function Transaction({
       <div
         className={`flex justify-center items-center font-semibold text-lg w-[160px] ${
           transaction.income ? "text-green-800" : "text-red-800"
-        }`}
+        } ${!transaction.important && 'opacity-50'}`}
       >
         {parseMoney(transaction.amount)} zł
       </div>

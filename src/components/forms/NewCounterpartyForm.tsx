@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { validateTransactionCounterparty } from "@app/utils/validator";
+import { validateCounterpartyName } from "@app/utils/validator";
 import { TextFieldOutlined } from "../material/TextField";
 import { FilledButton, OutlinedButton } from "../material/Button";
 import { Icon } from "@components/material/Icon";
@@ -24,7 +24,7 @@ export default function NewCounterpartyForm({ userId }: { userId: number }) {
 
     const name: string = formData.get("name")?.toString();
 
-    if (validateTransactionCounterparty(name)) {
+    if (validateCounterpartyName(name)) {
       createCounterparty(name, userId)
         .then((res) => {
           setSuccess(res.createCounterparty);
@@ -35,7 +35,7 @@ export default function NewCounterpartyForm({ userId }: { userId: number }) {
         .catch(() => setError(true));
     } else {
       setSuccess(false);
-      setNameErr(!validateTransactionCounterparty(name));
+      setNameErr(!validateCounterpartyName(name));
       setError(false);
     }
   };

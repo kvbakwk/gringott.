@@ -4,7 +4,7 @@ import {
   validateTransactionDate,
   validateTransactionAmount,
   validateTransactionDescription,
-  validateTransactionCounterparty,
+  validateTransactionCounterpartyId,
   validateTransactionWalletId,
   validateTransactionMethodId,
   validateTransactionCategoryId,
@@ -19,7 +19,7 @@ export async function createTransaction(
   amount: number,
   description: string,
   categoryId: number,
-  counterparty: string,
+  counterpartyId: number,
   important: boolean,
   userId: number,
   transactionTypeId: number
@@ -31,18 +31,18 @@ export async function createTransaction(
     validateTransactionAmount(amount) &&
     validateTransactionDescription(description) &&
     (await validateTransactionCategoryId(categoryId, income)) &&
-    validateTransactionCounterparty(counterparty);
+    validateTransactionCounterpartyId(counterpartyId);
 
   if (isValid) {
     const client: Pool = new Pool();
     await client.query(
-      `INSERT INTO public.transaction (date, amount, description, category_id, counterparty, income, important, wallet_id, method_id, transaction_type_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`,
+      `INSERT INTO public.transaction (date, amount, description, category_id, counterparty_id, income, important, wallet_id, method_id, transaction_type_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`,
       [
         date,
         amount,
         description,
         categoryId,
-        counterparty,
+        counterpartyId,
         income,
         important,
         walletId,
@@ -71,6 +71,6 @@ export async function createTransaction(
     amountErr: !validateTransactionAmount(amount),
     descriptionErr: !validateTransactionDescription(description),
     categoryIdErr: !(await validateTransactionCategoryId(categoryId, income)),
-    counterpartyErr: !validateTransactionCounterparty(counterparty),
+    counterpartyIdErr: !validateTransactionCounterpartyId(counterpartyId),
   };
 }
