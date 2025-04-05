@@ -11,9 +11,13 @@ export default function AuthMainNav() {
   const registerEl = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (pathname === "/logowanie")
+    if (pathname === "/logowanie") {
       loginEl.current.classList.add("bg-surface", "shadow-md");
-    else registerEl.current.classList.add("bg-surface", "shadow-md");
+      registerEl.current.classList.remove("bg-surface", "shadow-md");
+    } else {
+      registerEl.current.classList.add("bg-surface", "shadow-md");
+      loginEl.current.classList.remove("bg-surface", "shadow-md");
+    }
   }, [pathname]);
 
   return (
