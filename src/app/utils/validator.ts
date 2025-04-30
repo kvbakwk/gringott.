@@ -3,7 +3,7 @@ import { isBankMethod, isCashMethod } from "./db-actions/method";
 import { getWalletsIdsByUserId, isCashWallet } from "./db-actions/wallet";
 
 export const validateWalletName = (name: string): boolean => {
-  const pattern = /^.{1,256}$/;
+  const pattern = /^.{1,20}$/;
   return pattern.test(name);
 };
 
@@ -15,16 +15,16 @@ export const validateWalletBalance = (balance: number): boolean => {
 export const validateFullname = (fullname: string): boolean => {
   const pattern =
     /[A-ZŻŹĆĄŚĘŁÓŃ][A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]+\s[A-ZŻŹĆĄŚĘŁÓŃ][A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ]+/;
-  return pattern.test(fullname);
+  return pattern.test(fullname) && fullname.length <= 40;
 };
 
 export const validateEmail = (email: string): boolean => {
   const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  return pattern.test(email);
+  return pattern.test(email) && email.length <= 50;
 };
 
 export const validatePassword = (password: string): boolean => {
-  const pattern = /^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z0-9@$!%*#?&]{8,}$/;
+  const pattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])[A-Za-z0-9@$!%*#?&]{8,100}$/;
   return pattern.test(password);
 };
 

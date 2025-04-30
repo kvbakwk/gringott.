@@ -20,9 +20,9 @@ export default async function Layout({
   return (
     <html lang="pl" className="font-noto">
       <body>
-        <div className="flex flex-col justify-center items-center gap-[16px] w-screen h-screen bg-surface-container">
-            <div className="justify-self-center self-center flex justify-center items-center font-bold text-primary text-[100px] tracking-tight">
-              gringott.
+        <div className="flex flex-col justify-center items-center gap-[14px] w-screen h-screen bg-gray-100">
+            <div className="justify-self-center self-center flex justify-center items-center font-bold text-gray-900 text-[100px] tracking-tight">
+              proste.
             </div>
             {children}
         </div>
