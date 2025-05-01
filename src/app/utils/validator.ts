@@ -1,4 +1,5 @@
 import { isIncomeCategory, isOutcomeCategory } from "./db-actions/category";
+import { getCounterpartiesIdsByUserId } from "./db-actions/counterparty";
 import { isBankMethod, isCashMethod } from "./db-actions/method";
 import { getWalletsIdsByUserId, isCashWallet } from "./db-actions/wallet";
 
@@ -24,7 +25,8 @@ export const validateEmail = (email: string): boolean => {
 };
 
 export const validatePassword = (password: string): boolean => {
-  const pattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])[A-Za-z0-9@$!%*#?&]{8,100}$/;
+  const pattern =
+    /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])[A-Za-z0-9@$!%*#?&]{8,100}$/;
   return pattern.test(password);
 };
 
@@ -47,17 +49,21 @@ export const validateTransactionAmount = (amount: number): boolean => {
 export const validateTransactionDescription = (
   description: string
 ): boolean => {
-  const pattern = /^.{1,256}$/;
+  const pattern = /^.{1,64}$/;
   return pattern.test(description);
 };
 
-export const validateCounterpartyName = (counterparty: string): boolean => {
-  const pattern = /^.{1,256}$/;
-  return pattern.test(counterparty);
-};
-
-export const validateTransactionCounterpartyId = (counterpartyId: number): boolean => {
-  return !isNaN(counterpartyId);
+export const validateTransactionCounterpartyId = async (
+  counterpartyId: number,
+  userId: number
+): Promise<boolean> => {
+  return (
+    !isNaN(counterpartyId) &&
+    !isNaN(userId) &&
+    (await getCounterpartiesIdsByUserId(userId))
+      .map((counterparty) => counterparty.id)
+      .includes(counterpartyId)
+  );
 };
 
 export const validateTransactionWalletId = async (
@@ -94,4 +100,9 @@ export const validateTransactionCategoryId = async (
     (((await isIncomeCategory(categoryId)) && income) ||
       ((await isOutcomeCategory(categoryId)) && !income))
   );
+};
+
+export const validateCounterpartyName = (counterparty: string): boolean => {
+  const pattern = /^.{1,40}$/;
+  return pattern.test(counterparty);
 };

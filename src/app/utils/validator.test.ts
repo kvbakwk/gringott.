@@ -4,55 +4,89 @@ const {
   validateFullname,
   validateEmail,
   validatePassword,
+  validatePasswords,
+  validateTransactionDate,
+  validateTransactionAmount,
+  validateTransactionDescription,
+  validateCounterpartyName,
 } = require("./validator");
 
+const { generateRandomString } = require("./generator")
+
 test("wallet name validate", () => {
-  expect(validateWalletName("")).toBe(false);
-  expect(validateWalletName("test")).toBe(true);
-  expect(validateWalletName("testtesttesttesttest")).toBe(true);
-  expect(validateWalletName("testtesttesttesttestx")).toBe(false);
+  expect(validateWalletName("")).toBeFalsy();
+  expect(validateWalletName("test")).toBeTruthy();
+  expect(validateWalletName("testtesttesttesttest")).toBeTruthy();
+  expect(validateWalletName("testtesttesttesttestx")).toBeFalsy();
 });
-
 test("wallet balance validate", () => {
-  expect(validateWalletBalance(-1)).toBe(false);
-  expect(validateWalletBalance(0)).toBe(true);
-  expect(validateWalletBalance(1)).toBe(true);
+  expect(validateWalletBalance(-1)).toBeFalsy();
+  expect(validateWalletBalance(0)).toBeTruthy();
+  expect(validateWalletBalance(1)).toBeTruthy();
 
-  expect(validateWalletBalance(0.01)).toBe(true);
-  expect(validateWalletBalance(0.001)).toBe(false);
+  expect(validateWalletBalance(0.01)).toBeTruthy();
+  expect(validateWalletBalance(0.001)).toBeFalsy();
 });
 
 test("fullname validate", () => {
-  expect(validateFullname("")).toBe(false);
-  expect(validateFullname("A")).toBe(false);
-  expect(validateFullname("Aa")).toBe(false);
-  expect(validateFullname("Aa ")).toBe(false);
-  expect(validateFullname("Aa A")).toBe(false);
-  expect(validateFullname("Aa Aa")).toBe(true);
-  expect(validateFullname("Aaaaaaaaaaaaaaaaaaaa Aaaaaaaaaaaaaaaaaaa")).toBe(true);
-  expect(validateFullname("Aaaaaaaaaaaaaaaaaaaa Aaaaaaaaaaaaaaaaaaaa")).toBe(false);
+  expect(validateFullname("")).toBeFalsy();
+  expect(validateFullname("A")).toBeFalsy();
+  expect(validateFullname("Aa")).toBeFalsy();
+  expect(validateFullname("Aa ")).toBeFalsy();
+  expect(validateFullname("Aa A")).toBeFalsy();
+  expect(validateFullname("Aa Aa")).toBeTruthy();
+  expect(validateFullname("Aaaaaaaaaaaaaaaaaaaa Aaaaaaaaaaaaaaaaaaa")).toBeTruthy();
+  expect(validateFullname("Aaaaaaaaaaaaaaaaaaaa Aaaaaaaaaaaaaaaaaaaa")).toBeFalsy();
 });
-
 test("email validate", () => {
-  expect(validateEmail("")).toBe(false);
-  expect(validateEmail("a")).toBe(false);
-  expect(validateEmail("a@")).toBe(false);
-  expect(validateEmail("a@a")).toBe(false);
-  expect(validateEmail("a@a.")).toBe(false);
-  expect(validateEmail("a@a.a")).toBe(false);
-  expect(validateEmail("a@a.aa")).toBe(true);
-  expect(validateEmail("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@a.aa")).toBe(true);
-  expect(validateEmail("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@a.aa")).toBe(false);
+  expect(validateEmail("")).toBeFalsy();
+  expect(validateEmail("a")).toBeFalsy();
+  expect(validateEmail("a@")).toBeFalsy();
+  expect(validateEmail("a@a")).toBeFalsy();
+  expect(validateEmail("a@a.")).toBeFalsy();
+  expect(validateEmail("a@a.a")).toBeFalsy();
+  expect(validateEmail("a@a.aa")).toBeTruthy();
+  expect(validateEmail("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@a.aa")).toBeTruthy();
+  expect(validateEmail("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@a.aa")).toBeFalsy();
 });
 
 test("password validate", () => {
-  expect(validatePassword("")).toBe(false);
-  expect(validatePassword("a")).toBe(false);
-  expect(validatePassword("aaaaaaa")).toBe(false);
-  expect(validatePassword("aaaaaaaa")).toBe(false);
-  expect(validatePassword("a1aaaaaa")).toBe(false);
-  expect(validatePassword("aaAaaaaa")).toBe(false);
-  expect(validatePassword("a1Aaaaaa")).toBe(true);
-  expect(validatePassword("a1Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")).toBe(true);
-  expect(validatePassword("a1Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")).toBe(false);
+  expect(validatePassword("")).toBeFalsy();
+  expect(validatePassword("a")).toBeFalsy();
+  expect(validatePassword("aaaaaaa")).toBeFalsy();
+  expect(validatePassword("aaaaaaaa")).toBeFalsy();
+  expect(validatePassword("a1aaaaaa")).toBeFalsy();
+  expect(validatePassword("aaAaaaaa")).toBeFalsy();
+  expect(validatePassword("a1Aaaaaa")).toBeTruthy();
+  expect(validatePassword("a1Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")).toBeTruthy();
+  expect(validatePassword("a1Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")).toBeFalsy();
 });
+test("passwords validate", () => {
+  expect(validatePasswords("a", "a")).toBeTruthy();
+  expect(validatePasswords("a", "b")).toBeFalsy();
+});
+
+test("transaction date validate", () => {
+  expect(validateTransactionDate(new Date())).toBeTruthy();
+  expect(validateTransactionDate(null)).toBeFalsy();
+});
+test("transaction amount validate", () => {
+  expect(validateTransactionAmount(-1)).toBeFalsy();
+  expect(validateTransactionAmount(0)).toBeTruthy();
+  expect(validateTransactionAmount(1)).toBeTruthy();
+  expect(validateTransactionAmount(0.01)).toBeTruthy();
+  expect(validateTransactionAmount(0.001)).toBeFalsy();
+});
+test("transaction description validate", () => {
+  expect(validateTransactionDescription("")).toBeFalsy();
+  expect(validateTransactionDescription("a")).toBeTruthy();
+  expect(validateTransactionDescription("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")).toBeTruthy();
+  expect(validateTransactionDescription("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")).toBeFalsy();
+})
+
+test("counterparty name validate", () => {
+  expect(validateCounterpartyName("")).toBeFalsy();
+  expect(validateCounterpartyName("a")).toBeTruthy();
+  expect(validateCounterpartyName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")).toBeTruthy();
+  expect(validateCounterpartyName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")).toBeFalsy();
+})

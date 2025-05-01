@@ -6,7 +6,7 @@ import { TransactionT } from "@app/utils/db-actions/transaction";
 import { useEffect, useState } from "react";
 
 import { parseMoney, parseMonth } from "@app/utils/parser";
-import { getTimeLimits } from "@app/utils/time";
+import { generateTimeLimits } from "@app/utils/generator";
 import { CircularProgress } from "../material/Progress";
 
 export default function HomePage({
@@ -24,7 +24,7 @@ export default function HomePage({
   const [bankBalance, setBankBalance] = useState(0);
   const [savingsBalance, setSavingsBalance] = useState(0);
   const [investmentsBalance, setInvestmentsBalance] = useState(0);
-  const [timeLimits, setTimeLimits] = useState(getTimeLimits());
+  const [timeLimits, setTimeLimits] = useState(generateTimeLimits());
 
   useEffect(() => {
     if (walletsReady) {

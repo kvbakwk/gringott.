@@ -6,7 +6,7 @@ import { TransactionT } from "@app/utils/db-actions/transaction";
 import { useEffect, useState } from "react";
 
 import { parseDate, parseMoney } from "@app/utils/parser";
-import { getAllDaysFromOldestTransactionToToday } from "@app/utils/time";
+import { generateAllDaysFromOldestTransactionToToday } from "@app/utils/generator";
 import { CircularProgress } from "../material/Progress";
 
 export default function HistoryPage({
@@ -21,11 +21,11 @@ export default function HistoryPage({
   transactionsReady: boolean;
 }) {
   const [days, setDays] = useState<Date[]>(
-    getAllDaysFromOldestTransactionToToday(transactions)
+    generateAllDaysFromOldestTransactionToToday(transactions)
   );
 
   useEffect(
-    () => setDays(getAllDaysFromOldestTransactionToToday(transactions)),
+    () => setDays(generateAllDaysFromOldestTransactionToToday(transactions)),
     [transactions, transactionsReady]
   );
 

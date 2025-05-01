@@ -1,6 +1,6 @@
 import { TransactionT } from "./db-actions/transaction";
 
-export function getTimeLimits(): {
+export function generateTimeLimits(): {
   week: { startOfWeek: Date; endOfWeek: Date };
   month: { startOfMonth: Date; endOfMonth: Date };
   year: { startOfYear: Date; endOfYear: Date };
@@ -37,7 +37,7 @@ export function getTimeLimits(): {
   };
 }
 
-export function getAllDaysFromOldestTransactionToToday(
+export function generateAllDaysFromOldestTransactionToToday(
   transactions: TransactionT[]
 ): Date[] {
   const days: Date[] = [];
