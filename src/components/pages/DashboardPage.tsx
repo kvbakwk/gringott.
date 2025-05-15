@@ -70,42 +70,42 @@ export default function DashboardPage({
         />
       )}
       {slug && slug[0] === "transakcje" && slug[1] === "nowa" && (
-        <div className="flex justify-center items-center w-full h-full bg-surface rounded-tl-2xl shadow-sm">
+        <div className="flex justify-center items-center w-[calc(100%-50px)] h-[calc(100%-50px)] bg-surface rounded-2xl shadow-md">
           <NewTransactionForm userId={user.id} />
         </div>
       )}
       {slug && slug[0] === "transakcje" && slug[1] === "edycja" && !isNaN(parseInt(slug[2])) && (
-        <div className="flex justify-center items-center w-full h-full bg-surface rounded-tl-2xl shadow-sm">
+        <div className="flex justify-center items-center w-[calc(100%-50px)] h-[calc(100%-50px)] bg-surface rounded-2xl shadow-md">
           <EditTransactionForm userId={user.id} transactionId={parseInt(slug[2])} />
         </div>
       )}
       {slug && slug[0] === "transakcje" && slug[1] === "usuwanie" && !isNaN(parseInt(slug[2])) && (
-        <div className="flex justify-center items-center w-full h-full bg-surface rounded-tl-2xl shadow-sm">
+        <div className="flex justify-center items-center w-[calc(100%-50px)] h-[calc(100%-50px)] bg-surface rounded-2xl shadow-md">
           <DeleteTransactionForm userId={user.id} transactionId={parseInt(slug[2])} />
         </div>
       )}
       {slug && slug[0] === "transakcje" && slug[1] === "podmioty" && slug[2] === undefined && (
-        <div className="flex justify-center items-center w-full h-full bg-surface rounded-tl-2xl shadow-sm">
+        <div className="flex justify-center items-center w-[calc(100%-50px)] h-[calc(100%-50px)] bg-surface rounded-2xl shadow-md">
           <CounterpartiesPage userId={user.id} />
         </div>
       )}
       {slug && slug[0] === "transakcje" && slug[1] === "podmioty" && slug[2] === "nowy" && (
-        <div className="flex justify-center items-center w-full h-full bg-surface rounded-tl-2xl shadow-sm">
+        <div className="flex justify-center items-center w-[calc(100%-50px)] h-[calc(100%-50px)] bg-surface rounded-2xl shadow-md">
           <NewCounterpartyForm userId={user.id} />
         </div>
       )}
       {slug && slug[0] === "transakcje" && slug[1] === "podmioty" && slug[2] === "edycja" && !isNaN(parseInt(slug[3])) && (
-        <div className="flex justify-center items-center w-full h-full bg-surface rounded-tl-2xl shadow-sm">
+        <div className="flex justify-center items-center w-[calc(100%-50px)] h-[calc(100%-50px)] bg-surface rounded-2xl shadow-md">
           <EditCounterpartyForm userId={user.id} counterpartyId={parseInt(slug[3])}/>
         </div>
       )}
       {slug && slug[0] === "transakcje" && slug[1] === "podmioty" && slug[2] === "usuwanie" && !isNaN(parseInt(slug[3])) && (
-        <div className="flex justify-center items-center w-full h-full bg-surface rounded-tl-2xl shadow-sm">
+        <div className="flex justify-center items-center w-[calc(100%-50px)] h-[calc(100%-50px)] bg-surface rounded-2xl shadow-md">
           <DeleteCounterpartyForm userId={user.id} counterpartyId={parseInt(slug[3])}/>
         </div>
       )}
       {slug && slug[0] === "nowe-konto" && (
-        <div className="flex justify-center items-center w-full h-full bg-surface rounded-tl-2xl shadow-sm">
+        <div className="flex justify-center items-center w-[calc(100%-50px)] h-[calc(100%-50px)] bg-surface rounded-2xl shadow-md">
           <NewWalletForm userId={user.id} />
         </div>
       )}

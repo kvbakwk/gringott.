@@ -37,7 +37,7 @@ export default function WalletsList({
 
   return (
     <div className="flex justify-end items-center gap-[30px] w-full h-full">
-      <div className="flex items-end gap-[12px] max-w-[calc(100vw-300px)] h-full pl-[40px] pr-[20px] pb-[4px] overflow-x-auto overflow-y-hidden scroll-none">
+      <div className="flex items-end gap-[12px] max-w-[calc(100vw-300px)] h-full pl-[40px] pr-[70px] pb-[8px] overflow-x-auto overflow-y-hidden scroll-none">
         {walletsReady && (
           <>
             <WalletItem name="STAN" balance={balance} show={walletsReady} />
@@ -64,7 +64,7 @@ export default function WalletsList({
           </div>
         )}
         <Link
-          className="flex justify-center items-center text-primary h-[40px] px-[15px] bg-surface rounded-t-2xl rounded-b-lg"
+          className="flex justify-center items-center text-primary h-[40px] px-[15px]"
           href="/nowe-konto"
         >
           <Icon className="fill mini">settings</Icon>
@@ -84,7 +84,7 @@ function WalletItem({
   show: boolean;
 }) {
   return (
-    <div className="flex justify-center items-center gap-[10px] h-[40px] px-[20px] bg-surface rounded-t-2xl rounded-b-lg">
+    <div className="flex justify-center items-center gap-[10px] h-[40px] px-[20px]">
       <div className="font-bold text-primary">{name}</div>
       <div className="flex justify-center items-center gap-[3px]">
         {parseMoney(balance)}

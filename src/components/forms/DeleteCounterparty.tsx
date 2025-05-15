@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -17,6 +16,7 @@ export default function DeleteCounterpartyForm({
   const router = useRouter();
 
   const [success, setSuccess] = useState<boolean>(false);
+  const [transactionErr, setTransactionErr] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
   const handleSubmit = async (
@@ -27,6 +27,7 @@ export default function DeleteCounterpartyForm({
     deleteCounterparty(counterpartyId, userId)
       .then((res) => {
         setSuccess(res.success);
+        setTransactionErr(res.transactionErr);
         setError(false);
         if (res.success) router.back();
       })
@@ -40,13 +41,22 @@ export default function DeleteCounterpartyForm({
     >
       <div className="flex flex-col justify-center items-center gap-[50px] w-[400px] px-[10px] py-[10px]">
         <div className="font-medium text-[18px]">
-          Czy na pewno chcesz usunąć ten podmiot?
+          czy na pewno chcesz usunąć ten podmiot?
         </div>
-        <div className="flex justify-end items-center gap-[10px] w-full">
-          <OutlinedButton type="button" onClick={() => router.back()}>
-            nie, anuluj
-          </OutlinedButton>
-          <FilledButton className="error">tak, usuń</FilledButton>
+        <div className="flex flex-col gap-[10px] w-full">
+          <div className="flex justify-end items-center gap-[10px] w-full">
+            <OutlinedButton type="button" onClick={() => router.back()}>
+              nie, anuluj
+            </OutlinedButton>
+            <FilledButton className="error" disabled={transactionErr}>
+              tak, usuń
+            </FilledButton>
+          </div>
+          {transactionErr && (
+            <div className="font-medium text-error text-[12px] text-center">
+              nie można usunąć tego podmiotu, dopóki jest on używany
+            </div>
+          )}
         </div>
       </div>
     </form>

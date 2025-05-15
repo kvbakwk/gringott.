@@ -30,7 +30,7 @@ export default function HistoryPage({
   );
 
   return (
-    <div className="flex flex-col w-full h-full bg-surface rounded-tl-2xl shadow-sm">
+    <div className="flex flex-col w-[calc(100%-50px)] h-[calc(100%-50px)] bg-surface rounded-2xl shadow-md">
       <div className="flex justify-center items-end gap-[20px] font-bold text-primary text-md w-full h-[50px] pb-[10px]">
         <div className="flex justify-center items-center w-[200px]">DATA</div>
         <div className="flex justify-center items-center w-[200px]">STAN</div>

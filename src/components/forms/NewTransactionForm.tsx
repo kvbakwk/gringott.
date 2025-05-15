@@ -117,11 +117,13 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
     const counterpartyId: number = parseInt(formData.get("counterpartyId").toString());
     const important: boolean = formData.get("important")?.toString() === "on";
 
+    console.log(await validateTransactionCounterpartyId(counterpartyId, userId))
+
     if (
       validateTransactionDate(date) &&
       validateTransactionAmount(amount) &&
       validateTransactionDescription(description) &&
-      validateTransactionCounterpartyId(counterpartyId)
+      await validateTransactionCounterpartyId(counterpartyId, userId)
     ) {
       createTransaction(
         walletId,
@@ -157,7 +159,7 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
       setAmountErr(!validateTransactionAmount(amount));
       setDescriptionErr(!validateTransactionDescription(description));
       setCategoryIdErr(false);
-      setCounterpartyIdErr(!validateTransactionCounterpartyId(counterpartyId));
+      setCounterpartyIdErr(!(await validateTransactionCounterpartyId(counterpartyId, userId)));
       setError(false);
     }
   };

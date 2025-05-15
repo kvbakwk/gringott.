@@ -15,11 +15,6 @@ export default function User({ name }: { name: string }) {
 
   useEffect(() => {
     document.addEventListener("click", (e: PointerEvent) => {
-      console.log(
-        moreEl.current,
-        moreButton.current,
-        !moreEl.current.contains(e.target)
-      );
       if (
         moreEl.current &&
         moreButton.current &&

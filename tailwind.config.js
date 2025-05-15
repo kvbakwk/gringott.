@@ -22,6 +22,7 @@ module.exports = {
         'surface-container': '#F7ECDF',
         'on-surface': '#201b13',
         'on-surface-variant': '#4E4639',
+        'error': '#ba1a1a',
         'error-container': '#FFDAD6',
         'on-error-container': '#410002',
         'outline': '#7F7667'

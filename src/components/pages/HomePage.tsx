@@ -52,7 +52,7 @@ export default function HomePage({
   }, [wallets, walletsReady]);
 
   return (
-    <div className="grid grid-cols-12 grid-rows-12 justify-center items-center w-full h-full bg-surface rounded-tl-2xl shadow-sm">
+    <div className="grid grid-cols-12 grid-rows-12 justify-center items-center w-[calc(100%-50px)] h-[calc(100%-50px)] bg-surface rounded-2xl shadow-md">
       <div className="justify-self-center self-end col-start-3 row-start-2 col-span-2 font-bold text-primary">
         STAN
       </div>

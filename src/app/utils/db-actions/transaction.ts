@@ -217,3 +217,17 @@ export async function getTransactionsIdsByWalletId(
     id: parseInt(wallet.id),
   }));
 }
+
+export async function getTransactionsIdsByCounterpartyId(
+  id: number
+): Promise<TransactionIdT[]> {
+  const client: Pool = new Pool();
+  const res: QueryResult = await client.query(
+    "SELECT id FROM public.transaction WHERE counterparty_id = $1;",
+    [id]
+  );
+  await client.end();
+  return res.rows.map((wallet) => ({
+    id: parseInt(wallet.id),
+  }));
+}
