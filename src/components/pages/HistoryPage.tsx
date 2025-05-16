@@ -46,7 +46,7 @@ export default function HistoryPage({
         </div>
       </div>
       <div
-        className={`flex gap-[5px] w-full h-[calc(100vh-160px)] pb-[30px] overflow-y-auto scroll-none ${
+        className={`flex gap-[5px] w-full h-[calc(100vh-220px)] pb-[10px] overflow-y-auto scroll-none ${
           walletsReady && transactionsReady
             ? "flex-col"
             : "justify-center items-center"
