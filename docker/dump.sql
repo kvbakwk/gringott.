@@ -79,6 +79,22 @@ create table if not exists public.transaction (
     foreign key (transaction_type_id) references public.transaction_type(id)
 );
 
+create table if not exists public.trade (
+    id serial primary key,
+    date timestamp not null,
+    amount numeric(10, 2) not null,
+    deposit boolean not null,
+    atm boolean not null,
+    wallet_id integer not null,
+    counterparty_id integer not null,
+    deposit_method_id integer not null,
+    withdraw_method_id integer not null,
+    foreign key (wallet_id) references public.wallet(id),
+    foreign key (counterparty_id) references public.counterparty(id),
+    foreign key (deposit_method_id) references public.method(id),
+    foreign key (withdraw_method_id) references public.method(id)
+);
+
 create table if not exists public.product (
     id serial primary key,
     name varchar(255) not null,
@@ -128,8 +144,8 @@ insert into public.wallet_type (name) values
 ('oszczędności'), 
 ('inwestycje');
 
-insert into public.wallet (user_id, balance, wallet_type_id) values (1, 10, 1), (1, 0, 3), (1, 0, 4);
-insert into public.wallet (user_id, name, balance, wallet_type_id) values (1, 'mBank', 100, 2), (1, 'iPKO', 0, 2);
+insert into public.wallet (user_id, balance, wallet_type_id) values (1, 50, 1), (1, 0, 3), (1, 0, 4);
+insert into public.wallet (user_id, name, balance, wallet_type_id) values (1, 'mBank', 60, 2), (1, 'iPKO', 0, 2);
 insert into public.wallet (user_id, balance, wallet_type_id) values (4, 3.14, 1), (4, 0, 3), (4, 0, 4);
 insert into public.wallet (user_id, name, balance, wallet_type_id) values (4, 'mBank', 4, 2);
 
@@ -149,8 +165,11 @@ insert into public.transaction_type (name) values
 ('bankomat'),
 ('wstępna');
 
-insert into public.counterparty (user_id, name) values (1, 'Tata'), (1, 'Mama'), (1, 'Ola Kawka');
+insert into public.counterparty (user_id, name) values (1, 'Tata'), (1, 'Mama'), (1, 'Ola Kawka'), (1, 'Bankomat');
 
 insert into public.transaction (date, amount, description, category_id, counterparty_id, income, important, wallet_id, method_id, transaction_type_id) values 
-('2024-12-01 12:00:00', 10, 'kieszonkowe', 50, 1, true, true, 1, 1, 1),
-('2024-12-01 12:00:00', 100, 'kieszonkowe', 50, 1, true, true, 4, 4, 1);
+('2025-04-01 12:00:00', 10, 'kieszonkowe', 50, 1, true, true, 1, 1, 1),
+('2025-04-01 12:00:00', 100, 'kieszonkowe', 50, 1, true, true, 4, 4, 1);
+
+insert into public.trade (date, amount, deposit, atm, wallet_id, counterparty_id, deposit_method_id, withdraw_method_id) values 
+('2025-04-02 12:00:00', 40, false, false, 4, 4, 1, 3);
