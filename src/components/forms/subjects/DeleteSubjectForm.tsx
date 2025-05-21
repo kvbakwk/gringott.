@@ -3,20 +3,21 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { deleteCounterparty } from "@app/api/counterparty/delete";
-import { FilledButton, OutlinedButton } from "../material/Button";
+import { deleteSubject } from "@app/api/subject/delete";
+import { FilledButton, OutlinedButton } from "../../material/Button";
 
-export default function DeleteCounterpartyForm({
+export default function DeleteSubjectForm({
   userId,
-  counterpartyId,
+  subjectId,
 }: {
   userId: number;
-  counterpartyId: number;
+  subjectId: number;
 }) {
   const router = useRouter();
 
   const [success, setSuccess] = useState<boolean>(false);
   const [transactionErr, setTransactionErr] = useState<boolean>(false);
+  const [tradeErr, setTradeErr] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
   const handleSubmit = async (
@@ -24,10 +25,11 @@ export default function DeleteCounterpartyForm({
   ): Promise<void> => {
     e.preventDefault();
 
-    deleteCounterparty(counterpartyId, userId)
+    deleteSubject(subjectId, userId)
       .then((res) => {
         setSuccess(res.success);
         setTransactionErr(res.transactionErr);
+        setTradeErr(res.tradeErr);
         setError(false);
         if (res.success) router.back();
       })
@@ -52,7 +54,7 @@ export default function DeleteCounterpartyForm({
               tak, usuń
             </FilledButton>
           </div>
-          {transactionErr && (
+          {(transactionErr || tradeErr) && (
             <div className="font-medium text-error text-[12px] text-center">
               nie można usunąć tego podmiotu, dopóki jest on używany
             </div>

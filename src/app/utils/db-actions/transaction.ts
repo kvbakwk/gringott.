@@ -15,7 +15,7 @@ export interface TransactionT {
     id: number;
     name: string;
   };
-  counterparty: {
+  subject: {
     id: number;
     name: string;
   };
@@ -42,16 +42,16 @@ export async function getTransactionById(id: number): Promise<TransactionT> {
       public.super_category.name as super_category_name, 
       public.category.id as category_id, 
       public.category.name as category_name, 
-      public.counterparty.id as counterparty_id, 
-      public.counterparty.name as counterparty_name, 
+      public.subject.id as subject_id, 
+      public.subject.name as subject_name, 
       public.transaction.income, important, wallet_id, 
       public.method.id as method_id, 
       public.method.name as method_name, transaction_type_id 
       FROM public.transaction 
       JOIN public.category 
         ON public.transaction.category_id = public.category.id 
-      JOIN public.counterparty 
-        ON public.transaction.counterparty_id = public.counterparty.id 
+      JOIN public.subject 
+        ON public.transaction.subject_id = public.subject.id 
       JOIN public.method 
         ON public.transaction.method_id = public.method.id 
       JOIN public.super_category 
@@ -73,9 +73,9 @@ export async function getTransactionById(id: number): Promise<TransactionT> {
       id: parseInt(res.rows[0].category_id),
       name: res.rows[0].category_name,
     },
-    counterparty: {
-      id: parseInt(res.rows[0].counterparty_id),
-      name: res.rows[0].counterparty_name,
+    subject: {
+      id: parseInt(res.rows[0].subject_id),
+      name: res.rows[0].subject_name,
     },
     income: Boolean(res.rows[0].income),
     important: Boolean(res.rows[0].important),
@@ -99,16 +99,16 @@ export async function getTransactionsByWalletId(
       public.super_category.name as super_category_name, 
       public.category.id as category_id, 
       public.category.name as category_name, 
-      public.counterparty.id as counterparty_id, 
-      public.counterparty.name as counterparty_name, 
+      public.subject.id as subject_id, 
+      public.subject.name as subject_name, 
       public.transaction.income, important, wallet_id, 
       public.method.id as method_id, 
       public.method.name as method_name, transaction_type_id 
       FROM public.transaction 
       JOIN public.category 
         ON public.transaction.category_id = public.category.id 
-      JOIN public.counterparty 
-        ON public.transaction.counterparty_id = public.counterparty.id 
+      JOIN public.subject 
+        ON public.transaction.subject_id = public.subject.id 
       JOIN public.method 
         ON public.transaction.method_id = public.method.id 
       JOIN public.super_category 
@@ -130,9 +130,9 @@ export async function getTransactionsByWalletId(
       id: parseInt(transaction.category_id),
       name: transaction.category_name,
     },
-    counterparty: {
-      id: parseInt(transaction.counterparty_id),
-      name: transaction.counterparty_name,
+    subject: {
+      id: parseInt(transaction.subject_id),
+      name: transaction.subject_name,
     },
     income: Boolean(transaction.income),
     important: Boolean(transaction.important),
@@ -156,8 +156,8 @@ export async function getTransactionsByUserId(
       public.super_category.name as super_category_name, 
       public.category.id as category_id, 
       public.category.name as category_name, 
-      public.counterparty.id as counterparty_id, 
-      public.counterparty.name as counterparty_name, 
+      public.subject.id as subject_id, 
+      public.subject.name as subject_name, 
       public.transaction.income, important, wallet_id, 
       public.method.id as method_id, 
       public.method.name as method_name, transaction_type_id 
@@ -166,8 +166,8 @@ export async function getTransactionsByUserId(
       ON public.transaction.wallet_id = public.wallet.id 
     JOIN public.category 
       ON public.transaction.category_id = public.category.id 
-    JOIN public.counterparty 
-      ON public.transaction.counterparty_id = public.counterparty.id 
+    JOIN public.subject 
+      ON public.transaction.subject_id = public.subject.id 
     JOIN public.method 
       ON public.transaction.method_id = public.method.id 
     JOIN public.super_category 
@@ -189,9 +189,9 @@ export async function getTransactionsByUserId(
       id: parseInt(transaction.category_id),
       name: transaction.category_name,
     },
-    counterparty: {
-      id: parseInt(transaction.counterparty_id),
-      name: transaction.counterparty_name,
+    subject: {
+      id: parseInt(transaction.subject_id),
+      name: transaction.subject_name,
     },
     income: Boolean(transaction.income),
     important: Boolean(transaction.important),
@@ -218,12 +218,12 @@ export async function getTransactionsIdsByWalletId(
   }));
 }
 
-export async function getTransactionsIdsByCounterpartyId(
+export async function getTransactionsIdsBySubjectId(
   id: number
 ): Promise<TransactionIdT[]> {
   const client: Pool = new Pool();
   const res: QueryResult = await client.query(
-    "SELECT id FROM public.transaction WHERE counterparty_id = $1;",
+    "SELECT id FROM public.transaction WHERE subject_id = $1;",
     [id]
   );
   await client.end();

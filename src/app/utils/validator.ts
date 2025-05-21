@@ -1,7 +1,8 @@
 import { isIncomeCategory, isOutcomeCategory } from "./db-actions/category";
-import { getCounterpartiesIdsByUserId } from "./db-actions/counterparty";
+import { getSubjectsIdsByUserId } from "./db-actions/subject";
 import { isBankMethod, isCashMethod } from "./db-actions/method";
 import { getWalletsIdsByUserId, isCashWallet } from "./db-actions/wallet";
+import { normalizeFlightData } from "next/dist/client/flight-data-helpers";
 
 export const validateWalletName = (name: string): boolean => {
   const pattern = /^.{1,20}$/;
@@ -53,16 +54,16 @@ export const validateTransactionDescription = (
   return pattern.test(description);
 };
 
-export const validateTransactionCounterpartyId = async (
-  counterpartyId: number,
+export const validateTransactionSubjectId = async (
+  subjectId: number,
   userId: number
 ): Promise<boolean> => {
   return (
-    !isNaN(counterpartyId) &&
+    !isNaN(subjectId) &&
     !isNaN(userId) &&
-    (await getCounterpartiesIdsByUserId(userId))
-      .map((counterparty) => counterparty.id)
-      .includes(counterpartyId)
+    (await getSubjectsIdsByUserId(userId))
+      .map((subject) => subject.id)
+      .includes(subjectId)
   );
 };
 
@@ -102,7 +103,18 @@ export const validateTransactionCategoryId = async (
   );
 };
 
-export const validateCounterpartyName = (counterparty: string): boolean => {
+export const validateSubjectName = (name: string): boolean => {
   const pattern = /^.{1,40}$/;
-  return pattern.test(counterparty);
+  return pattern.test(name);
+};
+export const validateSubjectAddress = (address: string): boolean => {
+  const pattern = /^.{1,50}$/;
+  return pattern.test(address);
+};
+export const validateSubjectNormal = (normal: boolean): boolean => {
+  return typeof normal === "boolean";
+};
+export const validateSubjectAtm = (atm: boolean): boolean => {
+  const pattern = /^.{1,40}$/;
+  return typeof atm === "boolean";
 };

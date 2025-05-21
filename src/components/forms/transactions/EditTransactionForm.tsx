@@ -19,15 +19,15 @@ import {
   validateTransactionAmount,
   validateTransactionDate,
   validateTransactionDescription,
-  validateTransactionCounterpartyId,
+  validateTransactionSubjectId,
 } from "@app/utils/validator";
-import { SelectOption, SelectOutlined } from "../material/Select";
-import { TextFieldOutlined } from "../material/TextField";
-import { Checkbox } from "../material/Checkbox";
-import { FilledButton, OutlinedButton } from "../material/Button";
+import { SelectOption, SelectOutlined } from "../../material/Select";
+import { TextFieldOutlined } from "../../material/TextField";
+import { Checkbox } from "../../material/Checkbox";
+import { FilledButton, OutlinedButton } from "../../material/Button";
 import { Icon } from "@components/material/Icon";
-import { getCounterparties } from "@app/api/counterparty/get";
-import { CounterpartyT } from "@app/utils/db-actions/counterparty";
+import { getSubjects } from "@app/api/subject/get";
+import { SubjectT } from "@app/utils/db-actions/subject";
 import Loading from "@components/Loading";
 
 export default function EditTransactionForm({
@@ -41,7 +41,7 @@ export default function EditTransactionForm({
 
   const [transactionReady, setTransactionReady] = useState<boolean>(false);
   const [walletsReady, setWalletsReady] = useState<boolean>(false);
-  const [counterpartiesReady, setCounterpartiesReady] =
+  const [subjectsReady, setSubjectsReady] =
     useState<boolean>(false);
   const [methodsReady, setMethodsReady] = useState<boolean>(false);
   const [superCategoriesReady, setSuperCategoriesReady] =
@@ -53,14 +53,14 @@ export default function EditTransactionForm({
   const [superCategoryId, setSuperCategoryId] = useState<number>(0);
   const [categoryId, setCategoryId] = useState<number>(0);
   const [methodId, setMethodId] = useState<number>(0);
-  const [counterpartyId, setCounterpartyId] = useState<number>(0);
+  const [subjectId, setSubjectId] = useState<number>(0);
 
   const [transaction, setTransaction] = useState<TransactionT>(null);
   const [wallets, setWallets] = useState<WalletT[]>([]);
   const [methods, setMethods] = useState<MethodT[]>([]);
   const [categories, setCategories] = useState<CategoryT[]>([]);
   const [superCategories, setSuperCategories] = useState<SuperCategoryT[]>([]);
-  const [counterparties, setCounterparties] = useState<CounterpartyT[]>([]);
+  const [subjects, setSubjects] = useState<SubjectT[]>([]);
 
   const [success, setSuccess] = useState<boolean>(false);
   const [walletIdErr, setWalletIdErr] = useState<boolean>(false);
@@ -69,7 +69,7 @@ export default function EditTransactionForm({
   const [amountErr, setAmountErr] = useState<boolean>(false);
   const [descriptionErr, setDescriptionErr] = useState<boolean>(false);
   const [categoryIdErr, setCategoryIdErr] = useState<boolean>(false);
-  const [counterpartyIdErr, setCounterpartyIdErr] = useState<boolean>(false);
+  const [subjectIdErr, setSubjectIdErr] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
@@ -81,7 +81,7 @@ export default function EditTransactionForm({
         setSuperCategoryId(res.super_category.id);
         setCategoryId(res.category.id);
         setMethodId(res.method.id);
-        setCounterpartyId(res.counterparty.id);
+        setSubjectId(res.subject.id);
       })
       .finally(() => setTransactionReady(true));
     getWallets(userId)
@@ -94,11 +94,11 @@ export default function EditTransactionForm({
         );
       })
       .finally(() => setWalletsReady(true));
-    getCounterparties(userId)
+    getSubjects(userId)
       .then((res) => {
-        setCounterparties(res.sort((a, b) => a.name.localeCompare(b.name)));
+        setSubjects(res.sort((a, b) => a.name.localeCompare(b.name)));
       })
-      .finally(() => setCounterpartiesReady(true));
+      .finally(() => setSubjectsReady(true));
   }, []);
   useEffect(() => {
     if (wallets.length)
@@ -158,8 +158,8 @@ export default function EditTransactionForm({
     const amount: number = parseFloat(formData.get("amount").toString());
     const description: string = formData.get("description").toString();
     const categoryId: number = parseInt(formData.get("categoryId")?.toString());
-    const counterpartyId: number = parseInt(
-      formData.get("counterpartyId").toString()
+    const subjectId: number = parseInt(
+      formData.get("subjectId").toString()
     );
     const important: boolean = formData.get("important")?.toString() === "on";
 
@@ -167,7 +167,7 @@ export default function EditTransactionForm({
       validateTransactionDate(date) &&
       validateTransactionAmount(amount) &&
       validateTransactionDescription(description) &&
-      validateTransactionCounterpartyId(counterpartyId)
+      validateTransactionSubjectId(subjectId, userId)
     ) {
       editTransaction(
         transactionId,
@@ -178,7 +178,7 @@ export default function EditTransactionForm({
         amount,
         description,
         categoryId,
-        counterpartyId,
+        subjectId,
         important,
         userId,
         1
@@ -191,7 +191,7 @@ export default function EditTransactionForm({
           setAmountErr(res.amountErr);
           setDescriptionErr(res.descriptionErr);
           setCategoryIdErr(res.categoryIdErr);
-          setCounterpartyIdErr(res.counterpartyErr);
+          setSubjectIdErr(res.subjectErr);
           setError(false);
           if (res.createTransaction) router.back();
         })
@@ -204,12 +204,12 @@ export default function EditTransactionForm({
       setAmountErr(!validateTransactionAmount(amount));
       setDescriptionErr(!validateTransactionDescription(description));
       setCategoryIdErr(false);
-      setCounterpartyIdErr(!validateTransactionCounterpartyId(counterpartyId));
+      setSubjectIdErr(!validateTransactionSubjectId(subjectId, userId));
       setError(false);
     }
   };
 
-  if (transactionReady && walletsReady && counterpartiesReady && methodsReady && superCategoriesReady && categoriesReady)
+  if (transactionReady && walletsReady && subjectsReady && methodsReady && superCategoriesReady && categoriesReady)
     return (
       <form
         className="flex justify-center items-center gap-[30px] w-[500px] h-fit py-[60px]"
@@ -311,18 +311,18 @@ export default function EditTransactionForm({
           <SelectOutlined
             className="w-full"
             label="druga strona"
-            name="counterpartyId"
-            error={counterpartyIdErr}
+            name="subjectId"
+            error={subjectIdErr}
             errorText="wybierz drugą stronę"
-            value={counterpartyId.toString()}
+            value={subjectId.toString()}
           >
             <Icon slot="leading-icon">group</Icon>
-            {counterparties.map((counterparty) => (
+            {subjects.map((subject) => (
               <SelectOption
-                key={counterparty.id}
-                value={counterparty.id.toString()}
+                key={subject.id}
+                value={subject.id.toString()}
               >
-                <div slot="headline">{counterparty.name}</div>
+                <div slot="headline">{subject.name}</div>
               </SelectOption>
             ))}
           </SelectOutlined>

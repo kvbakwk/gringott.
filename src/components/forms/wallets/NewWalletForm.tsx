@@ -8,8 +8,8 @@ import {
   validateWalletBalance,
   validateWalletName,
 } from "@app/utils/validator";
-import { TextFieldOutlined } from "../material/TextField";
-import { FilledButton, OutlinedButton } from "../material/Button";
+import { TextFieldOutlined } from "../../material/TextField";
+import { FilledButton, OutlinedButton } from "../../material/Button";
 
 export default function NewWalletForm({ userId }: { userId: number }) {
   const router = useRouter();

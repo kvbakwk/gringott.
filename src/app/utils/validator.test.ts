@@ -8,7 +8,7 @@ const {
   validateTransactionDate,
   validateTransactionAmount,
   validateTransactionDescription,
-  validateCounterpartyName,
+  validateSubjectName,
 } = require("./validator");
 
 const { generateRandomString } = require("./generator")
@@ -84,9 +84,9 @@ test("transaction description validate", () => {
   expect(validateTransactionDescription("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")).toBeFalsy();
 })
 
-test("counterparty name validate", () => {
-  expect(validateCounterpartyName("")).toBeFalsy();
-  expect(validateCounterpartyName("a")).toBeTruthy();
-  expect(validateCounterpartyName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")).toBeTruthy();
-  expect(validateCounterpartyName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")).toBeFalsy();
+test("subject name validate", () => {
+  expect(validateSubjectName("")).toBeFalsy();
+  expect(validateSubjectName("a")).toBeTruthy();
+  expect(validateSubjectName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")).toBeTruthy();
+  expect(validateSubjectName("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")).toBeFalsy();
 })

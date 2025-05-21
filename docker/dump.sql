@@ -48,16 +48,20 @@ create table if not exists public.method (
     bank boolean not null
 );
 
+
+create table if not exists public.subject (
+    id serial primary key,
+    user_id integer not null,
+    name varchar(128) not null,
+    address varchar(128),
+    normal boolean not null,
+    atm boolean not null,
+    foreign key (user_id) references public.user(id)
+);
+
 create table if not exists public.transaction_type (
     id serial primary key,
     name varchar(255) not null
-);
-
-create table if not exists public.counterparty (
-    id serial primary key,
-    user_id integer not null,
-    name varchar(255) not null,
-    foreign key (user_id) references public.user(id)
 );
 
 create table if not exists public.transaction (
@@ -66,7 +70,7 @@ create table if not exists public.transaction (
     amount numeric(10, 2) not null,
     description varchar(255) not null,
     category_id integer not null,
-    counterparty_id integer not null,
+    subject_id integer not null,
     income boolean not null,
     important boolean not null,
     wallet_id integer not null,
@@ -74,7 +78,7 @@ create table if not exists public.transaction (
     transaction_type_id integer not null,
     foreign key (wallet_id) references public.wallet(id),
     foreign key (category_id) references public.category(id),
-    foreign key (counterparty_id) references public.counterparty(id),
+    foreign key (subject_id) references public.subject(id),
     foreign key (method_id) references public.method(id),
     foreign key (transaction_type_id) references public.transaction_type(id)
 );
@@ -86,11 +90,11 @@ create table if not exists public.trade (
     deposit boolean not null,
     atm boolean not null,
     wallet_id integer not null,
-    counterparty_id integer not null,
+    subject_id integer not null,
     deposit_method_id integer not null,
     withdraw_method_id integer not null,
     foreign key (wallet_id) references public.wallet(id),
-    foreign key (counterparty_id) references public.counterparty(id),
+    foreign key (subject_id) references public.subject(id),
     foreign key (deposit_method_id) references public.method(id),
     foreign key (withdraw_method_id) references public.method(id)
 );
@@ -165,11 +169,11 @@ insert into public.transaction_type (name) values
 ('bankomat'),
 ('wstępna');
 
-insert into public.counterparty (user_id, name) values (1, 'Tata'), (1, 'Mama'), (1, 'Ola Kawka'), (1, 'Bankomat');
+insert into public.subject (user_id, name, normal, atm) values (1, 'Tata', true, false), (1, 'Mama', true, false), (1, 'Ola Kawka', true, false), (1, 'Bankomat', false, true);
 
-insert into public.transaction (date, amount, description, category_id, counterparty_id, income, important, wallet_id, method_id, transaction_type_id) values 
+insert into public.transaction (date, amount, description, category_id, subject_id, income, important, wallet_id, method_id, transaction_type_id) values 
 ('2025-04-01 12:00:00', 10, 'kieszonkowe', 50, 1, true, true, 1, 1, 1),
 ('2025-04-01 12:00:00', 100, 'kieszonkowe', 50, 1, true, true, 4, 4, 1);
 
-insert into public.trade (date, amount, deposit, atm, wallet_id, counterparty_id, deposit_method_id, withdraw_method_id) values 
+insert into public.trade (date, amount, deposit, atm, wallet_id, subject_id, deposit_method_id, withdraw_method_id) values 
 ('2025-04-02 12:00:00', 40, false, false, 4, 4, 1, 3);
