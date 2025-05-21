@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 import { getTransaction } from "@app/api/transaction/get";
 import { deleteTransaction } from "@app/api/transaction/delete";
-import { FilledButton, OutlinedButton } from "../material/Button";
+import { FilledButton, OutlinedButton } from "../../material/Button";
 
 export default function DeleteTransactionForm({
   userId,
