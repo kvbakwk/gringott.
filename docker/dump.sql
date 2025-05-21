@@ -73,9 +73,11 @@ create table if not exists public.transaction (
     subject_id integer not null,
     income boolean not null,
     important boolean not null,
+    user_id integer not null,
     wallet_id integer not null,
     method_id integer not null,
     transaction_type_id integer not null,
+    foreign key (user_id) references public.user(id),
     foreign key (wallet_id) references public.wallet(id),
     foreign key (category_id) references public.category(id),
     foreign key (subject_id) references public.subject(id),
@@ -89,10 +91,12 @@ create table if not exists public.trade (
     amount numeric(10, 2) not null,
     deposit boolean not null,
     atm boolean not null,
+    user_id integer not null,
     wallet_id integer not null,
     subject_id integer not null,
     deposit_method_id integer not null,
     withdraw_method_id integer not null,
+    foreign key (user_id) references public.user(id),
     foreign key (wallet_id) references public.wallet(id),
     foreign key (subject_id) references public.subject(id),
     foreign key (deposit_method_id) references public.method(id),
@@ -100,12 +104,6 @@ create table if not exists public.trade (
 );
 
 create table if not exists public.product (
-    id serial primary key,
-    name varchar(255) not null,
-    price integer not null
-);
-
-create table if not exists public.shop (
     id serial primary key,
     name varchar(255) not null,
     price integer not null
@@ -171,9 +169,9 @@ insert into public.transaction_type (name) values
 
 insert into public.subject (user_id, name, normal, atm) values (1, 'Tata', true, false), (1, 'Mama', true, false), (1, 'Ola Kawka', true, false), (1, 'Bankomat', false, true);
 
-insert into public.transaction (date, amount, description, category_id, subject_id, income, important, wallet_id, method_id, transaction_type_id) values 
-('2025-04-01 12:00:00', 10, 'kieszonkowe', 50, 1, true, true, 1, 1, 1),
-('2025-04-01 12:00:00', 100, 'kieszonkowe', 50, 1, true, true, 4, 4, 1);
+insert into public.transaction (date, amount, description, category_id, subject_id, income, important, user_id, wallet_id, method_id, transaction_type_id) values 
+('2025-04-01 12:00:00', 10, 'kieszonkowe', 50, 1, true, true, 1, 1, 1, 1),
+('2025-04-01 12:00:00', 100, 'kieszonkowe', 50, 1, true, true, 1, 4, 4, 1);
 
-insert into public.trade (date, amount, deposit, atm, wallet_id, subject_id, deposit_method_id, withdraw_method_id) values 
-('2025-04-02 12:00:00', 40, false, false, 4, 4, 1, 3);
+insert into public.trade (date, amount, deposit, atm, user_id, wallet_id, subject_id, deposit_method_id, withdraw_method_id) values 
+('2025-04-02 12:00:00', 40, false, false, 1, 4, 4, 1, 3);

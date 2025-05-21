@@ -31,12 +31,12 @@ export async function createTransaction(
     validateTransactionAmount(amount) &&
     validateTransactionDescription(description) &&
     (await validateTransactionCategoryId(categoryId, income)) &&
-    validateTransactionSubjectId(subjectId);
+    (await validateTransactionSubjectId(subjectId, userId));
 
   if (isValid) {
     const client: Pool = new Pool();
     await client.query(
-      `INSERT INTO public.transaction (date, amount, description, category_id, subject_id, income, important, wallet_id, method_id, transaction_type_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`,
+      `INSERT INTO public.transaction (date, amount, description, category_id, subject_id, income, important, user_id, wallet_id, method_id, transaction_type_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);`,
       [
         date,
         amount,
@@ -45,6 +45,7 @@ export async function createTransaction(
         subjectId,
         income,
         important,
+        userId,
         walletId,
         methodId,
         transactionTypeId,
@@ -71,6 +72,6 @@ export async function createTransaction(
     amountErr: !validateTransactionAmount(amount),
     descriptionErr: !validateTransactionDescription(description),
     categoryIdErr: !(await validateTransactionCategoryId(categoryId, income)),
-    subjectIdErr: !validateTransactionSubjectId(subjectId),
+    subjectIdErr: !(await validateTransactionSubjectId(subjectId, userId)),
   };
 }

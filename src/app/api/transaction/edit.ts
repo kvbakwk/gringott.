@@ -32,7 +32,7 @@ export async function editTransaction(
     validateTransactionAmount(amount) &&
     validateTransactionDescription(description) &&
     (await validateTransactionCategoryId(categoryId, income)) &&
-    validateTransactionSubjectId(subjectId);
+    (await validateTransactionSubjectId(subjectId, userId));
 
   if (isValid) {
     const client: Pool = new Pool();
@@ -80,6 +80,6 @@ export async function editTransaction(
     amountErr: !validateTransactionAmount(amount),
     descriptionErr: !validateTransactionDescription(description),
     categoryIdErr: !(await validateTransactionCategoryId(categoryId, income)),
-    subjectErr: !validateTransactionSubjectId(subjectId),
+    subjectErr: !(await validateTransactionSubjectId(subjectId, userId)),
   };
 }

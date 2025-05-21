@@ -8,6 +8,7 @@ export interface TradeT {
   amount: number;
   deposit: boolean;
   atm: boolean;
+  user_id: number;
   wallet_id: number;
   subject: {
     id: number;
@@ -34,7 +35,7 @@ export async function getTradeById(id: number): Promise<TradeT> {
       public.trade.id, date, amount, 
       public.subject.id as subject_id, 
       public.subject.name as subject_name, 
-      public.trade.deposit, atm, wallet_id, 
+      public.trade.deposit, atm, user_id, wallet_id, 
       deposit_method.id as deposit_method_id, 
       deposit_method.name as deposit_method_name,
       withdraw_method.id as withdraw_method_id, 
@@ -60,6 +61,7 @@ export async function getTradeById(id: number): Promise<TradeT> {
     },
     deposit: Boolean(res.rows[0].deposit),
     atm: Boolean(res.rows[0].atm),
+    user_id: parseInt(res.rows[0].user_id),
     wallet_id: parseInt(res.rows[0].wallet_id),
     deposit_method: {
       id: parseInt(res.rows[0].withdraw_method_id),
@@ -81,7 +83,7 @@ export async function getTradesByWalletId(
       public.trade.id, date, amount, 
       public.subject.id as subject_id, 
       public.subject.name as subject_name, 
-      public.trade.deposit, atm, wallet_id, 
+      public.trade.deposit, atm, user_id, wallet_id, 
       deposit_method.id as deposit_method_id, 
       deposit_method.name as deposit_method_name,
       withdraw_method.id as withdraw_method_id, 
@@ -107,6 +109,7 @@ export async function getTradesByWalletId(
     },
     deposit: Boolean(trade.deposit),
     atm: Boolean(trade.atm),
+    user_id: parseInt(trade.user_id),
     wallet_id: parseInt(trade.wallet_id),
     deposit_method: {
       id: parseInt(trade.deposit_method_id),
@@ -128,7 +131,7 @@ export async function getTradesByUserId(
       public.trade.id, date, amount, 
       public.subject.id as subject_id, 
       public.subject.name as subject_name, 
-      public.trade.deposit, atm, wallet_id, 
+      public.trade.deposit, atm, user_id, wallet_id, 
       deposit_method.id as deposit_method_id, 
       deposit_method.name as deposit_method_name,
       withdraw_method.id as withdraw_method_id, 
@@ -156,6 +159,7 @@ export async function getTradesByUserId(
     },
     deposit: Boolean(trade.deposit),
     atm: Boolean(trade.atm),
+    user_id: parseInt(trade.user_id),
     wallet_id: parseInt(trade.wallet_id),
     deposit_method: {
       id: parseInt(trade.deposit_method_id),

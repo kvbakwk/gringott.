@@ -21,6 +21,7 @@ export interface TransactionT {
   };
   income: boolean;
   important: boolean;
+  user_id: number;
   wallet_id: number;
   method: {
     id: number;
@@ -44,7 +45,7 @@ export async function getTransactionById(id: number): Promise<TransactionT> {
       public.category.name as category_name, 
       public.subject.id as subject_id, 
       public.subject.name as subject_name, 
-      public.transaction.income, important, wallet_id, 
+      public.transaction.income, important, user_id, wallet_id, 
       public.method.id as method_id, 
       public.method.name as method_name, transaction_type_id 
       FROM public.transaction 
@@ -79,6 +80,7 @@ export async function getTransactionById(id: number): Promise<TransactionT> {
     },
     income: Boolean(res.rows[0].income),
     important: Boolean(res.rows[0].important),
+    user_id: parseInt(res.rows[0].user_id),
     wallet_id: parseInt(res.rows[0].wallet_id),
     method: {
       id: parseInt(res.rows[0].method_id),
@@ -101,7 +103,7 @@ export async function getTransactionsByWalletId(
       public.category.name as category_name, 
       public.subject.id as subject_id, 
       public.subject.name as subject_name, 
-      public.transaction.income, important, wallet_id, 
+      public.transaction.income, important, user_id, wallet_id, 
       public.method.id as method_id, 
       public.method.name as method_name, transaction_type_id 
       FROM public.transaction 
@@ -136,6 +138,7 @@ export async function getTransactionsByWalletId(
     },
     income: Boolean(transaction.income),
     important: Boolean(transaction.important),
+    user_id: parseInt(transaction.user_id),
     wallet_id: parseInt(transaction.wallet_id),
     method: {
       id: parseInt(transaction.method_id),
@@ -158,7 +161,7 @@ export async function getTransactionsByUserId(
       public.category.name as category_name, 
       public.subject.id as subject_id, 
       public.subject.name as subject_name, 
-      public.transaction.income, important, wallet_id, 
+      public.transaction.income, important, user_id, wallet_id, 
       public.method.id as method_id, 
       public.method.name as method_name, transaction_type_id 
     FROM public.transaction 
@@ -195,6 +198,7 @@ export async function getTransactionsByUserId(
     },
     income: Boolean(transaction.income),
     important: Boolean(transaction.important),
+    user_id: parseInt(transaction.user_id),
     wallet_id: parseInt(transaction.wallet_id),
     method: {
       id: parseInt(transaction.method_id),
