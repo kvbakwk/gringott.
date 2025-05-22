@@ -8,6 +8,7 @@ import Link from "next/link";
 import { parseMoney } from "@app/utils/parser";
 import { Icon } from "./material/Icon";
 import { CircularProgress } from "./material/Progress";
+import { RouteSegments } from "@app/utils/routes";
 
 export default function WalletsList({
   wallets,
@@ -65,7 +66,7 @@ export default function WalletsList({
         )}
         <Link
           className="flex justify-center items-center text-primary h-[40px] px-[15px]"
-          href="/nowe-konto"
+          href={`/${RouteSegments.Wallets}/${RouteSegments.New}`}
         >
           <Icon className="fill mini">settings</Icon>
         </Link>

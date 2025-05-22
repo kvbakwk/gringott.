@@ -117,48 +117,57 @@ insert into public.user (name, email, password) values
 ('Olaf Konieczny', 'olaf@gmail.com', 'zaq1@WSX');
 
 insert into public.super_category (name, income, outcome) values 
-('osobiste', false, true),
 ('codzienne', false, true),
-('domowe', false, true),
-('płatności', false, true),
-('rozrywka', false, true),
-('oszczędności', true, true),
-('dzieci', false, true),
 ('transport', false, true),
-('wpływy', true, false),
-('inne', true, true);
+('osobiste', false, true),
+('domowe', false, true),
+('dzieci', false, true),
+('rozrywka', false, true),
+('płatności', false, true),
+('oszczędności', true, true),
+('inwestycje', true, true),
+('wpływy', true, false);
 
 insert into public.category (name, super_category_id) values 
-('rozwój', 1), ('elektronika', 1), ('multimedia', 1), ('odzież i obuwie', 1), ('prezenty i wsparcie', 1), ('zdrowie i uroda', 1),
-('jedzenie poza domem', 2), ('zwierzęta', 2), ('żywność', 2), ('chemia domowa', 2),
-('wyposażenie', 3), ('remont', 3), ('ubezpieczenie', 3), ('usługi', 3),
+('jedzenie poza domem', 1), ('zwierzęta', 1), ('żywność', 1), ('chemia domowa', 1),
+('paliwo', 2), ('parking', 2), ('przejazd', 2), ('serwis', 2), ('sprzątanie', 2), ('ubezpieczenie', 2),
+('rozwój', 3), ('elektronika', 3), ('multimedia', 3), ('odzież i obuwie', 3), ('prezenty i wsparcie', 3), ('zdrowie i uroda', 3),
 ('czynsz', 4), ('woda i kanalizacja', 4), ('gaz', 4), ('prąd', 4), ('ogrzewanie', 4), ('telewizja', 4), ('internet', 4), ('telefon', 4), ('opłaty', 4), ('podatki', 4), ('raty', 4), ('ubezpieczenia', 4),
-('podróż', 5), ('wyjazd', 5), ('sport', 5), ('hobby', 5), ('wyjście', 5), ('wydarzenie', 5),
-('fundusz', 6), ('giełda', 6), ('lokata', 6), ('zakład', 6), 
-('zabawki', 7), ('przedszkole', 7), ('szkoła', 7), ('zajęcia', 7),
-('paliwo', 8), ('parking', 8), ('przejazd', 8), ('serwis', 8), ('sprzątanie', 8), ('ubezpieczenie', 8),
-('premia', 9), ('wynagrodzenie', 9), ('kredyt', 9), ('kieszonkowe', 9),
-('automatyczne', 10);
+('zabawki', 5), ('przedszkole', 5), ('szkoła', 5), ('zajęcia', 5),
+('podróż', 6), ('wyjazd', 6), ('sport', 6), ('hobby', 6), ('wyjście', 6), ('wydarzenie', 6),
+('wyposażenie', 7), ('remont', 7), ('ubezpieczenie', 7), ('usługi', 7),
+('ogólne', 8), ('skarbonki', 8), ('cele', 8),
+('akcje', 9), ('etf', 9), ('fundusz', 9), ('lokata', 9), ('zakład', 9), ('waluta', 9), ('kryptowaluta', 9), ('surowce', 9),
+('wynagrodzenie', 10), ('premia', 10), ('pożyczenie', 10), ('kredyt', 10), ('kieszonkowe', 10);
 
 insert into public.wallet_type (name) values 
 ('gotówka'), 
 ('bank'), 
 ('oszczędności'), 
-('inwestycje');
+('skarbonka'),
+('cel'), 
+('akcje'), 
+('etf'), 
+('fundusz'), 
+('lokata'), 
+('zakład'), 
+('waluta'), 
+('kryptowaluta'), 
+('surowiec');
 
-insert into public.wallet (user_id, balance, wallet_type_id) values (1, 50, 1), (1, 0, 3), (1, 0, 4);
+insert into public.wallet (user_id, balance, wallet_type_id) values (1, 50, 1), (1, 0, 3);
 insert into public.wallet (user_id, name, balance, wallet_type_id) values (1, 'mBank', 60, 2), (1, 'iPKO', 0, 2);
-insert into public.wallet (user_id, balance, wallet_type_id) values (4, 3.14, 1), (4, 0, 3), (4, 0, 4);
+insert into public.wallet (user_id, balance, wallet_type_id) values (4, 3.14, 1), (4, 0, 3);
 insert into public.wallet (user_id, name, balance, wallet_type_id) values (4, 'mBank', 4, 2);
 
 insert into public.method (name, cash, bank) values 
 ('do ręki', true, false),
-('poczta', true, false),
-('przelew', false, true),
-('na telefon', false, true),
+('pocztą', true, false),
+('przelew tradycyjny', false, true),
+('przelew na telefon', false, true),
+('kartą', false, true),
 ('zbliżeniowo', false, true),
-('blik', false, true),
-('inne', true, true);
+('blikiem', false, true);
 
 insert into public.transaction_type (name) values 
 ('normalna'),
@@ -170,8 +179,8 @@ insert into public.transaction_type (name) values
 insert into public.subject (user_id, name, normal, atm) values (1, 'Tata', true, false), (1, 'Mama', true, false), (1, 'Ola Kawka', true, false), (1, 'Bankomat', false, true);
 
 insert into public.transaction (date, amount, description, category_id, subject_id, income, important, user_id, wallet_id, method_id, transaction_type_id) values 
-('2025-04-01 12:00:00', 10, 'kieszonkowe', 50, 1, true, true, 1, 1, 1, 1),
-('2025-04-01 12:00:00', 100, 'kieszonkowe', 50, 1, true, true, 1, 4, 4, 1);
+('2025-04-01 12:00:00', 10, 'kieszonkowe', 58, 1, true, true, 1, 1, 1, 1),
+('2025-04-01 12:00:00', 100, 'kieszonkowe', 58, 1, true, true, 1, 4, 4, 1);
 
 insert into public.trade (date, amount, deposit, atm, user_id, wallet_id, subject_id, deposit_method_id, withdraw_method_id) values 
 ('2025-04-02 12:00:00', 40, false, false, 1, 4, 4, 1, 3);
