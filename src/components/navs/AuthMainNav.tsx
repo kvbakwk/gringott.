@@ -2,7 +2,10 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
+
 import { Icon } from "../material/Icon";
+
+import { RouteSegments } from "@app/utils/routes";
 
 export default function AuthMainNav() {
   const router = useRouter();
@@ -11,7 +14,7 @@ export default function AuthMainNav() {
   const registerEl = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (pathname === "/logowanie") {
+    if (pathname === `/${RouteSegments.Login}`) {
       loginEl.current.classList.add("bg-surface", "shadow-md");
       registerEl.current.classList.remove("bg-surface", "shadow-md");
     } else {
@@ -25,7 +28,7 @@ export default function AuthMainNav() {
       <div
         className="flex items-center gap-[18px] h-[70px] px-[19px] py-[18px] rounded-[16px] transition-all hover:bg-surface hover:cursor-pointer"
         ref={loginEl}
-        onClick={() => router.push("/logowanie")}
+        onClick={() => router.push(`/${RouteSegments.Login}`)}
       >
         <Icon className="fill">account_circle</Icon>
         <div className="font-extralight text-on-surface-variant text-[22px]">
@@ -35,7 +38,7 @@ export default function AuthMainNav() {
       <div
         className="flex items-center gap-[18px] h-[70px] px-[19px] py-[18px] rounded-[16px] transition-all hover:bg-surface hover:cursor-pointer"
         ref={registerEl}
-        onClick={() => router.push("/rejestracja")}
+        onClick={() => router.push(`/${RouteSegments.Register}`)}
       >
         <Icon className="fill">person_add</Icon>
         <div className="font-extralight text-on-surface-variant text-[22px]">

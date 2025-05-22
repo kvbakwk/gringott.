@@ -6,6 +6,8 @@ import { TransactionT } from "@app/utils/db-actions/transaction";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { RouteSegments } from "@app/utils/routes";
+
 import { parseDate, parseMoney, parseTime } from "@app/utils/parser";
 import { CircularProgress } from "@components/material/Progress";
 import { Fab } from "@components/material/Fab";
@@ -63,7 +65,7 @@ export default function TransactionsPage({
         </div>
       </div>
       <div className="absolute bottom-10 right-10">
-        <Fab lowered onClick={() => router.push("/transakcje/nowa")}>
+        <Fab lowered onClick={() => router.push(`/${RouteSegments.Transactions}/${RouteSegments.New}`)}>
           <Icon slot="icon">add</Icon>
         </Fab>
       </div>
@@ -125,13 +127,13 @@ export function Transaction({
       >
         <IconButton
           className="mini"
-          onClick={() => router.push(`/transakcje/edycja/${transaction.id}`)}
+          onClick={() => router.push(`/${RouteSegments.Transactions}/${RouteSegments.Edit}/${transaction.id}`)}
         >
           <Icon>edit</Icon>
         </IconButton>
         <IconButton
           className="mini error"
-          onClick={() => router.push(`/transakcje/usuwanie/${transaction.id}`)}
+          onClick={() => router.push(`/${RouteSegments.Transactions}/${RouteSegments.Delete}/${transaction.id}`)}
         >
           <Icon>delete</Icon>
         </IconButton>

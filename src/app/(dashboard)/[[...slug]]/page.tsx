@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { getUser } from "@app/api/user/get";
 import { loginCheck } from "@app/api/auth/login";
 import DashboardPage from "@components/pages/DashboardPage";
+import { RouteSegments } from "@app/utils/routes";
 
 export async function generateMetadata({ params }) {
   const path = await params;
@@ -10,25 +11,31 @@ export async function generateMetadata({ params }) {
     "gringott | " +
     (!path.slug
       ? "strona główna"
-      : path.slug[0] === "historia"
+      : path.slug[0] === RouteSegments.HistoryPage
       ? "historia"
-      : path.slug[0] === "transakcje" && !path.slug[1]
+      : path.slug[0] === RouteSegments.Transactions && !path.slug[1]
       ? "transakcje"
-      : path.slug[0] === "transakcje" && path.slug[1] === "podmioty"
-      ? "podmioty"
-      : path.slug[0] === "transakcje" && path.slug[1] === "kategorie"
-      ? "kategorie"
-      : path.slug[0] === "transakcje" && path.slug[1] === "metody"
-      ? "metody"
-      : path.slug[0] === "transakcje" && path.slug[1] === "nowa"
+      : path.slug[0] === RouteSegments.Transactions && path.slug[1] === RouteSegments.New
       ? "nowa transakcja"
-      : path.slug[0] === "transakcje" && path.slug[1] === "edycja"
+      : path.slug[0] === RouteSegments.Transactions && path.slug[1] === RouteSegments.Edit
       ? "edycja transakcji"
-      : path.slug[0] === "transakcje" && path.slug[1] === "usuwanie"
+      : path.slug[0] === RouteSegments.Transactions && path.slug[1] === RouteSegments.Delete
       ? "usuwanie transakcji"
-      : path.slug[0] === "statystyki"
+      : path.slug[0] === RouteSegments.Transactions && path.slug[1] === RouteSegments.Subjects && !path.slug[2]
+      ? "podmioty"
+      : path.slug[0] === RouteSegments.Transactions && path.slug[1] === RouteSegments.Subjects && path.slug[2] === RouteSegments.New
+      ? "nowy podmiot"
+      : path.slug[0] === RouteSegments.Transactions && path.slug[1] === RouteSegments.Subjects && path.slug[2] === RouteSegments.Edit
+      ? "edycja podmiotu"
+      : path.slug[0] === RouteSegments.Transactions && path.slug[1] === RouteSegments.Subjects && path.slug[2] === RouteSegments.Delete
+      ? "usuwanie podmiotu"
+      : path.slug[0] === RouteSegments.Transactions && path.slug[1] === RouteSegments.Categories
+      ? "kategorie"
+      : path.slug[0] === RouteSegments.Transactions && path.slug[1] === RouteSegments.Methods
+      ? "metody"
+      : path.slug[0] === RouteSegments.Statistics
       ? "statystyki"
-      : path.slug[0] === "kalkulator"
+      : path.slug[0] === RouteSegments.Calculator
       ? "kalkulator"
       : "404");
 
@@ -42,7 +49,7 @@ export default async function Page({
 }: {
   params: Promise<{ slug: string[] }>;
 }) {
-  if (!(await loginCheck())) redirect("/logowanie");
+  if (!(await loginCheck())) redirect(`/${RouteSegments.Login}`);
 
   return <DashboardPage slug={(await params).slug} user={await getUser()} />;
 }

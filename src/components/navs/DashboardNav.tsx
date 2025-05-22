@@ -4,19 +4,21 @@ import { usePathname, useRouter } from "next/navigation";
 
 import { Icon } from "../material/Icon";
 
+import { RouteSegments } from "@app/utils/routes";
+
 export default function DashboardNav() {
   const pathname = usePathname()
 
   return (
     <div className="flex flex-col items-center gap-[10px] text-primary w-full mt-[30px] px-[30px] py-[10px]">
-      <DashboardNavItem icon="home" text="główna" path="/" />
-      <DashboardNavItem icon="history" text="historia" path="/historia" />
-      <DashboardNavItem icon="list" text="transakcje" path="/transakcje" />
-      <DashboardNavSubitem icon="group" text="podmioty" path="/transakcje/podmioty" show={pathname.startsWith("/transakcje")} />
-      <DashboardNavSubitem icon="category" text="kategorie" path="/transakcje/kategorie" show={pathname.startsWith("/transakcje")} />
-      <DashboardNavSubitem icon="tactic" text="metody" path="/transakcje/metody" show={pathname.startsWith("/transakcje")} />
-      <DashboardNavItem icon="bar_chart" text="statystyki" path="/statystyki" />
-      <DashboardNavItem icon="calculate" text="kalkulator" path="/kalkulator" />
+      <DashboardNavItem icon="home" text="główna" path={`/${RouteSegments.HomePage}`}  />
+      <DashboardNavItem icon="history" text="historia" path={`/${RouteSegments.HistoryPage}`} />
+      <DashboardNavItem icon="list" text="transakcje" path={`/${RouteSegments.Transactions}`} />
+      <DashboardNavSubitem icon="group" text="podmioty" path={`/${RouteSegments.Transactions}/${RouteSegments.Subjects}`} show={pathname.startsWith(`/${RouteSegments.Transactions}`)} />
+      <DashboardNavSubitem icon="category" text="kategorie" path={`/${RouteSegments.Transactions}/${RouteSegments.Categories}`} show={pathname.startsWith(`/${RouteSegments.Transactions}`)} />
+      <DashboardNavSubitem icon="tactic" text="metody" path={`/${RouteSegments.Transactions}/${RouteSegments.Methods}`} show={pathname.startsWith(`/${RouteSegments.Transactions}`)} />
+      <DashboardNavItem icon="bar_chart" text="statystyki" path={`/${RouteSegments.Statistics}`} />
+      <DashboardNavItem icon="calculate" text="kalkulator" path={`/${RouteSegments.Calculator}`} />
     </div>
   );
 }

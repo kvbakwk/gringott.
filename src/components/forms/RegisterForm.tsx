@@ -14,6 +14,7 @@ import { register } from "@app/api/auth/register";
 import { TextFieldOutlined } from "../material/TextField";
 import { Checkbox } from "../material/Checkbox";
 import { FilledButton } from "../material/Button";
+import { RouteSegments } from "@app/utils/routes";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -58,7 +59,7 @@ export default function RegisterForm() {
         setRulesErr(response.rulesErr);
         setAccountErr(response.accountErr);
       } else {
-        router.push("/logowanie");
+        router.push(`/${RouteSegments.Login}`);
       }
     } else {
       setFullnameErr(!validateFullname(formData.get("fullname").toString()));

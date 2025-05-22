@@ -6,6 +6,8 @@ import { TransactionT } from "@app/utils/db-actions/transaction";
 
 import { useEffect, useState } from "react";
 
+import { RouteSegments } from "@app/utils/routes";
+
 import { getWallets } from "@app/api/wallet/get";
 import { getTransactions } from "@app/api/transaction/get";
 
@@ -41,16 +43,18 @@ export default function DashboardPage({
   useEffect(() => {
     getWallets(user.id)
       .then((wallets) => setWallets(wallets))
+      .catch((err) => console.log("failed to fetch wallets:", err))
       .finally(() => setWalletsReady(true));
     getTransactions(user.id)
       .then((transactions) => setTransactions(transactions))
+      .catch((err) => console.log("failed to fetch transactions:", err))
       .finally(() => setTransactionsReady(true));
-  }, []);
+  }, [user.id]);
 
   return (
     <div className="grid grid-rows-[110px_1fr]">
       <WalletsList wallets={wallets} walletsReady={walletsReady} />
-      {slug === undefined && (
+      {(slug === undefined || (slug && slug[0] === RouteSegments.HomePage)) && (
         <HomePage
           wallets={wallets}
           transactions={transactions}
@@ -58,7 +62,7 @@ export default function DashboardPage({
           transactionsReady={transactionsReady}
         />
       )}
-      {slug && slug[0] === "historia" && (
+      {slug && slug[0] === RouteSegments.HistoryPage && (
         <HistoryPage
           wallets={wallets}
           transactions={transactions}
@@ -66,20 +70,24 @@ export default function DashboardPage({
           transactionsReady={transactionsReady}
         />
       )}
-      {slug && slug[0] === "transakcje" && slug[1] === undefined && (
-        <TransactionsPage
-          wallets={wallets}
-          transactions={transactions}
-          walletsReady={walletsReady}
-          transactionsReady={transactionsReady}
-        />
-      )}
-      {slug && slug[0] === "transakcje" && slug[1] === "nowa" && (
-        <NewTransactionPage userId={user.id} />
-      )}
       {slug &&
-        slug[0] === "transakcje" &&
-        slug[1] === "edycja" &&
+        slug[0] === RouteSegments.Transactions &&
+        slug[1] === undefined && (
+          <TransactionsPage
+            wallets={wallets}
+            transactions={transactions}
+            walletsReady={walletsReady}
+            transactionsReady={transactionsReady}
+          />
+        )}
+      {slug &&
+        slug[0] === RouteSegments.Transactions &&
+        slug[1] === RouteSegments.New && (
+          <NewTransactionPage userId={user.id} />
+        )}
+      {slug &&
+        slug[0] === RouteSegments.Transactions &&
+        slug[1] === RouteSegments.Edit &&
         !isNaN(parseInt(slug[2])) && (
           <EditTransactionPage
             userId={user.id}
@@ -87,8 +95,8 @@ export default function DashboardPage({
           />
         )}
       {slug &&
-        slug[0] === "transakcje" &&
-        slug[1] === "usuwanie" &&
+        slug[0] === RouteSegments.Transactions &&
+        slug[1] === RouteSegments.Delete &&
         !isNaN(parseInt(slug[2])) && (
           <DeleteTransactionPage
             userId={user.id}
@@ -96,28 +104,30 @@ export default function DashboardPage({
           />
         )}
       {slug &&
-        slug[0] === "transakcje" &&
-        slug[1] === "podmioty" &&
+        slug[0] === RouteSegments.Transactions &&
+        slug[1] === RouteSegments.Subjects &&
         slug[2] === undefined && <SubjectsPage userId={user.id} />}
       {slug &&
-        slug[0] === "transakcje" &&
-        slug[1] === "podmioty" &&
-        slug[2] === "nowy" && <NewSubjectPage userId={user.id} />}
+        slug[0] === RouteSegments.Transactions &&
+        slug[1] === RouteSegments.Subjects &&
+        slug[2] === RouteSegments.New && <NewSubjectPage userId={user.id} />}
       {slug &&
-        slug[0] === "transakcje" &&
-        slug[1] === "podmioty" &&
-        slug[2] === "edycja" &&
+        slug[0] === RouteSegments.Transactions &&
+        slug[1] === RouteSegments.Subjects &&
+        slug[2] === RouteSegments.Edit &&
         !isNaN(parseInt(slug[3])) && (
           <EditSubjectPage userId={user.id} subjectId={parseInt(slug[3])} />
         )}
       {slug &&
-        slug[0] === "transakcje" &&
-        slug[1] === "podmioty" &&
-        slug[2] === "usuwanie" &&
+        slug[0] === RouteSegments.Transactions &&
+        slug[1] === RouteSegments.Subjects &&
+        slug[2] === RouteSegments.Delete &&
         !isNaN(parseInt(slug[3])) && (
           <DeleteSubjectPage userId={user.id} subjectId={parseInt(slug[3])} />
         )}
-      {slug && slug[0] === "nowe-konto" && <NewWalletPage userId={user.id} />}
+      {slug &&
+        slug[0] === RouteSegments.Wallets &&
+        slug[1] === RouteSegments.New && <NewWalletPage userId={user.id} />}
     </div>
   );
 }

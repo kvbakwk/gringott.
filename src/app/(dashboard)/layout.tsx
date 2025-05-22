@@ -8,6 +8,7 @@ import { loginCheck } from "@app/api/auth/login";
 import { getUser } from "@app/api/user/get";
 import DashboardNav from "@components/navs/DashboardNav";
 import User from "@components/User";
+import { RouteSegments } from "@app/utils/routes";
 
 export const metadata: Metadata = {
   title: "gringott",
@@ -23,7 +24,7 @@ export default async function Layout({
 }: {
   children: React.ReactNode;
 }) {
-  if (!(await loginCheck())) redirect("/logowanie");
+  if (!(await loginCheck())) redirect(`/${RouteSegments.Login}`);
 
   return (
     <html lang="pl" className="font-noto">
