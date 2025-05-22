@@ -88,9 +88,15 @@ export default function NewTradeForm({ userId }: { userId: number }) {
           error={atmErr}
           errorText="wybierz typ wymiany"
         >
-          <Icon className="fill" slot="leading-icon">
-            atm
-          </Icon>
+          {atm ? (
+            <Icon className="fill" slot="leading-icon">
+              atm
+            </Icon>
+          ) : (
+            <Icon className="fill" slot="leading-icon">
+              person
+            </Icon>
+          )}
           <SelectOption value="1">
             <div slot="headline">w bankomacie</div>
           </SelectOption>
