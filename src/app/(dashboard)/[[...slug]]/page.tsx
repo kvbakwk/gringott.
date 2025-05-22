@@ -21,6 +21,8 @@ export async function generateMetadata({ params }) {
       ? "edycja transakcji"
       : path.slug[0] === RouteSegments.Transactions && path.slug[1] === RouteSegments.Delete
       ? "usuwanie transakcji"
+      : path.slug[0] === RouteSegments.Transactions && path.slug[1] === RouteSegments.Trades && path.slug[2] === RouteSegments.New
+      ? "nowa wymiana"
       : path.slug[0] === RouteSegments.Transactions && path.slug[1] === RouteSegments.Subjects && !path.slug[2]
       ? "podmioty"
       : path.slug[0] === RouteSegments.Transactions && path.slug[1] === RouteSegments.Subjects && path.slug[2] === RouteSegments.New

@@ -117,8 +117,6 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
     const subjectId: number = parseInt(formData.get("subjectId").toString());
     const important: boolean = formData.get("important")?.toString() === "on";
 
-    console.log(await validateTransactionSubjectId(subjectId, userId))
-
     if (
       validateTransactionDate(date) &&
       validateTransactionAmount(amount) &&
@@ -194,6 +192,7 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
           onChange={(e) =>
             setIncome(parseInt(e.currentTarget.value) ? true : false)
           }
+          value={income ? "1" : "0"}
         >
           <Icon slot="leading-icon">swap_vert</Icon>
           <SelectOption value="1">

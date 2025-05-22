@@ -27,6 +27,7 @@ import EditSubjectPage from "./subjects/EditSubjectPage";
 import DeleteSubjectPage from "./subjects/DeleteSubjectPage";
 
 import NewWalletPage from "./wallets/NewWalletPage";
+import NewTradePage from "./trades/NewTradePage";
 
 export default function DashboardPage({
   slug,
@@ -103,6 +104,10 @@ export default function DashboardPage({
             transactionId={parseInt(slug[2])}
           />
         )}
+      {slug &&
+        slug[0] === RouteSegments.Transactions &&
+        slug[1] === RouteSegments.Trades &&
+        slug[2] === RouteSegments.New && <NewTradePage userId={user.id} />}
       {slug &&
         slug[0] === RouteSegments.Transactions &&
         slug[1] === RouteSegments.Subjects &&
