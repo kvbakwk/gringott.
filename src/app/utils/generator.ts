@@ -1,8 +1,6 @@
 import { TransactionT } from "./db-actions/transaction";
 import { TradeT } from "./db-actions/trade";
 
-import TradesPage from "@components/pages/trades/TradesPage";
-
 export function generateTimeLimits(): {
   week: { startOfWeek: Date; endOfWeek: Date };
   month: { startOfMonth: Date; endOfMonth: Date };
