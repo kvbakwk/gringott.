@@ -3,6 +3,7 @@
 import { UserT } from "@app/utils/db-actions/user";
 import { WalletT } from "@app/utils/db-actions/wallet";
 import { TransactionT } from "@app/utils/db-actions/transaction";
+import { TradeT } from "@app/utils/db-actions/trade";
 
 import { useEffect, useState } from "react";
 
@@ -10,6 +11,7 @@ import { RouteSegments } from "@app/utils/routes";
 
 import { getWallets } from "@app/api/wallet/get";
 import { getTransactions } from "@app/api/transaction/get";
+import { getTrades } from "@app/api/trade/get";
 
 import WalletsList from "../WalletsList";
 
@@ -28,6 +30,7 @@ import DeleteSubjectPage from "./subjects/DeleteSubjectPage";
 
 import NewWalletPage from "./wallets/NewWalletPage";
 import NewTradePage from "./trades/NewTradePage";
+import TradesPage from "./trades/TradesPage";
 
 export default function DashboardPage({
   slug,
@@ -38,8 +41,10 @@ export default function DashboardPage({
 }) {
   const [wallets, setWallets] = useState<WalletT[]>([]);
   const [transactions, setTransactions] = useState<TransactionT[]>([]);
+  const [trades, setTrades] = useState<TradeT[]>([]);
   const [walletsReady, setWalletsReady] = useState<boolean>(false);
   const [transactionsReady, setTransactionsReady] = useState<boolean>(false);
+  const [tradesReady, setTradesReady] = useState<boolean>(false);
 
   useEffect(() => {
     getWallets(user.id)
@@ -50,6 +55,10 @@ export default function DashboardPage({
       .then((transactions) => setTransactions(transactions))
       .catch((err) => console.log("failed to fetch transactions:", err))
       .finally(() => setTransactionsReady(true));
+    getTrades(user.id)
+      .then((trades) => setTrades(trades))
+      .catch((err) => console.log("failed to fetch transactions:", err))
+      .finally(() => setTradesReady(true));
   }, [user.id]);
 
   return (
@@ -67,8 +76,10 @@ export default function DashboardPage({
         <HistoryPage
           wallets={wallets}
           transactions={transactions}
+          trades={trades}
           walletsReady={walletsReady}
           transactionsReady={transactionsReady}
+          tradesReady={tradesReady}
         />
       )}
       {slug &&
@@ -102,6 +113,17 @@ export default function DashboardPage({
           <DeleteTransactionPage
             userId={user.id}
             transactionId={parseInt(slug[2])}
+          />
+        )}
+      {slug &&
+        slug[0] === RouteSegments.Transactions &&
+        slug[1] === RouteSegments.Trades &&
+        slug[2] === undefined && (
+          <TradesPage
+            wallets={wallets}
+            trades={trades}
+            walletsReady={walletsReady}
+            tradesReady={transactionsReady}
           />
         )}
       {slug &&

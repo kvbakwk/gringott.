@@ -2,6 +2,7 @@
 
 import { WalletT } from "@app/utils/db-actions/wallet";
 import { TransactionT } from "@app/utils/db-actions/transaction";
+import { TradeT } from "@app/utils/db-actions/trade";
 
 import { useEffect, useState } from "react";
 
@@ -12,21 +13,26 @@ import { CircularProgress } from "../material/Progress";
 export default function HistoryPage({
   wallets,
   transactions,
+  trades,
   walletsReady,
   transactionsReady,
+  tradesReady,
 }: {
   wallets: WalletT[];
   transactions: TransactionT[];
+  trades: TradeT[];
   walletsReady: boolean;
   transactionsReady: boolean;
+  tradesReady: boolean;
 }) {
-  const [days, setDays] = useState<Date[]>(
-    generateAllDaysFromOldestTransactionToToday(transactions)
-  );
+  const [days, setDays] = useState<Date[]>([]);
 
   useEffect(
-    () => setDays(generateAllDaysFromOldestTransactionToToday(transactions)),
-    [transactions, transactionsReady]
+    () =>
+      setDays(
+        generateAllDaysFromOldestTransactionToToday(transactions, trades)
+      ),
+    [transactions, trades, transactionsReady, tradesReady]
   );
 
   return (
@@ -47,7 +53,7 @@ export default function HistoryPage({
       </div>
       <div
         className={`flex gap-[5px] w-full h-[calc(100vh-220px)] pb-[10px] overflow-y-auto scroll-none ${
-          walletsReady && transactionsReady
+          walletsReady && transactionsReady && tradesReady
             ? "flex-col"
             : "justify-center items-center"
         }`}
@@ -55,7 +61,7 @@ export default function HistoryPage({
         {days.map((day) => (
           <div
             className={`flex justify-center items-center gap-[20px] font-normal text-on-surface-variant text-md w-full${
-              !(walletsReady && transactionsReady) && " hidden"
+              !(walletsReady && transactionsReady && tradesReady) && " hidden"
             }`}
             key={day.getTime()}
           >
@@ -83,7 +89,19 @@ export default function HistoryPage({
                         (wallet) => wallet.id === transaction.wallet_id
                       )[0].wallet_type_id === 1
                   )
-                  .reduce((a, b) => (b.income ? a + b.amount : a - b.amount), 0)
+                  .reduce(
+                    (a, b) => (b.income ? a + b.amount : a - b.amount),
+                    0
+                  ) +
+                  trades
+                    .filter(
+                      (trade) =>
+                        trade.date.getTime() - 86399999 <= day.getTime()
+                    )
+                    .reduce(
+                      (a, b) => (b.deposit ? a - b.amount : a + b.amount),
+                      0
+                    )
               )}{" "}
               zł
             </div>
@@ -97,7 +115,19 @@ export default function HistoryPage({
                         (wallet) => wallet.id === transaction.wallet_id
                       )[0].wallet_type_id === 2
                   )
-                  .reduce((a, b) => (b.income ? a + b.amount : a - b.amount), 0)
+                  .reduce(
+                    (a, b) => (b.income ? a + b.amount : a - b.amount),
+                    0
+                  ) +
+                  trades
+                    .filter(
+                      (trade) =>
+                        trade.date.getTime() - 86399999 <= day.getTime()
+                    )
+                    .reduce(
+                      (a, b) => (b.deposit ? a + b.amount : a - b.amount),
+                      0
+                    )
               )}{" "}
               zł
             </div>
