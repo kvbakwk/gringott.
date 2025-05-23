@@ -11,11 +11,18 @@ import { getWallets } from "@app/api/wallet/get";
 import { getMethods } from "@app/utils/db-actions/method";
 import { getSubjects } from "@app/api/subject/get";
 
+import {
+  validateTradeAmount,
+  validateTradeAtm,
+  validateTradeDate,
+  validateTradeDeposit,
+} from "@app/utils/validator";
+
+import Loading from "@components/Loading";
 import { Icon } from "@components/material/Icon";
 import { TextFieldOutlined } from "@components/material/TextField";
 import { SelectOption, SelectOutlined } from "@components/material/Select";
 import { FilledButton, OutlinedButton } from "@components/material/Button";
-import Loading from "@components/Loading";
 
 export default function NewTradeForm({ userId }: { userId: number }) {
   const router = useRouter();
@@ -69,6 +76,52 @@ export default function NewTradeForm({ userId }: { userId: number }) {
   ): Promise<void> => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
+
+    const atm: boolean = Boolean(parseInt(formData.get("atm")?.toString()));
+    const walletId: number = parseInt(formData.get("walletId")?.toString());
+    const deposit: boolean = Boolean(
+      parseInt(formData.get("deposit")?.toString())
+    );
+    const userMethodId: number = parseInt(
+      formData.get("userMethodId")?.toString()
+    );
+    const date: Date = new Date(formData.get("date").toString());
+    const amount: number = parseFloat(formData.get("amount").toString());
+    const subjectId: number = parseInt(formData.get("subjectId")?.toString());
+    const subjectMethodId: number = parseInt(
+      formData.get("subjectMethodId")?.toString()
+    );
+
+    console.log(atm, validateTradeAtm(atm));
+
+    if (
+      validateTradeAtm(atm) &&
+      validateTradeDeposit(deposit) &&
+      validateTradeDate(date) &&
+      validateTradeAmount(amount)
+    ) {
+      setSuccess(true);
+      setAtmErr(false);
+      setWalletIdErr(false);
+      setDepositErr(false);
+      setUserMethodIdErr(false);
+      setDateErr(false);
+      setAmountErr(false);
+      setSubjectIdErr(false);
+      setSubjectMethodIdErr(false);
+      setError(false);
+    } else {
+      setSuccess(false);
+      setAtmErr(!validateTradeAtm(atm));
+      setWalletIdErr(false);
+      setDepositErr(!validateTradeDeposit(deposit));
+      setUserMethodIdErr(false);
+      setDateErr(!validateTradeDate(date));
+      setAmountErr(!validateTradeAmount(amount));
+      setSubjectIdErr(false);
+      setSubjectMethodIdErr(false);
+      setError(false);
+    }
   };
 
   if (walletsReady && methodsReady && subjectsReady)
