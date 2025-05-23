@@ -115,6 +115,20 @@ export const validateSubjectNormal = (normal: boolean): boolean => {
   return typeof normal === "boolean";
 };
 export const validateSubjectAtm = (atm: boolean): boolean => {
-  const pattern = /^.{1,40}$/;
   return typeof atm === "boolean";
 };
+
+export const validateTradeAtm = (atm: boolean): boolean => {
+  return typeof atm === "boolean";
+};
+export const validateTradeDeposit = (atm: boolean): boolean => {
+  return typeof atm === "boolean";
+};
+export const validateTradeDate = (date: Date): boolean => {
+  return date instanceof Date && !isNaN(date.getTime());
+};
+export const validateTradeAmount = (amount: number): boolean => {
+  const pattern = /^\d+(?:.\d{1,2})?$/;
+  return pattern.test(amount.toString());
+};
+

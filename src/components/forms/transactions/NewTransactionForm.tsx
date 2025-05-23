@@ -223,11 +223,11 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
           label="data"
           name="date"
           type="datetime-local"
-          error={dateErr}
-          errorText="wybierz datę"
           value={new Date(new Date().getTime() + 2000 * 60 * 60)
             .toISOString()
             .slice(0, 16)}
+          error={dateErr}
+          errorText="wybierz datę"
         >
           <Icon slot="leading-icon">event</Icon>
         </TextFieldOutlined>
@@ -238,9 +238,9 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
           type="number"
           step="0.01"
           min="0"
+          suffixText="zł"
           error={amountErr}
           errorText="wpisz poprawną kwotę"
-          suffixText="zł"
         >
           <Icon slot="leading-icon">toll</Icon>
         </TextFieldOutlined>
