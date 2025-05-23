@@ -1,4 +1,7 @@
 import { TransactionT } from "./db-actions/transaction";
+import { TradeT } from "./db-actions/trade";
+
+import TradesPage from "@components/pages/trades/TradesPage";
 
 export function generateTimeLimits(): {
   week: { startOfWeek: Date; endOfWeek: Date };
@@ -38,7 +41,8 @@ export function generateTimeLimits(): {
 }
 
 export function generateAllDaysFromOldestTransactionToToday(
-  transactions: TransactionT[]
+  transactions: TransactionT[],
+  trades: TradeT[]
 ): Date[] {
   const days: Date[] = [];
   const time: Date = new Date();
@@ -47,16 +51,25 @@ export function generateAllDaysFromOldestTransactionToToday(
   time.setSeconds(0);
   time.setMilliseconds(0);
 
-  if (transactions.length)
+  if (transactions.length || (transactions.length && trades.length))
     while (
       time.getTime() >=
-      transactions
-        .sort(
-          (a: TransactionT, b: TransactionT) =>
-            new Date(a.date).getTime() - new Date(b.date).getTime()
-        )[0]
-        .date.getTime() -
-        86400000
+        transactions
+          .sort(
+            (a: TransactionT, b: TransactionT) =>
+              new Date(a.date).getTime() - new Date(b.date).getTime()
+          )[0]
+          .date.getTime() -
+          86400000 ||
+      (trades.length &&
+        time.getTime() >=
+          trades
+            .sort(
+              (a: TradeT, b: TradeT) =>
+                new Date(a.date).getTime() - new Date(b.date).getTime()
+            )[0]
+            .date.getTime() -
+            86400000)
     ) {
       days.push(new Date(time));
       time.setTime(time.getTime() - 86400000);

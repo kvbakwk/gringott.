@@ -14,6 +14,7 @@ export default function DashboardNav() {
       <DashboardNavItem icon="home" text="główna" path={`/${RouteSegments.HomePage}`}  />
       <DashboardNavItem icon="history" text="historia" path={`/${RouteSegments.HistoryPage}`} />
       <DashboardNavItem icon="list" text="transakcje" path={`/${RouteSegments.Transactions}`} />
+      <DashboardNavSubitem icon="swap_vert" text="wymiany" path={`/${RouteSegments.Transactions}/${RouteSegments.Trades}`} show={pathname.startsWith(`/${RouteSegments.Transactions}`)} />
       <DashboardNavSubitem icon="group" text="podmioty" path={`/${RouteSegments.Transactions}/${RouteSegments.Subjects}`} show={pathname.startsWith(`/${RouteSegments.Transactions}`)} />
       <DashboardNavSubitem icon="category" text="kategorie" path={`/${RouteSegments.Transactions}/${RouteSegments.Categories}`} show={pathname.startsWith(`/${RouteSegments.Transactions}`)} />
       <DashboardNavSubitem icon="tactic" text="metody" path={`/${RouteSegments.Transactions}/${RouteSegments.Methods}`} show={pathname.startsWith(`/${RouteSegments.Transactions}`)} />

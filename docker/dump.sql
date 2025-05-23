@@ -155,8 +155,8 @@ insert into public.wallet_type (name) values
 ('kryptowaluta'), 
 ('surowiec');
 
-insert into public.wallet (user_id, balance, wallet_type_id) values (1, 50, 1), (1, 0, 3);
-insert into public.wallet (user_id, name, balance, wallet_type_id) values (1, 'mBank', 60, 2), (1, 'iPKO', 0, 2);
+insert into public.wallet (user_id, balance, wallet_type_id) values (1, 40, 1), (1, 0, 3);
+insert into public.wallet (user_id, name, balance, wallet_type_id) values (1, 'mBank', 70, 2), (1, 'iPKO', 0, 2);
 insert into public.wallet (user_id, balance, wallet_type_id) values (4, 3.14, 1), (4, 0, 3);
 insert into public.wallet (user_id, name, balance, wallet_type_id) values (4, 'mBank', 4, 2);
 
@@ -183,4 +183,5 @@ insert into public.transaction (date, amount, description, category_id, subject_
 ('2025-04-01 12:00:00', 100, 'kieszonkowe', 58, 1, true, true, 1, 4, 4, 1);
 
 insert into public.trade (date, amount, deposit, atm, user_id, wallet_id, subject_id, deposit_method_id, withdraw_method_id) values 
-('2025-04-02 12:00:00', 40, false, false, 1, 4, 4, 1, 3);
+('2025-04-02 12:00:00', 40, false, true, 1, 3, 4, 1, 3),
+('2025-04-02 13:00:00', 10, true, false, 1, 3, 2, 1, 4);
