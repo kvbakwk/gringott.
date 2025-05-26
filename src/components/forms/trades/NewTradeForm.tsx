@@ -23,6 +23,7 @@ import { Icon } from "@components/material/Icon";
 import { TextFieldOutlined } from "@components/material/TextField";
 import { SelectOption, SelectOutlined } from "@components/material/Select";
 import { FilledButton, OutlinedButton } from "@components/material/Button";
+import { createTrade } from "@app/api/trade/create";
 
 export default function NewTradeForm({ userId }: { userId: number }) {
   const router = useRouter();
@@ -92,24 +93,34 @@ export default function NewTradeForm({ userId }: { userId: number }) {
       formData.get("subjectMethodId")?.toString()
     );
 
-    console.log(atm, validateTradeAtm(atm));
-
     if (
       validateTradeAtm(atm) &&
       validateTradeDeposit(deposit) &&
       validateTradeDate(date) &&
       validateTradeAmount(amount)
     ) {
-      setSuccess(true);
-      setAtmErr(false);
-      setWalletIdErr(false);
-      setDepositErr(false);
-      setUserMethodIdErr(false);
-      setDateErr(false);
-      setAmountErr(false);
-      setSubjectIdErr(false);
-      setSubjectMethodIdErr(false);
-      setError(false);
+      createTrade(
+        atm,
+        walletId,
+        deposit,
+        userMethodId,
+        date,
+        amount,
+        subjectId,
+        subjectMethodId,
+        userId
+      ).then((res) => {
+        setSuccess(res.createTrade);
+        setAtmErr(res.atmErr);
+        setWalletIdErr(res.walletIdErr);
+        setDepositErr(res.depositErr);
+        setUserMethodIdErr(res.userMethodIdErr);
+        setDateErr(res.dateErr);
+        setAmountErr(res.amountErr);
+        setSubjectIdErr(res.subjectIdErr);
+        setSubjectMethodIdErr(res.subjectMethodIdErr);
+        setError(false);
+      });
     } else {
       setSuccess(false);
       setAtmErr(!validateTradeAtm(atm));
