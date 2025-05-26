@@ -31,7 +31,6 @@ export interface TransactionT {
   };
   transaction_type_id: number;
 }
-
 export interface TransactionIdT {
   id: number;
 }
@@ -43,7 +42,6 @@ export async function getTransactionById(id: number): Promise<TransactionT> {
   );
   return mapRowToTransaction(res.rows[0]);
 }
-
 export async function getTransactionsByWalletId(
   id: number
 ): Promise<TransactionT[]> {
@@ -53,7 +51,6 @@ export async function getTransactionsByWalletId(
   );
   return res.rows.map(mapRowToTransaction);
 }
-
 export async function getTransactionsByUserId(
   id: number
 ): Promise<TransactionT[]> {
@@ -63,17 +60,15 @@ export async function getTransactionsByUserId(
   );
   return res.rows.map(mapRowToTransaction);
 }
-
 export async function getTransactionsIdsByWalletId(
   id: number
 ): Promise<TransactionIdT[]> {
   const res: QueryResult = await pool.query(
     "SELECT id FROM public.transaction WHERE wallet_id = $1;",
     [id]
-  )
+  );
   return res.rows.map(mapRowToTransactionId);
 }
-
 export async function getTransactionsIdsBySubjectId(
   id: number
 ): Promise<TransactionIdT[]> {
@@ -83,7 +78,89 @@ export async function getTransactionsIdsBySubjectId(
   );
   return res.rows.map(mapRowToTransactionId);
 }
+export async function getTransactionAmount(id: number): Promise<number> {
+  const res: QueryResult = await pool.query(
+    "SELECT amount FROM public.transaction WHERE id = $1;",
+    [id]
+  );
+  return res.rows[0].amount;
+}
 
+export async function createTransaction(
+  date: Date,
+  amount: number,
+  description: string,
+  categoryId: number,
+  subjectId: number,
+  income: boolean,
+  important: boolean,
+  userId: number,
+  walletId: number,
+  methodId: number,
+  transactionTypeId: number
+): Promise<number> {
+  const res = await pool.query(
+    `INSERT INTO public.transaction 
+      (date, amount, description, category_id, subject_id, income, important, user_id, wallet_id, method_id, transaction_type_id)
+     VALUES 
+      ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`,
+    [
+      date,
+      amount,
+      description,
+      categoryId,
+      subjectId,
+      income,
+      important,
+      userId,
+      walletId,
+      methodId,
+      transactionTypeId,
+    ]
+  );
+  return res.rowCount;
+}
+export async function editTransaction(
+  date: Date,
+  amount: number,
+  description: string,
+  categoryId: number,
+  subjectId: number,
+  important: boolean,
+  methodId: number,
+  transactionTypeId: number,
+  transactionId: number
+): Promise<number> {
+  const res = await pool.query(
+    `UPDATE public.transaction 
+    SET 
+      date = $1, amount = $2, description = $3, category_id = $4, 
+      subject_id = $5, important = $6, method_id = $7, 
+      transaction_type_id = $8 
+    WHERE id = $9;`,
+    [
+      date,
+      amount,
+      description,
+      categoryId,
+      subjectId,
+      important,
+      methodId,
+      transactionTypeId,
+      transactionId,
+    ]
+  );
+  return res.rowCount;
+}
+export async function deleteTransaction(
+  transactionId: number
+): Promise<number> {
+  const res = await pool.query(
+    `DELETE FROM public.transaction WHERE id = $1;`,
+    [transactionId]
+  );
+  return res.rowCount;
+}
 
 const BASE_TRANSACTION_QUERY = `
     SELECT
@@ -110,7 +187,6 @@ const BASE_TRANSACTION_QUERY = `
     JOIN public.method ON public.transaction.method_id = public.method.id
     JOIN public.super_category ON public.category.super_category_id = public.super_category.id
 `;
-
 
 function mapRowToTransaction(row: any): TransactionT {
   return {
@@ -141,7 +217,6 @@ function mapRowToTransaction(row: any): TransactionT {
     transaction_type_id: parseInt(row.transaction_type_id),
   };
 }
-
 function mapRowToTransactionId(row: any): TransactionIdT {
   return {
     id: parseInt(row.id),

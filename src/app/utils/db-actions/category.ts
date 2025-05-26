@@ -1,6 +1,8 @@
 "use server";
 
-import { Pool, QueryResult } from "pg";
+import { QueryResult } from "pg";
+
+import pool from "../db";
 
 export interface CategoryT {
   id: number;
@@ -9,35 +11,32 @@ export interface CategoryT {
 }
 
 export async function getCategories(): Promise<CategoryT[]> {
-  const client: Pool = new Pool();
-  const res: QueryResult = await client.query(
+  const res: QueryResult = await pool.query(
     "SELECT id, name, super_category_id FROM public.category;"
   );
-  await client.end();
 
-  return res.rows.map((category) => ({
-    id: parseInt(category.id),
-    name: category.name,
-    super_category_id: parseInt(category.super_category_id),
-  }));
+  return res.rows.map(mapRowToCategory);
 }
 
-export async function isIncomeCategory(id: number): Promise<boolean> {
-  const client: Pool = new Pool();
-  const res: QueryResult = await client.query(
-    "SELECT public.category.id FROM public.category JOIN public.super_category ON public.category.super_category_id = public.super_category.id WHERE public.category.id = $1 AND public.super_category.income = TRUE;",
+export async function isCategoryIncome(id: number): Promise<boolean> {
+  const res: QueryResult = await pool.query(
+    "SELECT public.super_category.income FROM public.category JOIN public.super_category ON public.category.super_category_id = public.super_category.id WHERE public.category.id = $1;",
     [id]
   );
-  await client.end();
-  return res.rows.length > 0;
+  return Boolean(res.rows[0].income);
+}
+export async function isCategoryOutcome(id: number): Promise<boolean> {
+  const res: QueryResult = await pool.query(
+    "SELECT public.super_category.outcome FROM public.category JOIN public.super_category ON public.category.super_category_id = public.super_category.id WHERE public.category.id = $1;",
+    [id]
+  );
+  return Boolean(res.rows[0].outcome);
 }
 
-export async function isOutcomeCategory(id: number): Promise<boolean> {
-  const client: Pool = new Pool();
-  const res: QueryResult = await client.query(
-    "SELECT public.category.id FROM public.category JOIN public.super_category ON public.category.super_category_id = public.super_category.id WHERE public.category.id = $1 AND public.super_category.outcome = TRUE;",
-    [id]
-  );
-  await client.end();
-  return res.rows.length > 0;
+function mapRowToCategory(row: any): CategoryT {
+  return {
+    id: parseInt(row.id),
+    name: row.name,
+    super_category_id: parseInt(row.super_category_id),
+  };
 }

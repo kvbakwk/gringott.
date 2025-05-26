@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { getTransaction } from "@app/api/transaction/get";
-import { deleteTransaction } from "@app/api/transaction/delete";
+import { deleteTransactionAPI } from "@app/api/transaction/delete";
 import { FilledButton, OutlinedButton } from "../../material/Button";
 
 export default function DeleteTransactionForm({
@@ -38,7 +38,7 @@ export default function DeleteTransactionForm({
     const income: boolean = transaction.income;
     const amount: number = transaction.amount;
 
-    deleteTransaction(transactionId, walletId, amount, income, userId)
+    deleteTransactionAPI(transactionId, walletId, amount, income, userId)
       .then((res) => {
         setSuccess(res.createTransaction);
         setError(false);

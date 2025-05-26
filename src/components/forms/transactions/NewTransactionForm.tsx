@@ -6,7 +6,7 @@ import { SubjectT } from "@app/utils/db-actions/subject";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { createTransaction } from "@app/api/transaction/create";
+import { createTransactionAPI } from "@app/api/transaction/create";
 import { getWallets } from "@app/api/wallet/get";
 import { CategoryT, getCategories } from "@app/utils/db-actions/category";
 import {
@@ -123,7 +123,7 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
       validateTransactionDescription(description) &&
       await validateTransactionSubjectId(subjectId, userId)
     ) {
-      createTransaction(
+      createTransactionAPI(
         walletId,
         income,
         methodId,

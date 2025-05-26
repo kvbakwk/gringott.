@@ -15,6 +15,8 @@ export async function generateMetadata({ params }) {
       ? "historia"
       : path.slug[0] === RouteSegments.Transactions && !path.slug[1]
       ? "transakcje"
+      : path.slug[0] === RouteSegments.Wallets && path.slug[1] === RouteSegments.New
+      ? "nowy portfel"
       : path.slug[0] === RouteSegments.Transactions && path.slug[1] === RouteSegments.New
       ? "nowa transakcja"
       : path.slug[0] === RouteSegments.Transactions && path.slug[1] === RouteSegments.Edit

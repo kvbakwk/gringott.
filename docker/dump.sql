@@ -138,7 +138,7 @@ insert into public.category (name, super_category_id) values
 ('wyposażenie', 7), ('remont', 7), ('ubezpieczenie', 7), ('usługi', 7),
 ('ogólne', 8), ('skarbonki', 8), ('cele', 8),
 ('akcje', 9), ('etf', 9), ('fundusz', 9), ('lokata', 9), ('zakład', 9), ('waluta', 9), ('kryptowaluta', 9), ('surowce', 9),
-('wynagrodzenie', 10), ('premia', 10), ('pożyczenie', 10), ('kredyt', 10), ('kieszonkowe', 10);
+('wynagrodzenie', 10), ('premia', 10), ('pożyczenie', 10), ('kredyt', 10), ('kieszonkowe', 10), ('wstępne', 10);
 
 insert into public.wallet_type (name) values 
 ('gotówka'), 
@@ -167,7 +167,8 @@ insert into public.method (name, cash, bank) values
 ('przelew na telefon', false, true),
 ('kartą', false, true),
 ('zbliżeniowo', false, true),
-('blikiem', false, true);
+('blikiem', false, true),
+('-', false, false);
 
 insert into public.transaction_type (name) values 
 ('normalna'),
@@ -176,7 +177,7 @@ insert into public.transaction_type (name) values
 ('bankomat'),
 ('wstępna');
 
-insert into public.subject (user_id, name, normal, atm) values (1, 'Tata', true, false), (1, 'Mama', true, false), (1, 'Ola Kawka', true, false), (1, 'Bankomat', false, true);
+insert into public.subject (user_id, name, normal, atm) values (1, 'Tata', true, false), (1, 'Mama', true, false), (1, 'Ola Kawka', true, false), (1, 'Bankomat', false, true), (1, 'Ty', true, false);
 
 insert into public.transaction (date, amount, description, category_id, subject_id, income, important, user_id, wallet_id, method_id, transaction_type_id) values 
 ('2025-04-01 12:00:00', 10, 'kieszonkowe', 58, 1, true, true, 1, 1, 1, 1),

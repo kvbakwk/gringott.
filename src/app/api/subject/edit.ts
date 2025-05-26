@@ -1,19 +1,27 @@
 "use server";
 
-import { validateSubjectAddress, validateSubjectAtm, validateSubjectName, validateSubjectNormal } from "@app/utils/validator";
-import { Pool } from "pg";
+import { editSubject } from "@app/utils/db-actions/subject";
+import {
+  validateSubjectAddress,
+  validateSubjectAtm,
+  validateSubjectName,
+  validateSubjectNormal,
+} from "@app/utils/validator";
 
-export async function editSubject(subjectId: number, name: string, userId: number, address: string, normal: boolean, atm: boolean) {
-  const isValid: boolean = validateSubjectName(name);
+export async function editSubjectAPI(
+  subjectId: number,
+  name: string,
+  address: string,
+  normal: boolean,
+  atm: boolean
+) {
+  const isValid: boolean =
+    validateSubjectName(name) &&
+    validateSubjectAddress(address) &&
+    validateSubjectNormal(normal) &&
+    validateSubjectAtm(atm);
 
-  if (isValid) {
-    const client: Pool = new Pool();
-    await client.query(
-      `UPDATE public.subject SET name = $1, address = $3, normal = $4, atm = $5 WHERE id = $2;`,
-      [name, subjectId, address, normal, atm]
-    );
-    await client.end();
-  }
+  if (isValid) await editSubject(name, subjectId, address, normal, atm);
 
   return {
     editSubject: isValid,

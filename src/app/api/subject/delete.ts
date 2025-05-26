@@ -1,31 +1,32 @@
 "use server";
 
-import { getTradesIdsBySubjectId } from "@app/utils/db-actions/trade";
 import { getTransactionsIdsBySubjectId } from "@app/utils/db-actions/transaction";
-import { Pool } from "pg";
+import { getTradesIdsBySubjectId } from "@app/utils/db-actions/trade";
+import { deleteSubject, getSubjectById } from "@app/utils/db-actions/subject";
 
-export async function deleteSubject(
+export async function deleteSubjectAPI(
   subjectId: number,
   userId: number
-): Promise<{ success: boolean; transactionErr: boolean; tradeErr: boolean }> {
-  const client: Pool = new Pool();
-
+): Promise<{
+  success: boolean;
+  transactionErr: boolean;
+  tradeErr: boolean;
+  userIdErr: boolean;
+}> {
   const transactionErr =
     (await getTransactionsIdsBySubjectId(subjectId)).length !== 0;
   const tradeErr = (await getTradesIdsBySubjectId(subjectId)).length !== 0;
-  const isValid = !transactionErr && !tradeErr;
+  const userIdErr =
+    isNaN(userId) || userId !== (await getSubjectById(subjectId)).user_id;
 
-  if (isValid) {
-    await client.query(
-      `DELETE FROM public.subject WHERE id = $1 AND user_id = $2;`,
-      [subjectId, userId]
-    );
-  }
-  await client.end();
+  const isValid = !transactionErr && !tradeErr && !userIdErr;
+
+  if (isValid) await deleteSubject(subjectId);
 
   return {
     success: isValid,
     transactionErr: transactionErr,
     tradeErr: tradeErr,
+    userIdErr: userIdErr,
   };
 }

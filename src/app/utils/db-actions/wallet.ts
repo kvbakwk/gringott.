@@ -1,10 +1,8 @@
 'use server'
 
-import { Pool, QueryResult } from "pg";
+import { QueryResult } from "pg";
 
-export interface WalletIdT {
-  id: number;
-}
+import pool from "../db";
 
 export interface WalletT {
   id: number;
@@ -12,45 +10,77 @@ export interface WalletT {
   balance: number;
   wallet_type_id: number;
 }
+export interface WalletIdT {
+  id: number;
+}
 
 export async function getWalletsByUserId(
   userId: number
 ): Promise<WalletT[]> {
-  const client: Pool = new Pool();
-  const res: QueryResult = await client.query(
+  const res: QueryResult = await pool.query(
     "SELECT id, name, balance, wallet_type_id FROM public.wallet WHERE user_id = $1",
     [userId]
   );
-  await client.end();
 
-  return res.rows.map((wallet) => ({
-    id: parseInt(wallet.id),
-    name: wallet.name,
-    balance: parseFloat(wallet.balance),
-    wallet_type_id: parseInt(wallet.wallet_type_id)
-  }));
+  return res.rows.map(mapRowToWallet);
 }
-
 export async function getWalletsIdsByUserId(
   userId: number
 ): Promise<WalletIdT[]> {
-  const client: Pool = new Pool();
-  const res: QueryResult = await client.query(
+  const res: QueryResult = await pool.query(
     "SELECT id FROM public.wallet WHERE user_id = $1;",
     [userId]
   );
-  await client.end();
-  return res.rows.map((wallet) => ({
-    id: parseInt(wallet.id),
-  }));
+  return res.rows.map(mapRowToWalletId);
 }
 
-export async function isCashWallet(walletId: number) {
-  const client: Pool = new Pool();
-  const res: QueryResult = await client.query(
-    "SELECT id FROM public.wallet WHERE id = $1 AND wallet_type_id = 1;",
+export async function isWalletCash(walletId: number): Promise<boolean> {
+  const res: QueryResult = await pool.query(
+    "SELECT wallet_type_id FROM public.wallet WHERE id = $1;",
     [walletId]
   );
-  await client.end();
-  return res.rows.length > 0;
+  return Boolean(res.rows[0].wallet_type_id);
+}
+
+export async function createWallet(name: string, balance: number, userId: number, walletTypeId: number): Promise<number> {
+  const res: QueryResult = await pool.query(
+    `INSERT INTO wallet 
+      (name, balance, user_id, wallet_type_id) 
+     VALUES 
+      ($1, $2, $3, $4) 
+     RETURNING 
+      id;`,
+    [name, balance, userId, walletTypeId]
+  );
+  return res.rows[0].id;
+}
+
+export async function increaseWalletBalance(walletId: number, amount: number): Promise<number> {
+  const res = await pool.query(
+    "UPDATE public.wallet SET balance = balance + $1 WHERE id = $2",
+    [amount, walletId]
+  );
+  return res.rowCount;
+}
+export async function decreaseWalletBalance(walletId: number, amount: number): Promise<number> {
+  const res = await pool.query(
+    "UPDATE public.wallet SET balance = balance - $1 WHERE id = $2",
+    [amount, walletId]
+  );
+  return res.rowCount;
+}
+
+
+function mapRowToWallet(row: any): WalletT {
+  return {
+    id: parseInt(row.id),
+    name: row.name,
+    balance: parseFloat(row.balance),
+    wallet_type_id: parseInt(row.wallet_type_id)
+  };
+}
+function mapRowToWalletId(row: any): WalletIdT {
+  return {
+    id: parseInt(row.id),
+  };
 }

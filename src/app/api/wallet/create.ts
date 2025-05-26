@@ -1,51 +1,43 @@
 "use server";
 
-import { Pool, QueryResult } from "pg";
-
+import { createWallet } from "@app/utils/db-actions/wallet";
+import { createTransaction } from "@app/utils/db-actions/transaction";
 import {
   validateWalletBalance,
   validateWalletName,
 } from "@app/utils/validator";
-import { createTransaction } from "../transaction/create";
 
-export async function createWallet(
+export async function createWalletAPI(
   name: string | null,
   balance: number,
   userId: number,
-  typeId: number
+  walletTypeId: number
 ) {
   const isValid: boolean =
-    (name === null || validateWalletName(name)) &&
-    validateWalletBalance(balance);
+    name !== null && validateWalletName(name) && validateWalletBalance(balance);
 
   if (isValid) {
-    const client: Pool = new Pool();
-    const res: QueryResult = await client.query(
-      `INSERT INTO wallet (name, balance, user_id, wallet_type_id) VALUES ($1, $2, $3, $4) RETURNING id;`,
-      [name, 0, userId, typeId]
-    );
-    await client.end();
+    const walletId = await createWallet(name, balance, userId, walletTypeId);
 
-    const now = new Date((new Date()).getTime())
     if (balance > 0)
       await createTransaction(
-        res.rows[0].id,
-        true,
-        7,
-        now,
+        new Date(new Date().getTime()),
         balance,
-        "kwota wejściowa",
+        "-",
         59,
-        "Ty",
+        5,
+        true,
         true,
         userId,
+        walletId,
+        8,
         5
       );
   }
 
   return {
     createWallet: isValid,
-    nameErr: !(name === null || validateWalletName(name)),
+    nameErr: !(name !== null && validateWalletName(name)),
     balanceErr: !validateWalletBalance(balance),
   };
 }

@@ -1,5 +1,9 @@
-import { createWallet } from "@app/api/wallet/create";
-import { Pool, QueryResult } from "pg";
+'use server'
+
+import { QueryResult } from "pg";
+
+import pool from "../db";
+import { createWallet } from "./wallet";
 
 export interface UserT {
   id: number;
@@ -12,47 +16,51 @@ export interface UserIdT {
 }
 
 export async function getUserByUuid(uuid: string): Promise<UserT> {
-  const client: Pool = new Pool();
-  const res: QueryResult<UserT> = await client.query(
+  const res: QueryResult = await pool.query(
     "SELECT id, name, email FROM public.user JOIN public.user_device ON public.user.id = public.user_device.user_id WHERE public.user_device.device_id = $1",
     [uuid]
   );
-  await client.end();
-  return res.rows[0];
+  return mapRowToUser(res.rows[0]);
+}
+export async function getUsersIdsByEmail(email: string): Promise<UserIdT[]> {
+  const res: QueryResult = await pool.query(
+    "SELECT id FROM public.user WHERE email = $1;",
+    [email]
+  );
+  return res.rows.map(mapRowToUserId);
+}
+
+export async function createUser(name: string, email: string, password: string): Promise<void> {
+  const res: QueryResult = await pool.query(
+    "INSERT INTO public.user (name, email, password) VALUES ($1, $2, $3) RETURNING id;",
+    [name, email, password]
+  );
+  await createWallet(null, res.rows[0].id, 1);
+  await createWallet(null, res.rows[0].id, 3);
+  await createWallet(null, res.rows[0].id, 4);
 }
 
 export async function validateUser(
   email: string,
   password: string
 ): Promise<number> {
-  const client: Pool = new Pool();
-  const res: QueryResult<UserIdT> = await client.query(
+  const res: QueryResult<UserIdT> = await pool.query(
     "SELECT id FROM public.user WHERE email = $1 AND password = $2;",
     [email, password]
   );
-  await client.end();
   if (res.rowCount === 1) return res.rows[0].id;
   return 0;
 }
 
-export async function isUserByEmail(email: string): Promise<boolean> {
-  const client: Pool = new Pool();
-  const res: QueryResult<UserIdT> = await client.query(
-    "SELECT id FROM public.user WHERE email = $1;",
-    [email]
-  );
-  await client.end();
-  return res.rowCount === 1;
+function mapRowToUser(row: any): UserT {
+  return {
+    id: parseInt(row.id),
+    name: row.name,
+    email: row.email,
+  };
 }
-
-export async function createUser(name: string, email: string, password: string): Promise<void> {
-  const client: Pool = new Pool();
-  const res: QueryResult = await client.query(
-    "INSERT INTO public.user (name, email, password) VALUES ($1, $2, $3) RETURNING id;",
-    [name, email, password]
-  );
-  await createWallet(null, 0, res.rows[0].id, 1);
-  await createWallet(null, 0, res.rows[0].id, 3);
-  await createWallet(null, 0, res.rows[0].id, 4);
-  await client.end();
+function mapRowToUserId(row: any): UserIdT {
+  return {
+    id: parseInt(row.id),
+  };
 }

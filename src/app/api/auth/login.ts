@@ -1,29 +1,26 @@
 "use server";
 
 import { cookies } from "next/headers";
-
 import { v4 as uuid } from "uuid";
 
-import { validateEmail, validatePassword } from "@app/utils/validator";
 import { validateUser } from "@app/utils/db-actions/user";
 import {
   createUserDevice,
-  deleteUserDeviceByDeviceId,
-  getUserDeviceByDeviceId,
+  deleteUserDevice,
+  getUserDeviceDateByDeviceId
 } from "@app/utils/db-actions/user_device";
-
-interface LoginResponseT {
-  login: boolean;
-  emailErr: boolean;
-  passwordErr: boolean;
-  accountErr: boolean;
-}
+import { validateEmail, validatePassword } from "@app/utils/validator";
 
 export async function login(
   email: string,
   password: string,
   remember: boolean
-): Promise<LoginResponseT> {
+): Promise<{
+  login: boolean;
+  emailErr: boolean;
+  passwordErr: boolean;
+  accountErr: boolean;
+}> {
   const userId = await validateUser(email, password);
 
   const isValid: boolean =
@@ -58,12 +55,12 @@ export async function login(
 
 export async function loginCheck(): Promise<boolean> {
   if ((await cookies()).has("device_id")) {
-    const userDevicesDates = await getUserDeviceByDeviceId(
+    const userDeviceDate = await getUserDeviceDateByDeviceId(
       (await cookies()).get("device_id").value
     );
-    if (userDevicesDates.length > 0) {
-      if (new Date(userDevicesDates[0].expireDate) < new Date()) {
-        await deleteUserDeviceByDeviceId(
+    if (userDeviceDate.length > 0) {
+      if (userDeviceDate[0].expireDate < new Date()) {
+        await deleteUserDevice(
           (await cookies()).get("device_id").value
         );
         return false;
@@ -76,5 +73,5 @@ export async function loginCheck(): Promise<boolean> {
 
 export async function logout(): Promise<void> {
   if ((await cookies()).has("device_id"))
-    await deleteUserDeviceByDeviceId((await cookies()).get("device_id").value);
+    await deleteUserDevice((await cookies()).get("device_id").value);
 }

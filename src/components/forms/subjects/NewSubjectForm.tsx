@@ -3,11 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+import { createSubjectAPI } from "@app/api/subject/create";
 import { validateSubjectAddress, validateSubjectAtm, validateSubjectName, validateSubjectNormal } from "@app/utils/validator";
+
 import { TextFieldOutlined } from "../../material/TextField";
 import { FilledButton, OutlinedButton } from "../../material/Button";
 import { Icon } from "@components/material/Icon";
-import { createSubject } from "@app/api/subject/create";
 import { Checkbox } from "@components/material/Checkbox";
 
 export default function NewSubjectForm({ userId }: { userId: number }) {
@@ -32,7 +33,7 @@ export default function NewSubjectForm({ userId }: { userId: number }) {
     const atm: boolean = formData.get("atm")?.toString() == "on";
 
     if (validateSubjectName(name) && validateSubjectAddress(address) && validateSubjectNormal(normal) && validateSubjectAtm(atm)) {
-      createSubject(name, userId, address, normal, atm)
+      createSubjectAPI(name, userId, address, normal, atm)
         .then((res) => {
           setSuccess(res.createSubject);
           setNameErr(res.nameErr);

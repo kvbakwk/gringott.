@@ -1,6 +1,7 @@
 "use server";
 
-import { Pool, QueryResult } from "pg";
+import { QueryResult } from "pg";
+import pool from "../db";
 
 export interface SuperCategoryT {
   id: number;
@@ -10,16 +11,17 @@ export interface SuperCategoryT {
 }
 
 export async function getSuperCategories(): Promise<SuperCategoryT[]> {
-  const client: Pool = new Pool();
-  const res: QueryResult = await client.query(
+  const res: QueryResult = await pool.query(
     "SELECT id, name, income, outcome FROM public.super_category;"
   );
-  await client.end();
+  return res.rows.map(mapRowToSuperCategory);
+}
 
-  return res.rows.map((super_category) => ({
-    id: parseInt(super_category.id),
-    name: super_category.name,
-    income: Boolean(super_category.income),
-    outcome: Boolean(super_category.outcome),
-  }));
+function mapRowToSuperCategory(row: any): SuperCategoryT {
+  return {
+    id: parseInt(row.id),
+    name: row.name,
+    income: Boolean(row.income),
+    outcome: Boolean(row.outcome),
+  };
 }

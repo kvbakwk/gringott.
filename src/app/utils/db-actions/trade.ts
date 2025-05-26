@@ -25,7 +25,6 @@ export interface TradeT {
     name: string;
   };
 }
-
 export interface TradeIdT {
   id: number;
 }
@@ -37,7 +36,6 @@ export async function getTradeById(id: number): Promise<TradeT> {
   );
   return mapRowToTrade(res.rows[0]);
 }
-
 export async function getTradesByWalletId(
   id: number
 ): Promise<TradeT[]> {
@@ -47,7 +45,6 @@ export async function getTradesByWalletId(
   );
   return res.rows.map(mapRowToTrade);
 }
-
 export async function getTradesByUserId(
   id: number
 ): Promise<TradeT[]> {
@@ -57,7 +54,6 @@ export async function getTradesByUserId(
   );
   return res.rows.map(mapRowToTrade);
 }
-
 export async function getTradesIdsByWalletId(
   id: number
 ): Promise<TradeIdT[]> {
@@ -67,7 +63,6 @@ export async function getTradesIdsByWalletId(
   );
   return res.rows.map(mapRowToTradeId);
 }
-
 export async function getTradesIdsBySubjectId(
   id: number
 ): Promise<TradeIdT[]> {
@@ -77,7 +72,6 @@ export async function getTradesIdsBySubjectId(
   );
   return res.rows.map(mapRowToTradeId);
 }
-
 
 const BASE_TRADE_QUERY = `
     SELECT 
@@ -100,7 +94,6 @@ const BASE_TRADE_QUERY = `
       JOIN public.method AS withdraw_method 
         ON public.trade.withdraw_method_id = withdraw_method.id
 `;
-
 
 function mapRowToTrade(row: any): TradeT {
   return {
@@ -125,7 +118,6 @@ function mapRowToTrade(row: any): TradeT {
     },
   };
 }
-
 function mapRowToTradeId(row: any): TradeIdT {
   return {
     id: parseInt(row.id),

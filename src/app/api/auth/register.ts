@@ -6,7 +6,7 @@ import {
   validatePassword,
   validatePasswords,
 } from "@app/utils/validator";
-import { createUser, isUserByEmail } from "@app/utils/db-actions/user";
+import { createUser, getUsersIdsByEmail } from "@app/utils/db-actions/user";
 
 interface RegisterResponseT {
   register: boolean;
@@ -25,13 +25,13 @@ export async function register(
   passwordValid: string,
   rules: boolean
 ): Promise<RegisterResponseT> {
+  const accountErr = !validateEmail(email) || ((await getUsersIdsByEmail(email)).length > 0)
   const isValid =
     validateFullname(name) &&
-    validateEmail(email) &&
+    !accountErr &&
     validatePassword(password) &&
     validatePasswords(password, passwordValid) &&
-    rules &&
-    !(await isUserByEmail(email));
+    rules;
 
   if (isValid) await createUser(name, email, password);
 
@@ -42,6 +42,6 @@ export async function register(
     passwordErr: !validatePassword(password),
     passwordsErr: !validatePasswords(password, passwordValid),
     rulesErr: !rules,
-    accountErr: !validateEmail(email) || (await isUserByEmail(email)),
+    accountErr: accountErr,
   };
 }

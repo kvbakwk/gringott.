@@ -1,6 +1,11 @@
 "use server";
 
 import {
+  decreaseWalletBalance,
+  increaseWalletBalance,
+} from "@app/utils/db-actions/wallet";
+import { createTransaction } from "@app/utils/db-actions/transaction";
+import {
   validateTransactionDate,
   validateTransactionAmount,
   validateTransactionDescription,
@@ -9,9 +14,8 @@ import {
   validateTransactionMethodId,
   validateTransactionCategoryId,
 } from "@app/utils/validator";
-import { Pool } from "pg";
 
-export async function createTransaction(
+export async function createTransactionAPI(
   walletId: number,
   income: boolean,
   methodId: number,
@@ -34,34 +38,21 @@ export async function createTransaction(
     (await validateTransactionSubjectId(subjectId, userId));
 
   if (isValid) {
-    const client: Pool = new Pool();
-    await client.query(
-      `INSERT INTO public.transaction (date, amount, description, category_id, subject_id, income, important, user_id, wallet_id, method_id, transaction_type_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11);`,
-      [
-        date,
-        amount,
-        description,
-        categoryId,
-        subjectId,
-        income,
-        important,
-        userId,
-        walletId,
-        methodId,
-        transactionTypeId,
-      ]
+    await createTransaction(
+      date,
+      amount,
+      description,
+      categoryId,
+      subjectId,
+      income,
+      important,
+      userId,
+      walletId,
+      methodId,
+      transactionTypeId
     );
-    if (income)
-      await client.query(
-        "UPDATE public.wallet SET balance = balance + $1 WHERE id = $2",
-        [amount, walletId]
-      );
-    else
-      await client.query(
-        "UPDATE public.wallet SET balance = balance - $1 WHERE id = $2",
-        [amount, walletId]
-      );
-    await client.end();
+    if (income) increaseWalletBalance(walletId, amount);
+    else decreaseWalletBalance(walletId, amount);
   }
 
   return {

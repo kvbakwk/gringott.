@@ -1,29 +1,21 @@
 "use server";
 
-import { Pool } from "pg";
+import {
+  decreaseWalletBalance,
+  increaseWalletBalance,
+} from "@app/utils/db-actions/wallet";
+import { deleteTransaction } from "@app/utils/db-actions/transaction";
 
-export async function deleteTransaction(
+export async function deleteTransactionAPI(
   transactionId: number,
   walletId: number,
   amount: number,
   income: boolean,
   userId: number
 ) {
-  const client: Pool = new Pool();
-  await client.query(`DELETE FROM public.transaction WHERE id = $1;`, [
-    transactionId,
-  ]);
-  if (income)
-    await client.query(
-      "UPDATE public.wallet SET balance = balance - $1 WHERE id = $2",
-      [amount, walletId]
-    );
-  else
-    await client.query(
-      "UPDATE public.wallet SET balance = balance + $1 WHERE id = $2",
-      [amount, walletId]
-    );
-  await client.end();
+  deleteTransaction(transactionId);
+  if (income) decreaseWalletBalance(walletId, amount);
+  else increaseWalletBalance(walletId, amount);
 
   return {
     createTransaction: true,

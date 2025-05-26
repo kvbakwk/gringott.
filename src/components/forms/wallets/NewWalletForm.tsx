@@ -3,11 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { createWallet } from "@app/api/wallet/create";
+import { createWalletAPI } from "@app/api/wallet/create";
 import {
   validateWalletBalance,
   validateWalletName,
 } from "@app/utils/validator";
+
 import { TextFieldOutlined } from "../../material/TextField";
 import { FilledButton, OutlinedButton } from "../../material/Button";
 
@@ -29,7 +30,7 @@ export default function NewWalletForm({ userId }: { userId: number }) {
     const balance: number = parseFloat(formData.get("balance").toString());
 
     if (validateWalletName(name) && validateWalletBalance(balance)) {
-      createWallet(name, balance, userId, 2)
+      createWalletAPI(name, balance, userId, 2)
         .then((res) => {
           setSuccess(res.createWallet);
           setNameErr(res.nameErr);

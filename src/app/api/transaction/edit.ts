@@ -1,6 +1,14 @@
 "use server";
 
 import {
+  decreaseWalletBalance,
+  increaseWalletBalance,
+} from "@app/utils/db-actions/wallet";
+import {
+  editTransaction,
+  getTransactionAmount,
+} from "@app/utils/db-actions/transaction";
+import {
   validateTransactionDate,
   validateTransactionAmount,
   validateTransactionDescription,
@@ -9,9 +17,8 @@ import {
   validateTransactionMethodId,
   validateTransactionCategoryId,
 } from "@app/utils/validator";
-import { Pool } from "pg";
 
-export async function editTransaction(
+export async function editTransactionAPI(
   transactionId: number,
   walletId: number,
   income: boolean,
@@ -35,41 +42,20 @@ export async function editTransaction(
     (await validateTransactionSubjectId(subjectId, userId));
 
   if (isValid) {
-    const client: Pool = new Pool();
-    const oldAmount = (await client.query(
-      "SELECT amount FROM public.transaction WHERE id = $1",
-      [transactionId]
-    )).rows[0].amount;
-    await client.query(
-      `UPDATE public.transaction 
-      SET 
-        date = $1, amount = $2, description = $3, category_id = $4, 
-        subject_id = $5, important = $6, method_id = $7, 
-        transaction_type_id = $8 
-      WHERE id = $9;`,
-      [
-        date,
-        amount,
-        description,
-        categoryId,
-        subjectId,
-        important,
-        methodId,
-        transactionTypeId,
-        transactionId,
-      ]
+    const oldAmount = await getTransactionAmount(transactionId);
+    await editTransaction(
+      date,
+      amount,
+      description,
+      categoryId,
+      subjectId,
+      important,
+      methodId,
+      transactionTypeId,
+      transactionId
     );
-    if (income)
-      await client.query(
-        "UPDATE public.wallet SET balance = balance + $1 WHERE id = $2",
-        [amount - oldAmount, walletId]
-      );
-    else
-      await client.query(
-        "UPDATE public.wallet SET balance = balance - $1 WHERE id = $2",
-        [amount - oldAmount, walletId]
-      );
-    await client.end();
+    if (income) increaseWalletBalance(walletId, amount - oldAmount);
+    else decreaseWalletBalance(walletId, amount - oldAmount);
   }
 
   return {

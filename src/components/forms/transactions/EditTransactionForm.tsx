@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { getTransaction } from "@app/api/transaction/get";
-import { editTransaction } from "@app/api/transaction/edit";
+import { editTransactionAPI } from "@app/api/transaction/edit";
 import { getWallets } from "@app/api/wallet/get";
 import { getCategories } from "@app/utils/db-actions/category";
 import { getSuperCategories } from "@app/utils/db-actions/super_category";
@@ -169,7 +169,7 @@ export default function EditTransactionForm({
       validateTransactionDescription(description) &&
       validateTransactionSubjectId(subjectId, userId)
     ) {
-      editTransaction(
+      editTransactionAPI(
         transactionId,
         walletId,
         income,

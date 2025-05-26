@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { deleteSubject } from "@app/api/subject/delete";
+import { deleteSubjectAPI } from "@app/api/subject/delete";
+
 import { FilledButton, OutlinedButton } from "../../material/Button";
 
 export default function DeleteSubjectForm({
@@ -25,7 +26,7 @@ export default function DeleteSubjectForm({
   ): Promise<void> => {
     e.preventDefault();
 
-    deleteSubject(subjectId, userId)
+    await deleteSubjectAPI(subjectId, userId)
       .then((res) => {
         setSuccess(res.success);
         setTransactionErr(res.transactionErr);

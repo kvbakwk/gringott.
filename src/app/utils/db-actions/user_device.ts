@@ -1,19 +1,19 @@
-import { Pool, QueryResult } from "pg";
+import { QueryResult } from "pg";
+
+import pool from "../db";
 
 interface UserDeviceDateT {
   expireDate: Date;
 }
 
-export async function getUserDeviceByDeviceId(
+export async function getUserDeviceDateByDeviceId(
   id: string
 ): Promise<UserDeviceDateT[]> {
-  const client: Pool = new Pool();
-  const res: QueryResult<UserDeviceDateT> = await client.query(
+  const res: QueryResult = await pool.query(
     "SELECT expire_date FROM public.user_device WHERE device_id = $1;",
     [id]
   );
-  await client.end();
-  return res.rows;
+  return res.rows.map(mapToUserDeviceDate);
 }
 
 export async function createUserDevice(
@@ -21,20 +21,21 @@ export async function createUserDevice(
   deviceId: string,
   expireDate: Date
 ): Promise<void> {
-  const client: Pool = new Pool();
-  await client.query("INSERT INTO public.user_device VALUES ($1, $2, $3);", [
+  await pool.query("INSERT INTO public.user_device VALUES ($1, $2, $3);", [
     userId,
     deviceId,
     expireDate,
   ]);
-  await client.end();
 }
-
-export async function deleteUserDeviceByDeviceId(id: string): Promise<void> {
-  const client: Pool = new Pool();
-  await client.query("DELETE FROM public.user_device WHERE device_id = $1;", [
+export async function deleteUserDevice(id: string): Promise<void> {
+  await pool.query("DELETE FROM public.user_device WHERE device_id = $1;", [
     id,
   ]);
-  await client.end();
 }
+
+const mapToUserDeviceDate = (row: any): UserDeviceDateT => {
+  return {
+    expireDate: new Date(row.expire_date),
+  };
+};
 

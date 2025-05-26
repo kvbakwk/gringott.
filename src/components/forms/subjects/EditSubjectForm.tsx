@@ -13,9 +13,9 @@ import { TextFieldOutlined } from "../../material/TextField";
 import { FilledButton, OutlinedButton } from "../../material/Button";
 import { Icon } from "@components/material/Icon";
 import { getSubject } from "@app/api/subject/get";
-import { editSubject } from "@app/api/subject/edit";
 import { Checkbox } from "@components/material/Checkbox";
 import Loading from "@components/Loading";
+import { editSubjectAPI } from "@app/api/subject/edit";
 
 export default function EditSubjectForm({
   userId,
@@ -69,7 +69,7 @@ export default function EditSubjectForm({
       validateSubjectNormal(normal) &&
       validateSubjectAtm(atm)
     ) {
-      editSubject(subjectId, name, userId, address, normal, atm)
+      editSubjectAPI(subjectId, name, address, normal, atm)
         .then((res) => {
           setSuccess(res.editSubject);
           setNameErr(res.nameErr);

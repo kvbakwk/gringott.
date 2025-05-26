@@ -1,11 +1,11 @@
-import { isIncomeCategory, isOutcomeCategory } from "./db-actions/category";
-import { getSubjectsIdsByUserId } from "./db-actions/subject";
-import { isBankMethod, isCashMethod } from "./db-actions/method";
 import {
   getWalletsByUserId,
   getWalletsIdsByUserId,
-  isCashWallet,
+  isWalletCash,
 } from "./db-actions/wallet";
+import { getSubjectsIdsByUserId } from "./db-actions/subject";
+import { isCategoryIncome, isCategoryOutcome } from "./db-actions/category";
+import { isMethodBank, isMethodCash } from "./db-actions/method";
 
 export const validateWalletName = (name: string): boolean => {
   const pattern = /^.{1,20}$/;
@@ -81,8 +81,8 @@ export const validateTransactionMethodId = async (
   return (
     !isNaN(methodId) &&
     !isNaN(walletId) &&
-    (((await isCashWallet(walletId)) && (await isCashMethod(methodId))) ||
-      (!(await isCashWallet(walletId)) && (await isBankMethod(methodId))))
+    (((await isWalletCash(walletId)) && (await isMethodBank(methodId))) ||
+      (!(await isWalletCash(walletId)) && (await isMethodBank(methodId))))
   );
 };
 export const validateTransactionCategoryId = async (
@@ -91,8 +91,8 @@ export const validateTransactionCategoryId = async (
 ): Promise<boolean> => {
   return (
     !isNaN(categoryId) &&
-    (((await isIncomeCategory(categoryId)) && income) ||
-      ((await isOutcomeCategory(categoryId)) && !income))
+    (((await isCategoryIncome(categoryId)) && income) ||
+      ((await isCategoryOutcome(categoryId)) && !income))
   );
 };
 
@@ -101,7 +101,7 @@ export const validateSubjectName = (name: string): boolean => {
   return pattern.test(name);
 };
 export const validateSubjectAddress = (address: string): boolean => {
-  const pattern = /^.{1,50}$/;
+  const pattern = /^.{0,50}$/;
   return pattern.test(address);
 };
 export const validateSubjectNormal = (normal: boolean): boolean => {
@@ -136,8 +136,8 @@ export const validateTradeUserMethodId = async (
 ): Promise<boolean> => {
   return (
     !isNaN(methodId) &&
-    ((deposit && (await isCashMethod(methodId))) ||
-      (!deposit && (await isBankMethod(methodId))))
+    ((deposit && (await isMethodCash(methodId))) ||
+      (!deposit && (await isMethodBank(methodId))))
   );
 };
 export const validateTradeDate = (date: Date): boolean => {
@@ -165,7 +165,7 @@ export const validateTradeSubjectMethodId = async (
 ): Promise<boolean> => {
   return (
     !isNaN(methodId) &&
-    ((deposit && (await isBankMethod(methodId))) ||
-      (!deposit && (await isCashMethod(methodId))))
+    ((deposit && (await isMethodBank(methodId))) ||
+      (!deposit && (await isMethodCash(methodId))))
   );
 };
