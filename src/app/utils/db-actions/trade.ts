@@ -34,7 +34,8 @@ export async function getTradeById(id: number): Promise<TradeT> {
     `${BASE_TRADE_QUERY} WHERE public.trade.id = $1;`,
     [id]
   );
-  return mapRowToTrade(res.rows[0]);
+  if (res.rows.length) return mapRowToTrade(res.rows[0]);
+  return null;
 }
 export async function getTradesByWalletId(id: number): Promise<TradeT[]> {
   const res: QueryResult = await pool.query(
