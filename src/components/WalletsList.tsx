@@ -49,6 +49,7 @@ export default function WalletsList({
             />
             {wallets
               .filter((wallet) => wallet.wallet_type_id === 2)
+              .sort((a, b) => a.name.localeCompare(b.name))
               .map((wallet) => (
                 <WalletItem
                   name={wallet.name}
