@@ -34,7 +34,8 @@ export async function getTradeById(id: number): Promise<TradeT> {
     `${BASE_TRADE_QUERY} WHERE public.trade.id = $1;`,
     [id]
   );
-  return mapRowToTrade(res.rows[0]);
+  if (res.rows.length) return mapRowToTrade(res.rows[0]);
+  return null;
 }
 export async function getTradesByWalletId(id: number): Promise<TradeT[]> {
   const res: QueryResult = await pool.query(
@@ -92,6 +93,15 @@ export async function createTrade(
       subjectId,
       subjectMethodId,
     ]
+  );
+  return res.rowCount;
+}
+export async function deleteTrade(
+  tradeId: number
+): Promise<number> {
+  const res = await pool.query(
+    `DELETE FROM public.trade WHERE id = $1;`,
+    [tradeId]
   );
   return res.rowCount;
 }
