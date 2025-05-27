@@ -108,13 +108,13 @@ export function Trade({
         }
       </div>
       <div className="flex justify-center items-center w-[150px]">
-        {trade.atm ? "-" : trade.deposit ? trade.deposit_method.name : trade.withdraw_method.name}
+        {trade.atm ? "-" : trade.user_method.name}
       </div>
       <div className="flex justify-center items-center truncate w-[200px]">
         {trade.subject.name}
       </div>
       <div className="flex justify-center items-center w-[150px]">
-        {trade.atm ? "-" : trade.deposit ? trade.withdraw_method.name : trade.deposit_method.name}
+        {trade.atm ? "-" : trade.subject_method.name}
       </div>
       <div
         className={`flex justify-between items-center w-[70px] h-full transition-opacity ${

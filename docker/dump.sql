@@ -93,14 +93,14 @@ create table if not exists public.trade (
     atm boolean not null,
     user_id integer not null,
     wallet_id integer not null,
+    user_method_id integer not null,
     subject_id integer not null,
-    deposit_method_id integer not null,
-    withdraw_method_id integer not null,
+    subject_method_id integer not null,
     foreign key (user_id) references public.user(id),
     foreign key (wallet_id) references public.wallet(id),
+    foreign key (user_method_id) references public.method(id),
     foreign key (subject_id) references public.subject(id),
-    foreign key (deposit_method_id) references public.method(id),
-    foreign key (withdraw_method_id) references public.method(id)
+    foreign key (subject_method_id) references public.method(id)
 );
 
 create table if not exists public.product (
@@ -183,6 +183,6 @@ insert into public.transaction (date, amount, description, category_id, subject_
 ('2025-04-01 12:00:00', 10, 'kieszonkowe', 58, 1, true, true, 1, 1, 1, 1),
 ('2025-04-01 12:00:00', 100, 'kieszonkowe', 58, 1, true, true, 1, 4, 4, 1);
 
-insert into public.trade (date, amount, deposit, atm, user_id, wallet_id, subject_id, deposit_method_id, withdraw_method_id) values 
-('2025-04-02 12:00:00', 40, false, true, 1, 3, 4, 1, 3),
-('2025-04-02 13:00:00', 10, true, false, 1, 3, 2, 1, 4);
+insert into public.trade (date, amount, deposit, atm, user_id, wallet_id, user_method_id, subject_id, subject_method_id) values 
+('2025-04-02 12:00:00', 40, false, true, 1, 3, 1, 4, 3),
+('2025-04-02 13:00:00', 10, true, false, 1, 3, 1, 3, 4);
