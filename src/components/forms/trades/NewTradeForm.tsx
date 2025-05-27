@@ -23,7 +23,7 @@ import { Icon } from "@components/material/Icon";
 import { TextFieldOutlined } from "@components/material/TextField";
 import { SelectOption, SelectOutlined } from "@components/material/Select";
 import { FilledButton, OutlinedButton } from "@components/material/Button";
-import { createTrade } from "@app/api/trade/create";
+import { createTradeAPI } from "@app/api/trade/create";
 
 export default function NewTradeForm({ userId }: { userId: number }) {
   const router = useRouter();
@@ -99,7 +99,7 @@ export default function NewTradeForm({ userId }: { userId: number }) {
       validateTradeDate(date) &&
       validateTradeAmount(amount)
     ) {
-      createTrade(
+      createTradeAPI(
         atm,
         walletId,
         deposit,
@@ -120,7 +120,8 @@ export default function NewTradeForm({ userId }: { userId: number }) {
         setSubjectIdErr(res.subjectIdErr);
         setSubjectMethodIdErr(res.subjectMethodIdErr);
         setError(false);
-      });
+        if(res.createTrade) router.back()
+      })
     } else {
       setSuccess(false);
       setAtmErr(!validateTradeAtm(atm));
