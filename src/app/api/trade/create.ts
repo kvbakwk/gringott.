@@ -1,7 +1,11 @@
 "use server";
 
+import {
+  decreaseWalletBalance,
+  getWalletsByUserId,
+  increaseWalletBalance,
+} from "@app/utils/db-actions/wallet";
 import { createTrade } from "@app/utils/db-actions/trade";
-import { decreaseWalletBalance, getWalletsByUserId, increaseWalletBalance } from "@app/utils/db-actions/wallet";
 import {
   validateTradeAmount,
   validateTradeAtm,
@@ -34,17 +38,30 @@ export async function createTradeAPI(
   subjectIdErr: boolean;
   subjectMethodIdErr: boolean;
 }> {
-  const isValid: boolean =
-    validateTradeAtm(atm) &&
-    (await validateTradeWalletId(walletId, userId)) &&
-    validateTradeDeposit(deposit) &&
-    (atm || (await validateTradeUserMethodId(userMethodId, deposit))) &&
-    validateTradeDate(date) &&
-    validateTradeAmount(amount) &&
-    (await validateTradeSubjectId(subjectId, userId)) &&
-    (atm || (await validateTradeSubjectMethodId(subjectMethodId, deposit)));
+  const atmErr = !validateTradeAtm(atm);
+  const walletIdErr = !(await validateTradeWalletId(walletId, userId));
+  const depositErr = !validateTradeDeposit(deposit);
+  const userMethodIdErr =
+    !atm && !(await validateTradeUserMethodId(userMethodId, deposit));
+  const dateErr = !validateTradeDate(date);
+  const amountErr = !validateTradeAmount(amount);
+  const subjectIdErr = !(await validateTradeSubjectId(subjectId, userId));
+  const subjectMethodIdErr =
+    !atm && !(await validateTradeSubjectMethodId(subjectMethodId, deposit));
 
-  const cashWalletId = (await getWalletsByUserId(userId)).filter(wallet => wallet.wallet_type_id === 1).at(0).id
+  const isValid: boolean =
+    !atmErr &&
+    !walletIdErr &&
+    !depositErr &&
+    !userMethodIdErr &&
+    !dateErr &&
+    !amountErr &&
+    !subjectIdErr &&
+    !subjectMethodIdErr;
+
+  const cashWalletId = (await getWalletsByUserId(userId))
+    .filter((wallet) => wallet.wallet_type_id === 1)
+    .at(0).id;
 
   if (isValid) {
     await createTrade(
@@ -58,21 +75,19 @@ export async function createTradeAPI(
       subjectId,
       atm ? 8 : subjectMethodId
     );
-      increaseWalletBalance(deposit ? walletId : cashWalletId, amount);
-      decreaseWalletBalance(deposit ? cashWalletId : walletId, amount);
+    increaseWalletBalance(deposit ? walletId : cashWalletId, amount);
+    decreaseWalletBalance(deposit ? cashWalletId : walletId, amount);
   }
 
   return {
     createTrade: isValid,
-    atmErr: !validateTradeAtm(atm),
-    walletIdErr: !(await validateTradeWalletId(walletId, userId)),
-    depositErr: !validateTradeDeposit(deposit),
-    userMethodIdErr:
-      !atm && !(await validateTradeUserMethodId(userMethodId, deposit)),
-    dateErr: !validateTradeDate(date),
-    amountErr: !validateTradeAmount(amount),
-    subjectIdErr: !(await validateTradeSubjectId(subjectId, userId)),
-    subjectMethodIdErr:
-      !atm && !(await validateTradeSubjectMethodId(subjectMethodId, deposit)),
+    atmErr: atmErr,
+    walletIdErr: walletIdErr,
+    depositErr: depositErr,
+    userMethodIdErr: userMethodIdErr,
+    dateErr: dateErr,
+    amountErr: amountErr,
+    subjectIdErr: subjectIdErr,
+    subjectMethodIdErr: subjectMethodIdErr,
   };
 }

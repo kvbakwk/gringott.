@@ -39,7 +39,7 @@ export async function isWalletCash(walletId: number): Promise<boolean> {
     "SELECT wallet_type_id FROM public.wallet WHERE id = $1;",
     [walletId]
   );
-  return Boolean(res.rows[0].wallet_type_id);
+  return Boolean(res.rows[0].wallet_type_id === 1);
 }
 
 export async function createWallet(name: string, balance: number, userId: number, walletTypeId: number): Promise<number> {

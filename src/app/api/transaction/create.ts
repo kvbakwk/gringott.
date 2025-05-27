@@ -28,14 +28,25 @@ export async function createTransactionAPI(
   userId: number,
   transactionTypeId: number
 ) {
+  const walletIdErr = !(await validateTransactionWalletId(walletId, userId));
+  const methodIdErr = !(await validateTransactionMethodId(methodId, walletId));
+  const dateErr = !validateTransactionDate(date);
+  const amountErr = !validateTransactionAmount(amount);
+  const descriptionErr = !validateTransactionDescription(description);
+  const categoryIdErr = !(await validateTransactionCategoryId(
+    categoryId,
+    income
+  ));
+  const subjectIdErr = !(await validateTransactionSubjectId(subjectId, userId));
+
   const isValid: boolean =
-    (await validateTransactionWalletId(walletId, userId)) &&
-    (await validateTransactionMethodId(methodId, walletId)) &&
-    validateTransactionDate(date) &&
-    validateTransactionAmount(amount) &&
-    validateTransactionDescription(description) &&
-    (await validateTransactionCategoryId(categoryId, income)) &&
-    (await validateTransactionSubjectId(subjectId, userId));
+    !walletIdErr &&
+    !methodIdErr &&
+    !dateErr &&
+    !amountErr &&
+    !descriptionErr &&
+    !categoryIdErr &&
+    !subjectIdErr;
 
   if (isValid) {
     await createTransaction(
@@ -57,12 +68,12 @@ export async function createTransactionAPI(
 
   return {
     createTransaction: isValid,
-    walletIdErr: !(await validateTransactionWalletId(walletId, userId)),
-    methodIdErr: !(await validateTransactionMethodId(methodId, walletId)),
-    dateErr: !validateTransactionDate(date),
-    amountErr: !validateTransactionAmount(amount),
-    descriptionErr: !validateTransactionDescription(description),
-    categoryIdErr: !(await validateTransactionCategoryId(categoryId, income)),
-    subjectIdErr: !(await validateTransactionSubjectId(subjectId, userId)),
+    walletIdErr: walletIdErr,
+    methodIdErr: methodIdErr,
+    dateErr: dateErr,
+    amountErr: amountErr,
+    descriptionErr: descriptionErr,
+    categoryIdErr: categoryIdErr,
+    subjectIdErr: subjectIdErr,
   };
 }

@@ -13,8 +13,10 @@ export async function createWalletAPI(
   userId: number,
   walletTypeId: number
 ) {
-  const isValid: boolean =
-    name !== null && validateWalletName(name) && validateWalletBalance(balance);
+  const nameErr = !validateWalletName(name)
+  const balanceErr = !validateWalletBalance(balance)
+  
+  const isValid: boolean = !nameErr && !balanceErr;
 
   if (isValid) {
     const walletId = await createWallet(name, balance, userId, walletTypeId);
@@ -37,7 +39,7 @@ export async function createWalletAPI(
 
   return {
     createWallet: isValid,
-    nameErr: !(name !== null && validateWalletName(name)),
-    balanceErr: !validateWalletBalance(balance),
+    nameErr: nameErr,
+    balanceErr: balanceErr,
   };
 }

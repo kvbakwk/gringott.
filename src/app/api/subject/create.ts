@@ -15,19 +15,20 @@ export async function createSubjectAPI(
   normal: boolean,
   atm: boolean
 ) {
-  const isValid: boolean =
-    validateSubjectName(name) &&
-    validateSubjectAddress(address) &&
-    validateSubjectNormal(normal) &&
-    validateSubjectAtm(atm);
+  const nameErr = !validateSubjectName(name);
+  const addressErr = !validateSubjectAddress(name);
+  const normalErr = !validateSubjectNormal(normal);
+  const atmErr = !validateSubjectAtm(atm);
+
+  const isValid: boolean = !nameErr && !addressErr && !normalErr && !atmErr;
 
   if (isValid) await createSubject(name, userId, address, normal, atm);
 
   return {
     createSubject: isValid,
-    nameErr: !validateSubjectName(name),
-    addressErr: !validateSubjectAddress(address),
-    normalErr: !validateSubjectNormal(normal),
-    atmErr: !validateSubjectAtm(atm),
+    nameErr: nameErr,
+    addressErr: addressErr,
+    normalErr: normalErr,
+    atmErr: atmErr,
   };
 }

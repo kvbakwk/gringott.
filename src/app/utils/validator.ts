@@ -81,7 +81,7 @@ export const validateTransactionMethodId = async (
   return (
     !isNaN(methodId) &&
     !isNaN(walletId) &&
-    (((await isWalletCash(walletId)) && (await isMethodBank(methodId))) ||
+    (((await isWalletCash(walletId)) && (await isMethodCash(methodId))) ||
       (!(await isWalletCash(walletId)) && (await isMethodBank(methodId))))
   );
 };

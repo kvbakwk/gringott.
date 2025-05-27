@@ -32,14 +32,26 @@ export async function editTransactionAPI(
   userId: number,
   transactionTypeId: number
 ) {
+  const walletIdErr = !(await validateTransactionWalletId(walletId, userId));
+  const methodIdErr = !(await validateTransactionMethodId(methodId, walletId));
+  console.log(methodId, walletId, methodIdErr)
+  const dateErr = !validateTransactionDate(date);
+  const amountErr = !validateTransactionAmount(amount);
+  const descriptionErr = !validateTransactionDescription(description);
+  const categoryIdErr = !(await validateTransactionCategoryId(
+    categoryId,
+    income
+  ));
+  const subjectIdErr = !(await validateTransactionSubjectId(subjectId, userId));
+
   const isValid: boolean =
-    (await validateTransactionWalletId(walletId, userId)) &&
-    (await validateTransactionMethodId(methodId, walletId)) &&
-    validateTransactionDate(date) &&
-    validateTransactionAmount(amount) &&
-    validateTransactionDescription(description) &&
-    (await validateTransactionCategoryId(categoryId, income)) &&
-    (await validateTransactionSubjectId(subjectId, userId));
+    !walletIdErr &&
+    !methodIdErr &&
+    !dateErr &&
+    !amountErr &&
+    !descriptionErr &&
+    !categoryIdErr &&
+    !subjectIdErr;
 
   if (isValid) {
     const oldAmount = await getTransactionAmount(transactionId);
@@ -60,12 +72,12 @@ export async function editTransactionAPI(
 
   return {
     createTransaction: isValid,
-    walletIdErr: !(await validateTransactionWalletId(walletId, userId)),
-    methodIdErr: !(await validateTransactionMethodId(methodId, walletId)),
-    dateErr: !validateTransactionDate(date),
-    amountErr: !validateTransactionAmount(amount),
-    descriptionErr: !validateTransactionDescription(description),
-    categoryIdErr: !(await validateTransactionCategoryId(categoryId, income)),
-    subjectErr: !(await validateTransactionSubjectId(subjectId, userId)),
+    walletIdErr: walletIdErr,
+    methodIdErr: methodIdErr,
+    dateErr: dateErr,
+    amountErr: amountErr,
+    descriptionErr: descriptionErr,
+    categoryIdErr: categoryIdErr,
+    subjectErr: subjectIdErr,
   };
 }
