@@ -13,7 +13,7 @@ export async function deleteTransactionAPI(
   income: boolean,
   userId: number
 ) {
-  deleteTransaction(transactionId);
+  await deleteTransaction(transactionId);
   if (income) decreaseWalletBalance(walletId, amount);
   else increaseWalletBalance(walletId, amount);
 

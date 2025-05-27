@@ -96,6 +96,15 @@ export async function createTrade(
   );
   return res.rowCount;
 }
+export async function deleteTrade(
+  tradeId: number
+): Promise<number> {
+  const res = await pool.query(
+    `DELETE FROM public.trade WHERE id = $1;`,
+    [tradeId]
+  );
+  return res.rowCount;
+}
 
 const BASE_TRADE_QUERY = `
     SELECT 

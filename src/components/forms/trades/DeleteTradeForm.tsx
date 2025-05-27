@@ -64,7 +64,9 @@ export default function DeleteTradeForm({
               <OutlinedButton type="button" onClick={() => router.back()}>
                 nie, anuluj
               </OutlinedButton>
-              <FilledButton className="error" disabled={tradeIdErr}>tak, usuń</FilledButton>
+              <FilledButton className="error" disabled={tradeIdErr}>
+                tak, usuń
+              </FilledButton>
             </div>
             {tradeIdErr && (
               <div className="font-medium text-error text-[12px] text-center">
