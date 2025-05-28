@@ -2,8 +2,6 @@
 
 import { WalletT } from "@app/utils/db-actions/wallet";
 import { TradeT } from "@app/utils/db-actions/trade";
-import { SuperCategoryT } from "@app/utils/db-actions/super_category";
-import { CategoryT } from "@app/utils/db-actions/category";
 import { MethodT } from "@app/utils/db-actions/method";
 
 import { useEffect, useState } from "react";
@@ -11,17 +9,16 @@ import { useRouter } from "next/navigation";
 
 import { getTrade } from "@app/api/trade/get";
 import { getWallets } from "@app/api/wallet/get";
-import { getCategories } from "@app/utils/db-actions/category";
-import { getSuperCategories } from "@app/utils/db-actions/super_category";
 import { getMethods } from "@app/utils/db-actions/method";
 import { SelectOption, SelectOutlined } from "../../material/Select";
 import { TextFieldOutlined } from "../../material/TextField";
-import { Checkbox } from "../../material/Checkbox";
 import { FilledButton, OutlinedButton } from "../../material/Button";
 import { Icon } from "@components/material/Icon";
 import { getSubjects } from "@app/api/subject/get";
 import { SubjectT } from "@app/utils/db-actions/subject";
 import Loading from "@components/Loading";
+import { validateTradeAmount, validateTradeAtm, validateTradeDate, validateTradeDeposit } from "@app/utils/validator";
+import { editTradeAPI } from "@app/api/trade/edit";
 
 export default function EditTradeForm({
   userId,
@@ -50,6 +47,7 @@ export default function EditTradeForm({
   const [subjectMethodId, setSubjectMethodId] = useState<number>(0);
 
   const [success, setSuccess] = useState<boolean>(false);
+  const [tradeIdErr, setTradeIdErr] = useState<boolean>(false);
   const [atmErr, setAtmErr] = useState<boolean>(false);
   const [depositErr, setDepositErr] = useState<boolean>(false);
   const [walletIdErr, setWalletIdErr] = useState<boolean>(false);
@@ -63,12 +61,15 @@ export default function EditTradeForm({
   useEffect(() => {
     getTrade(tradeId)
       .then((res) => {
-        setTrade(res);
-        setAtm(res.atm);
-        setWalletId(res.wallet_id);
-        setDeposit(res.deposit);
-        setUserMethodId(res.user_method.id);
-        setSubjectMethodId(res.subject_method.id);
+        if (!res || res.user_id !== userId) setTradeIdErr(true);
+        else {
+          setTrade(res);
+          setAtm(res.atm);
+          setWalletId(res.wallet_id);
+          setDeposit(res.deposit);
+          setUserMethodId(res.user_method.id);
+          setSubjectMethodId(res.subject_method.id);
+        }
       })
       .finally(() => setTradeReady(true));
     getWallets(userId)
@@ -101,9 +102,74 @@ export default function EditTradeForm({
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    
+    const atm: boolean = Boolean(parseInt(formData.get("atm")?.toString()));
+    const walletId: number = parseInt(formData.get("walletId")?.toString());
+    const deposit: boolean = Boolean(
+      parseInt(formData.get("deposit")?.toString())
+    );
+    const userMethodId: number = parseInt(
+      formData.get("userMethodId")?.toString()
+    );
+    const date: Date = new Date(formData.get("date").toString());
+    const amount: number = parseFloat(formData.get("amount").toString());
+    const subjectId: number = parseInt(formData.get("subjectId")?.toString());
+    const subjectMethodId: number = parseInt(
+      formData.get("subjectMethodId")?.toString()
+    );
+    
+    if (
+      validateTradeAtm(atm) &&
+      validateTradeDeposit(deposit) &&
+      validateTradeDate(date) &&
+      validateTradeAmount(amount)
+    ) {
+      editTradeAPI(
+        atm,
+        walletId,
+        deposit,
+        userMethodId,
+        date,
+        amount,
+        subjectId,
+        subjectMethodId,
+        userId
+      ).then((res) => {
+        setSuccess(res.editTrade);
+        setAtmErr(res.atmErr);
+        setWalletIdErr(res.walletIdErr);
+        setDepositErr(res.depositErr);
+        setUserMethodIdErr(res.userMethodIdErr);
+        setDateErr(res.dateErr);
+        setAmountErr(res.amountErr);
+        setSubjectIdErr(res.subjectIdErr);
+        setSubjectMethodIdErr(res.subjectMethodIdErr);
+        setError(false);
+        if(res.editTrade) router.back()
+      })
+    } else {
+      setSuccess(false);
+      setAtmErr(!validateTradeAtm(atm));
+      setWalletIdErr(false);
+      setDepositErr(!validateTradeDeposit(deposit));
+      setUserMethodIdErr(false);
+      setDateErr(!validateTradeDate(date));
+      setAmountErr(!validateTradeAmount(amount));
+      setSubjectIdErr(false);
+      setSubjectMethodIdErr(false);
+      setError(false);
+    }
   };
 
-  if (tradeReady && walletsReady && subjectsReady && methodsReady)
+  if (
+    tradeReady &&
+    walletsReady &&
+    subjectsReady &&
+    methodsReady &&
+    !tradeIdErr
+  )
     return (
       <form
         className="flex flex-col justify-center items-center gap-[30px] w-fit h-fit py-[60px]"
@@ -283,6 +349,12 @@ export default function EditTradeForm({
           <FilledButton>edytuj wymianę</FilledButton>
         </div>
       </form>
+    );
+  else if (tradeIdErr)
+    return (
+      <div className="text-error text-[18px] text-center">
+        wymiana, którą próbujesz edytować nie należy do Ciebie
+      </div>
     );
   else return <Loading />;
 }
