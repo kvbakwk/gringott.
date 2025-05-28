@@ -32,6 +32,7 @@ import NewWalletPage from "./wallets/NewWalletPage";
 import NewTradePage from "./trades/NewTradePage";
 import TradesPage from "./trades/TradesPage";
 import DeleteTradePage from "./trades/DeleteTradePage";
+import EditTradePage from "./trades/EditTradePage";
 
 export default function DashboardPage({
   slug,
@@ -130,13 +131,19 @@ export default function DashboardPage({
       {slug &&
         slug[0] === RouteSegments.Transactions &&
         slug[1] === RouteSegments.Trades &&
-        slug[2] === RouteSegments.Delete && (
-          <DeleteTradePage userId={user.id} tradeId={parseInt(slug[3])} />
+        slug[2] === RouteSegments.New && <NewTradePage userId={user.id} />}
+      {slug &&
+        slug[0] === RouteSegments.Transactions &&
+        slug[1] === RouteSegments.Trades &&
+        slug[2] === RouteSegments.Edit && (
+          <EditTradePage userId={user.id} tradeId={parseInt(slug[3])} />
         )}
       {slug &&
         slug[0] === RouteSegments.Transactions &&
         slug[1] === RouteSegments.Trades &&
-        slug[2] === RouteSegments.New && <NewTradePage userId={user.id} />}
+        slug[2] === RouteSegments.Delete && (
+          <DeleteTradePage userId={user.id} tradeId={parseInt(slug[3])} />
+        )}
       {slug &&
         slug[0] === RouteSegments.Transactions &&
         slug[1] === RouteSegments.Subjects &&
