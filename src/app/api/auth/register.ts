@@ -7,6 +7,7 @@ import {
   validatePasswords,
 } from "@app/utils/validator";
 import { createUser, getUsersIdsByEmail } from "@app/utils/db-actions/user";
+import { createWallet } from "@app/utils/db-actions/wallet";
 
 interface RegisterResponseT {
   register: boolean;
@@ -25,7 +26,8 @@ export async function register(
   passwordValid: string,
   rules: boolean
 ): Promise<RegisterResponseT> {
-  const accountErr = !validateEmail(email) || ((await getUsersIdsByEmail(email)).length > 0)
+  const accountErr =
+    !validateEmail(email) || (await getUsersIdsByEmail(email)).length > 0;
   const isValid =
     validateFullname(name) &&
     !accountErr &&
@@ -33,7 +35,12 @@ export async function register(
     validatePasswords(password, passwordValid) &&
     rules;
 
-  if (isValid) await createUser(name, email, password);
+  if (isValid) {
+    const user = await createUser(name, email, password);
+    await createWallet(null, 0, user.id, 1);
+    await createWallet(null, 0, user.id, 3);
+    await createWallet(null, 0, user.id, 4);
+  }
 
   return {
     register: isValid,

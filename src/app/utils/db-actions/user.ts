@@ -1,9 +1,8 @@
-'use server'
+"use server";
 
 import { QueryResult } from "pg";
 
 import pool from "../db";
-import { createWallet } from "./wallet";
 
 export interface UserT {
   id: number;
@@ -30,14 +29,16 @@ export async function getUsersIdsByEmail(email: string): Promise<UserIdT[]> {
   return res.rows.map(mapRowToUserId);
 }
 
-export async function createUser(name: string, email: string, password: string): Promise<void> {
+export async function createUser(
+  name: string,
+  email: string,
+  password: string
+): Promise<UserIdT> {
   const res: QueryResult = await pool.query(
     "INSERT INTO public.user (name, email, password) VALUES ($1, $2, $3) RETURNING id;",
     [name, email, password]
   );
-  await createWallet(null, res.rows[0].id, 1);
-  await createWallet(null, res.rows[0].id, 3);
-  await createWallet(null, res.rows[0].id, 4);
+  return mapRowToUserId(res.rows[0]);
 }
 
 export async function validateUser(

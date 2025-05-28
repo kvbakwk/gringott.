@@ -28,7 +28,7 @@ export default function NewSubjectForm({ userId }: { userId: number }) {
     const formData = new FormData(e.currentTarget);
 
     const name: string = formData.get("name")?.toString();
-    const address: string = formData.get("name")?.toString();
+    const address: string = formData.get("address")?.toString();
     const normal: boolean = formData.get("normal")?.toString() == "on";
     const atm: boolean = formData.get("atm")?.toString() == "on";
 
