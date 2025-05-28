@@ -65,6 +65,13 @@ export async function getTradesIdsBySubjectId(id: number): Promise<TradeIdT[]> {
   );
   return res.rows.map(mapRowToTradeId);
 }
+export async function getTradeAmount(id: number): Promise<number> {
+  const res: QueryResult = await pool.query(
+    "SELECT amount FROM public.trade WHERE id = $1;",
+    [id]
+  );
+  return res.rows[0].amount;
+}
 
 export async function createTrade(
   date: Date,
@@ -92,6 +99,38 @@ export async function createTrade(
       userMethodId,
       subjectId,
       subjectMethodId,
+    ]
+  );
+  return res.rowCount;
+}
+export async function editTrade(
+  date: Date,
+  amount: number,
+  deposit: boolean,
+  atm: boolean,
+  walletId: number,
+  userMethodId: number,
+  subjectId: number,
+  subjectMethodId: number,
+  tradeId: number
+): Promise<number> {
+  const res = await pool.query(
+    `UPDATE public.trade 
+    SET 
+      date = $1, amount = $2, deposit = $3, atm = $4, 
+      wallet_id = $5, user_method_id = $6, subject_id = $7, 
+      subject_method_id = $8
+    WHERE id = $9;`,
+    [
+      date,
+      amount,
+      deposit,
+      atm,
+      walletId,
+      userMethodId,
+      subjectId,
+      subjectMethodId,
+      tradeId,
     ]
   );
   return res.rowCount;
