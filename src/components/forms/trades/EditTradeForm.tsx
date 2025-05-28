@@ -127,6 +127,7 @@ export default function EditTradeForm({
       validateTradeAmount(amount)
     ) {
       editTradeAPI(
+        tradeId,
         atm,
         walletId,
         deposit,
@@ -138,6 +139,7 @@ export default function EditTradeForm({
         userId
       ).then((res) => {
         setSuccess(res.editTrade);
+        setTradeIdErr(res.tradeIdErr)
         setAtmErr(res.atmErr);
         setWalletIdErr(res.walletIdErr);
         setDepositErr(res.depositErr);
@@ -151,6 +153,7 @@ export default function EditTradeForm({
       })
     } else {
       setSuccess(false);
+      setTradeIdErr(false)
       setAtmErr(!validateTradeAtm(atm));
       setWalletIdErr(false);
       setDepositErr(!validateTradeDeposit(deposit));
