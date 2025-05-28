@@ -8,7 +8,7 @@ import { RouteSegments } from "@app/utils/routes";
 export async function generateMetadata({ params }) {
   const path = await params;
   const title =
-    "gringott | " +
+    "portfel. | " +
     (!path.slug
       ? "strona główna"
       : path.slug[0] === RouteSegments.HistoryPage

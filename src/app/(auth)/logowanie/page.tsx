@@ -1,7 +1,7 @@
 import LoginForm from "@components/forms/LoginForm";
 
 export const metadata = {
-  title: "gringott | logowanie",
+  title: "portfel. | logowanie",
 };
 
 export default function Page() {
