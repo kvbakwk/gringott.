@@ -8,6 +8,7 @@ export enum RouteSegments {
   Wallets = "portfele",
   Transactions = "transakcje",
   Trades = "wymiany",
+  Transfers = "transfery",
   Subjects = "podmioty",
   Categories = "kategorie",
   Methods = "metody",

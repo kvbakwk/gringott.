@@ -33,6 +33,7 @@ import NewTradePage from "./trades/NewTradePage";
 import TradesPage from "./trades/TradesPage";
 import DeleteTradePage from "./trades/DeleteTradePage";
 import EditTradePage from "./trades/EditTradePage";
+import NewTransferPage from "./transfers/NewTransferPage";
 
 export default function DashboardPage({
   slug,
@@ -144,6 +145,10 @@ export default function DashboardPage({
         slug[2] === RouteSegments.Delete && (
           <DeleteTradePage userId={user.id} tradeId={parseInt(slug[3])} />
         )}
+      {slug &&
+        slug[0] === RouteSegments.Transactions &&
+        slug[1] === RouteSegments.Transfers &&
+        slug[2] === RouteSegments.New && <NewTransferPage userId={user.id} />}
       {slug &&
         slug[0] === RouteSegments.Transactions &&
         slug[1] === RouteSegments.Subjects &&
