@@ -114,7 +114,7 @@ create table if not exists public.transfer (
     foreign key (user_id) references public.user(id),
     foreign key (method_id) references public.method(id),
     foreign key (from_wallet_id) references public.wallet(id),
-    foreign key (to_wallet_id) references public.wallet(id),
+    foreign key (to_wallet_id) references public.wallet(id)
 );
 
 create table if not exists public.product (
