@@ -65,7 +65,7 @@ export default function DashboardPage({
   }, [user.id]);
 
   return (
-    <div className="grid grid-rows-[110px_1fr]">
+    <div className="grid grid-rows-[56px_1fr]">
       <WalletsList wallets={wallets} walletsReady={walletsReady} />
       {(slug === undefined || (slug && slug[0] === RouteSegments.HomePage)) && (
         <HomePage

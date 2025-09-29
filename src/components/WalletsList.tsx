@@ -41,7 +41,6 @@ export default function WalletsList({
       <div className="flex items-end gap-[12px] max-w-[calc(100vw-300px)] h-full pl-[40px] pr-[70px] pb-[8px] overflow-x-auto overflow-y-hidden scroll-none">
         {walletsReady && (
           <>
-            <WalletItem name="STAN" balance={balance} show={walletsReady} />
             <WalletItem
               name="gotówka"
               balance={cashBalance}
@@ -65,12 +64,6 @@ export default function WalletsList({
             <CircularProgress className="mini" indeterminate />
           </div>
         )}
-        <Link
-          className="flex justify-center items-center text-primary h-[40px] px-[15px]"
-          href={`/${RouteSegments.Wallets}/${RouteSegments.New}`}
-        >
-          <Icon className="fill mini">settings</Icon>
-        </Link>
       </div>
     </div>
   );
@@ -87,7 +80,7 @@ function WalletItem({
 }) {
   return (
     <div className="flex justify-center items-center gap-[10px] h-[40px] px-[20px]">
-      <div className="font-bold text-primary">{name}</div>
+      <div className="text-primary">{name}</div>
       <div className="flex justify-center items-center gap-[3px]">
         {parseMoney(balance)}
         <span>zł</span>

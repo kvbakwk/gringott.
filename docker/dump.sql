@@ -157,6 +157,7 @@ insert into public.category (name, super_category_id) values
 insert into public.wallet_type (name) values 
 ('gotówka'), 
 ('bank'), 
+('należności'), 
 ('oszczędności'), 
 ('skarbonka'),
 ('cel'), 

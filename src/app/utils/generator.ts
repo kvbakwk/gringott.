@@ -4,7 +4,9 @@ import { TradeT } from "./db-actions/trade";
 export function generateTimeLimits(): {
   week: { startOfWeek: Date; endOfWeek: Date };
   month: { startOfMonth: Date; endOfMonth: Date };
+  previousMonth: { startOfMonth: Date; endOfMonth: Date };
   year: { startOfYear: Date; endOfYear: Date };
+  previousYear: { startOfYear: Date; endOfYear: Date };
 } {
   function getWeekStartEnd() {
     const today = new Date();
@@ -20,21 +22,38 @@ export function generateTimeLimits(): {
     const year = today.getFullYear();
     const month = today.getMonth();
     const startOfMonth = new Date(year, month, 1);
-    const endOfMonth = new Date(year, month + 2, 0);
+    const endOfMonth = new Date(year, month + 1, 0, 23, 59, 59);
+    return { startOfMonth, endOfMonth };
+  }
+  function getPreviousMonthStartEnd() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    const startOfMonth = new Date(year, month ? month - 1 : 11, 1);
+    const endOfMonth = new Date(year, month, 0, 23, 59, 59);
     return { startOfMonth, endOfMonth };
   }
   function getYearStartEnd() {
     const today = new Date();
     const year = today.getFullYear();
     const startOfYear = new Date(year, 0, 1);
-    const endOfYear = new Date(year + 2, 0, 0);
+    const endOfYear = new Date(year + 1, 0, 0, 23, 59, 59);
+    return { startOfYear, endOfYear };
+  }
+  function getPreviousYearStartEnd() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const startOfYear = new Date(year - 1, 0, 1);
+    const endOfYear = new Date(year, 0, 0, 23, 59, 59);
     return { startOfYear, endOfYear };
   }
 
   return {
     week: getWeekStartEnd(),
     month: getMonthStartEnd(),
+    previousMonth: getPreviousMonthStartEnd(),
     year: getYearStartEnd(),
+    previousYear: getPreviousYearStartEnd(),
   };
 }
 
