@@ -28,21 +28,21 @@ export default function TradesPage({
   const router = useRouter();
 
   return (
-    <div className="flex flex-col w-[calc(100%-50px)] h-[calc(100%-50px)] bg-surface rounded-2xl shadow-sm">
+    <div className="flex flex-col w-[calc(100%-50px)] h-full">
       <div className="flex justify-center items-end gap-[20px] font-bold text-primary text-md w-full h-[50px] pb-[10px]">
-        <div className="flex justify-center items-center w-[200px]">DATA</div>
-        <div className="flex justify-center items-center w-[160px]">KWOTA</div>
+        <div className="flex justify-center items-center w-[200px]">data</div>
+        <div className="flex justify-center items-center w-[160px]">kwota</div>
         <div className="flex justify-center items-center w-[120px]">
-          PORTFEL
+          portfel
         </div>
-        <div className="flex justify-center items-center w-[150px]">METODA</div>
+        <div className="flex justify-center items-center w-[150px]">metoda</div>
         <div className="flex justify-center items-center w-[200px]">
-          DRUGA STRONA
+          druga strona
         </div>
-        <div className="flex justify-center items-center w-[150px]">METODA</div>
+        <div className="flex justify-center items-center w-[150px]">metoda</div>
       </div>
       <div
-        className={`flex w-full h-[calc(100vh-160px)] pb-[30px] overflow-y-auto scroll-none ${
+        className={`flex w-full h-[calc(100vh-160px)] px-[20px] pb-[30px] overflow-y-auto scroll-none ${
           walletsReady && tradesReady
             ? "flex-col"
             : "justify-center items-center"
@@ -84,7 +84,7 @@ export function Trade({
 
   return (
     <div
-      className={`flex justify-center items-center gap-[20px] font-normal text-on-surface-variant text-base w-full h-[30px]`}
+      className={`flex justify-center items-center gap-[20px] font-normal text-on-surface-variant text-base w-full h-[30px] rounded-lg hover:shadow-sm hover:bg-surface`}
       key={trade.id}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}

@@ -91,7 +91,7 @@ export function Transaction({
 
   return (
     <div
-      className={`flex justify-center items-center gap-[20px] font-normal text-on-surface-variant text-base w-full h-[30px] border-y-[1px] border-surface-container hover:border-primary  ${
+      className={`flex justify-center items-center gap-[20px] font-normal text-on-surface-variant text-base w-full h-[30px] rounded-lg hover:shadow-sm hover:bg-surface  ${
         !transaction.important && "opacity-100"
       }`}
       key={transaction.id}

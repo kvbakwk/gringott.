@@ -49,7 +49,7 @@ export function Subject({ subject }: { subject: SubjectT }) {
 
   return (
     <div
-      className="flex justify-between items-center w-[250px] h-[30px]"
+      className="flex justify-between items-center w-[300px] h-[46px] px-[16px] py-[8px] rounded-lg hover:shadow-sm hover:bg-surface"
       key={subject.id}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
@@ -58,7 +58,7 @@ export function Subject({ subject }: { subject: SubjectT }) {
         {subject.normal ? "person" : "atm"}
       </Icon>
       <div className="flex flex-col">
-        <div className="flex justify-start items-center text-primary font-semibold text-[16px] w-[150px] pl-[10px]">
+        <div className="flex justify-start items-center text-primary font-semibold text-[16px] w-[160px] pl-[10px]">
           {subject.name}
         </div>
         <div className="flex justify-start items-center text-on-surface-variant font-semibold text-[10px] w-[150px] pl-[10px]">
@@ -66,7 +66,7 @@ export function Subject({ subject }: { subject: SubjectT }) {
         </div>
       </div>
       <div
-        className={`flex justify-between items-center w-[70px] h-full transition-opacity ${
+        className={`flex justify-between items-center w-[60px] h-full transition-opacity ${
           hover ? "opacity-100" : "opacity-0"
         }`}
       >
