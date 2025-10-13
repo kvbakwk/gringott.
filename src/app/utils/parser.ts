@@ -29,29 +29,29 @@ export function parseTime(date: Date): string {
 export function parseMonth(number: number): string {
   switch (number) {
     case 0:
-      return "styczeń";
+      return "w styczniu";
     case 1:
-      return "luty";
+      return "w lutym";
     case 2:
-      return "marzec";
+      return "w marcu";
     case 3:
-      return "kwiecień";
+      return "w kwietniu";
     case 4:
-      return "maj";
+      return "w maju";
     case 5:
-      return "czerwiec";
+      return "w czerwcu";
     case 6:
-      return "lipiec";
+      return "w lipcu";
     case 7:
-      return "sierpień";
+      return "w sierpniu";
     case 8:
-      return "wrzesień";
+      return "we wrześniu";
     case 9:
-      return "październik";
+      return "w październiku";
     case 10:
-      return "listopad";
+      return "w listopadzie";
     case 11:
-      return "grudzień";
+      return "w grudniu";
     default:
       return "";
   }

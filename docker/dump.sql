@@ -103,6 +103,20 @@ create table if not exists public.trade (
     foreign key (subject_method_id) references public.method(id)
 );
 
+create table if not exists public.transfer (
+    id serial primary key,
+    user_id integer not null,
+    date timestamp not null,
+    amount numeric(10, 2) not null,
+    method_id integer not null,
+    from_wallet_id integer not null,
+    to_wallet_id integer not null,
+    foreign key (user_id) references public.user(id),
+    foreign key (method_id) references public.method(id),
+    foreign key (from_wallet_id) references public.wallet(id),
+    foreign key (to_wallet_id) references public.wallet(id)
+);
+
 create table if not exists public.product (
     id serial primary key,
     name varchar(255) not null,
@@ -143,6 +157,7 @@ insert into public.category (name, super_category_id) values
 insert into public.wallet_type (name) values 
 ('gotówka'), 
 ('bank'), 
+('należności'), 
 ('oszczędności'), 
 ('skarbonka'),
 ('cel'), 
