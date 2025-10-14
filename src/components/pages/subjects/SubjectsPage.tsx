@@ -49,7 +49,7 @@ export function Subject({ subject }: { subject: SubjectT }) {
 
   return (
     <div
-      className="flex justify-between items-center w-[300px] h-[46px] px-[16px] py-[8px] rounded-lg hover:shadow-sm hover:bg-surface"
+      className="flex justify-between items-center w-[300px] h-[46px] px-[16px] py-[8px] rounded-2xl hover:shadow-sm hover:bg-surface"
       key={subject.id}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}

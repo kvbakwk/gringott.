@@ -15,6 +15,7 @@ export default function DashboardNav() {
       <DashboardNavItem icon="history" text="historia" path={`/${RouteSegments.HistoryPage}`} />
       <DashboardNavItem icon="list" text="transakcje" path={`/${RouteSegments.Transactions}`} />
       <DashboardNavSubitem icon="swap_vert" text="wymiany" path={`/${RouteSegments.Transactions}/${RouteSegments.Trades}`} show={pathname.startsWith(`/${RouteSegments.Transactions}`)} />
+      <DashboardNavSubitem icon="swap_horiz" text="transfery" path={`/${RouteSegments.Transactions}/${RouteSegments.Transfers}`} show={pathname.startsWith(`/${RouteSegments.Transactions}`)} />
       <DashboardNavSubitem icon="group" text="podmioty" path={`/${RouteSegments.Transactions}/${RouteSegments.Subjects}`} show={pathname.startsWith(`/${RouteSegments.Transactions}`)} />
       <DashboardNavSubitem icon="category" text="kategorie" path={`/${RouteSegments.Transactions}/${RouteSegments.Categories}`} show={pathname.startsWith(`/${RouteSegments.Transactions}`)} />
       <DashboardNavSubitem icon="tactic" text="metody" path={`/${RouteSegments.Transactions}/${RouteSegments.Methods}`} show={pathname.startsWith(`/${RouteSegments.Transactions}`)} />
@@ -30,7 +31,7 @@ function DashboardNavItem({ icon, text, path }) {
 
   return (
     <div
-    className={`flex items-center gap-[18px] font-extralight text-[22px] w-full h-[70px] p-[18px] rounded-2xl cursor-pointer hover:bg-surface${pathname === path ? ' bg-surface shadow-sm' : ''}`}
+    className={`flex items-center gap-[18px] font-extralight text-[20px] w-full h-[50px] p-[18px] rounded-2xl cursor-pointer hover:bg-surface${pathname === path ? ' bg-surface shadow-sm' : ''}`}
     onClick={() => router.push(path)}
   >
     <Icon className="fill">{icon}</Icon>
@@ -45,7 +46,7 @@ function DashboardNavSubitem({ icon, text, path, show }) {
 
   return (
     <div
-    className={`items-center gap-[18px] font-extralight text-[20px] w-[80%] h-[60px] p-[18px] rounded-2xl cursor-pointer hover:bg-surface ${pathname === path && 'bg-surface shadow-sm'} ${show ? 'flex' : 'hidden'}`}
+    className={`items-center gap-[18px] font-extralight text-[18px] w-[80%] h-[40px] p-[18px] rounded-2xl cursor-pointer hover:bg-surface ${pathname === path && 'bg-surface shadow-sm'} ${show ? 'flex' : 'hidden'}`}
     onClick={() => router.push(path)}
   >
     <Icon className="fill">{icon}</Icon>

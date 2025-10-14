@@ -1,1 +1,6 @@
-![image](https://github.com/user-attachments/assets/df02eaf8-b1d5-4fef-9692-d5d06423abe7)
+### welcome to gringott, place, where you can improve your relation with money
+
+#### if you want to see my application, download this, and run docker compose using:
+<code>sudo docker compose up</code>
+
+###### thanks for attention ;*
