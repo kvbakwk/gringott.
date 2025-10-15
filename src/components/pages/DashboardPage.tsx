@@ -87,15 +87,16 @@ export default function DashboardPage({
       )}
       {slug &&
         slug[0] === RouteSegments.Transactions &&
-        slug[1] === undefined && (
+        ![RouteSegments.Trades.toString(), RouteSegments.Transfers.toString(), RouteSegments.Subjects.toString()].includes(slug[1]) && (
           <TransactionsPage
             wallets={wallets}
             transactions={transactions}
             walletsReady={walletsReady}
             transactionsReady={transactionsReady}
+            userId = {user.id}
           />
         )}
-      {slug &&
+      {/* {slug &&
         slug[0] === RouteSegments.Transactions &&
         slug[1] === RouteSegments.New && (
           <NewTransactionPage userId={user.id} />
@@ -117,7 +118,7 @@ export default function DashboardPage({
             userId={user.id}
             transactionId={parseInt(slug[2])}
           />
-        )}
+        )} */}
       {slug &&
         slug[0] === RouteSegments.Transactions &&
         slug[1] === RouteSegments.Trades &&

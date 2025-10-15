@@ -164,10 +164,10 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
 
   return (
     <form
-      className="flex justify-center items-center gap-[30px] w-[500px] h-fit py-[60px]"
+      className="flex justify-center items-center gap-[30px] w-fit h-fit px-[90px] py-[60px] bg-surface rounded-2xl shadow-lg"
       onSubmit={handleSubmit}
     >
-      <div className="flex flex-col justify-center items-center gap-[25px] w-[320px] px-[10px] py-[10px]">
+      <div className="flex flex-col justify-center items-center gap-[25px] w-[230px] px-[10px] py-[10px]">
         <SelectOutlined
           className="w-full"
           label="portfel"
@@ -217,7 +217,7 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
           ))}
         </SelectOutlined>
       </div>
-      <div className="flex flex-col justify-center items-center gap-[25px] w-[320px] px-[10px] py-[10px]">
+      <div className="flex flex-col justify-center items-center gap-[25px] w-[250px] px-[10px] py-[10px]">
         <TextFieldOutlined
           className="w-full"
           label="data"
@@ -271,7 +271,7 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
           ))}
         </SelectOutlined>
       </div>
-      <div className="flex flex-col justify-center items-center gap-[25px] w-[320px] px-[10px] py-[10px]">
+      <div className="flex flex-col justify-center items-center gap-[25px] w-[230px] px-[10px] py-[10px]">
         <SelectOutlined
           className="w-full"
           label="kategoria"
