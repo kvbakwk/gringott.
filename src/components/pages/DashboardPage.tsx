@@ -64,6 +64,12 @@ export default function DashboardPage({
       .finally(() => setTradesReady(true));
   }, [user.id]);
 
+  const reloadTransactions = () =>
+    getTransactions(user.id)
+      .then((transactions) => setTransactions(transactions))
+      .catch((err) => console.log("failed to fetch transactions:", err))
+      .finally(() => setTransactionsReady(true));
+
   return (
     <div className="grid grid-rows-[56px_1fr]">
       <WalletsList wallets={wallets} walletsReady={walletsReady} />
@@ -87,38 +93,20 @@ export default function DashboardPage({
       )}
       {slug &&
         slug[0] === RouteSegments.Transactions &&
-        ![RouteSegments.Trades.toString(), RouteSegments.Transfers.toString(), RouteSegments.Subjects.toString()].includes(slug[1]) && (
+        ![
+          RouteSegments.Trades.toString(),
+          RouteSegments.Transfers.toString(),
+          RouteSegments.Subjects.toString(),
+        ].includes(slug[1]) && (
           <TransactionsPage
             wallets={wallets}
             transactions={transactions}
             walletsReady={walletsReady}
             transactionsReady={transactionsReady}
-            userId = {user.id}
-          />
-        )}
-      {/* {slug &&
-        slug[0] === RouteSegments.Transactions &&
-        slug[1] === RouteSegments.New && (
-          <NewTransactionPage userId={user.id} />
-        )}
-      {slug &&
-        slug[0] === RouteSegments.Transactions &&
-        slug[1] === RouteSegments.Edit &&
-        !isNaN(parseInt(slug[2])) && (
-          <EditTransactionPage
+            reloadTransactions={reloadTransactions}
             userId={user.id}
-            transactionId={parseInt(slug[2])}
           />
         )}
-      {slug &&
-        slug[0] === RouteSegments.Transactions &&
-        slug[1] === RouteSegments.Delete &&
-        !isNaN(parseInt(slug[2])) && (
-          <DeleteTransactionPage
-            userId={user.id}
-            transactionId={parseInt(slug[2])}
-          />
-        )} */}
       {slug &&
         slug[0] === RouteSegments.Transactions &&
         slug[1] === RouteSegments.Trades &&

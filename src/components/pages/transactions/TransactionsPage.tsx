@@ -6,8 +6,6 @@ import { TransactionT } from "@app/utils/db-actions/transaction";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { RouteSegments } from "@app/utils/routes";
-
 import { parseDate, parseMoney, parseTime } from "@app/utils/parser";
 import { CircularProgress } from "@components/material/Progress";
 import { Fab } from "@components/material/Fab";
@@ -15,34 +13,47 @@ import { Icon } from "@components/material/Icon";
 import { IconButton } from "@components/material/IconButton";
 import NewTransactionForm from "@components/forms/transactions/NewTransactionForm";
 import EditTransactionForm from "@components/forms/transactions/EditTransactionForm";
+import DeleteTransactionForm from "@components/forms/transactions/DeleteTransactionForm";
 
 export default function TransactionsPage({
   wallets,
   transactions,
   walletsReady,
   transactionsReady,
+  reloadTransactions,
   userId,
 }: {
   wallets: WalletT[];
   transactions: TransactionT[];
   walletsReady: boolean;
   transactionsReady: boolean;
+  reloadTransactions: () => void;
   userId: number;
 }) {
   const router = useRouter();
 
-  const form = useRef(null);
+  const formEl = useRef(null);
 
   const [operation, setOperation] = useState<string>("");
   const [id, setId] = useState<number>(0);
 
+  const successOperation = () => {
+    setOperation("");
+    reloadTransactions()
+  };
+  const cancelOperation = () => setOperation("");
+
   useEffect(() => {
     if (["new", "edit", "delete"].includes(operation)) {
-      form.current.classList.remove("hidden");
-      form.current.classList.add("flex");
+      formEl.current.classList.remove("hidden");
+      formEl.current.classList.add("flex");
+      formEl.current.classList.remove("opacity-0");
+      formEl.current.classList.add("opacity-100");
     } else {
-      form.current.classList.remove("flex");
-      form.current.classList.add("hidden");
+      formEl.current.classList.remove("flex");
+      formEl.current.classList.add("hidden");
+      formEl.current.classList.remove("opacity-100");
+      formEl.current.classList.add("opacity-0");
     }
   }, [operation]);
 
@@ -91,14 +102,32 @@ export default function TransactionsPage({
         </Fab>
       </div>
       <div
-        ref={form}
-        className="absolute flex justify-center items-center w-full h-full"
+        ref={formEl}
+        className="absolute flex justify-center items-center w-full h-full opacity-100 transition-opacity"
       >
-        {operation === "new" && <NewTransactionForm userId={userId} />}
-        {operation === "edit" && (
-          <EditTransactionForm userId={userId} transactionId={id} />
+        {operation === "new" && (
+          <NewTransactionForm
+            userId={userId}
+            successOperation={successOperation}
+            cancelOperation={cancelOperation}
+          />
         )}
-        {operation === "delete" && <NewTransactionForm userId={userId} />}
+        {operation === "edit" && (
+          <EditTransactionForm
+            userId={userId}
+            transactionId={id}
+            successOperation={successOperation}
+            cancelOperation={cancelOperation}
+          />
+        )}
+        {operation === "delete" && (
+          <DeleteTransactionForm
+            userId={userId}
+            transactionId={id}
+            successOperation={successOperation}
+            cancelOperation={cancelOperation}
+          />
+        )}
       </div>
     </div>
   );
@@ -173,11 +202,10 @@ export function Transaction({
         </IconButton>
         <IconButton
           className="mini error"
-          onClick={() =>
-            router.push(
-              `/${RouteSegments.Transactions}/${RouteSegments.Delete}/${transaction.id}`
-            )
-          }
+          onClick={() => {
+            setOperation("delete");
+            setId(transaction.id);
+          }}
         >
           <Icon>delete</Icon>
         </IconButton>

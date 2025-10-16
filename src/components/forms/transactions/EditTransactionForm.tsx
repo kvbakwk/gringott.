@@ -33,9 +33,13 @@ import Loading from "@components/Loading";
 export default function EditTransactionForm({
   userId,
   transactionId,
+  successOperation,
+  cancelOperation,
 }: {
   userId: number;
   transactionId: number;
+  successOperation: () => void;
+  cancelOperation: () => void;
 }) {
   const router = useRouter();
 
@@ -190,7 +194,7 @@ export default function EditTransactionForm({
           setCategoryIdErr(res.categoryIdErr);
           setSubjectIdErr(res.subjectErr);
           setError(false);
-          if (res.createTransaction) router.back();
+          if (res.createTransaction) successOperation();
         })
         .catch(() => setError(true));
     } else {
@@ -377,7 +381,7 @@ export default function EditTransactionForm({
               istotna
             </label>
             <div className="flex justify-center items-center gap-[10px]">
-              <OutlinedButton type="button" onClick={() => router.back()}>
+              <OutlinedButton type="button" onClick={() => cancelOperation()}>
                 anuluj
               </OutlinedButton>
               <FilledButton>zapisz zmiany</FilledButton>

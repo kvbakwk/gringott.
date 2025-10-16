@@ -27,7 +27,7 @@ import { FilledButton, OutlinedButton } from "../../material/Button";
 import { Icon } from "@components/material/Icon";
 import { getSubjects } from "@app/api/subject/get";
 
-export default function NewTransactionForm({ userId }: { userId: number }) {
+export default function NewTransactionForm({ userId, successOperation, cancelOperation }: { userId: number, successOperation: () => void, cancelOperation: () => void }) {
   const router = useRouter();
 
   const [income, setIncome] = useState<boolean>(false);
@@ -146,7 +146,7 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
           setCategoryIdErr(res.categoryIdErr);
           setSubjectIdErr(res.subjectIdErr);
           setError(false);
-          if (res.createTransaction) router.back();
+          if (res.createTransaction) successOperation();
         })
         .catch(() => setError(true));
     } else {
@@ -316,7 +316,7 @@ export default function NewTransactionForm({ userId }: { userId: number }) {
           istotna
         </label>
         <div className="flex justify-center items-center gap-[10px]">
-          <OutlinedButton type="button" onClick={() => router.back()}>
+          <OutlinedButton type="button" onClick={() => cancelOperation()}>
             anuluj
           </OutlinedButton>
           <FilledButton>dodaj transakcję</FilledButton>
