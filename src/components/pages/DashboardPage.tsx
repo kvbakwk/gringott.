@@ -64,6 +64,11 @@ export default function DashboardPage({
       .finally(() => setTradesReady(true));
   }, [user.id]);
 
+  const reloadWallets = () =>
+    getWallets(user.id)
+      .then((wallets) => setWallets(wallets))
+      .catch((err) => console.log("failed to fetch wallets:", err))
+      .finally(() => setWalletsReady(true));
   const reloadTransactions = () =>
     getTransactions(user.id)
       .then((transactions) => setTransactions(transactions))
@@ -103,6 +108,7 @@ export default function DashboardPage({
             transactions={transactions}
             walletsReady={walletsReady}
             transactionsReady={transactionsReady}
+            reloadWallets={reloadWallets}
             reloadTransactions={reloadTransactions}
             userId={user.id}
           />

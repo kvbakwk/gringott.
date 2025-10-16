@@ -73,7 +73,7 @@ export default function HistoryPage({
       >
         {days.map((day) => (
           <div
-            className={`flex justify-center items-center gap-[20px] font-normal text-on-surface-variant text-md w-full rounded-md hover:shadow-sm hover:bg-surface ${
+            className={`flex justify-center items-center gap-[20px] font-normal text-on-surface-variant text-md w-full rounded-md hover:bg-surface ${
               !(walletsReady && transactionsReady && tradesReady) && " hidden"
             }`}
             key={day.getTime()}

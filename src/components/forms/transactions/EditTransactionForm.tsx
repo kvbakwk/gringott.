@@ -32,34 +32,32 @@ import Loading from "@components/Loading";
 
 export default function EditTransactionForm({
   userId,
-  transactionId,
+  wallets,
+  transaction,
   successOperation,
   cancelOperation,
 }: {
   userId: number;
-  transactionId: number;
+  wallets: WalletT[];
+  transaction: TransactionT;
   successOperation: () => void;
   cancelOperation: () => void;
 }) {
   const router = useRouter();
 
-  const [transactionReady, setTransactionReady] = useState<boolean>(false);
-  const [walletsReady, setWalletsReady] = useState<boolean>(false);
   const [subjectsReady, setSubjectsReady] = useState<boolean>(false);
   const [methodsReady, setMethodsReady] = useState<boolean>(false);
   const [superCategoriesReady, setSuperCategoriesReady] =
     useState<boolean>(false);
   const [categoriesReady, setCategoriesReady] = useState<boolean>(false);
 
-  const [income, setIncome] = useState<boolean>(false);
-  const [walletId, setWalletId] = useState<number>(0);
-  const [superCategoryId, setSuperCategoryId] = useState<number>(0);
-  const [categoryId, setCategoryId] = useState<number>(0);
-  const [methodId, setMethodId] = useState<number>(0);
-  const [subjectId, setSubjectId] = useState<number>(0);
+  const [income, setIncome] = useState<boolean>(transaction.income);
+  const [walletId, setWalletId] = useState<number>(transaction.wallet_id);
+  const [superCategoryId, setSuperCategoryId] = useState<number>(transaction.super_category.id);
+  const [categoryId, setCategoryId] = useState<number>(transaction.category.id);
+  const [methodId, setMethodId] = useState<number>(transaction.method.id);
+  const [subjectId, setSubjectId] = useState<number>(transaction.subject.id);
 
-  const [transaction, setTransaction] = useState<TransactionT>(null);
-  const [wallets, setWallets] = useState<WalletT[]>([]);
   const [methods, setMethods] = useState<MethodT[]>([]);
   const [categories, setCategories] = useState<CategoryT[]>([]);
   const [superCategories, setSuperCategories] = useState<SuperCategoryT[]>([]);
@@ -76,27 +74,6 @@ export default function EditTransactionForm({
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
-    getTransaction(transactionId)
-      .then((res) => {
-        setTransaction(res);
-        setWalletId(res.wallet_id);
-        setIncome(res.income);
-        setSuperCategoryId(res.super_category.id);
-        setCategoryId(res.category.id);
-        setMethodId(res.method.id);
-        setSubjectId(res.subject.id);
-      })
-      .finally(() => setTransactionReady(true));
-    getWallets(userId)
-      .then((res) => {
-        setWallets(
-          res.filter(
-            (wallet) =>
-              wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2
-          )
-        );
-      })
-      .finally(() => setWalletsReady(true));
     getSubjects(userId)
       .then((res) => {
         setSubjects(res.sort((a, b) => a.name.localeCompare(b.name)));
@@ -171,7 +148,7 @@ export default function EditTransactionForm({
       validateTransactionSubjectId(subjectId, userId)
     ) {
       editTransactionAPI(
-        transactionId,
+        transaction.id,
         walletId,
         income,
         methodId,
@@ -212,12 +189,10 @@ export default function EditTransactionForm({
 
   return (
     <form
-      className="flex justify-center items-center gap-[30px] w-fit h-fit px-[90px] py-[60px] bg-surface rounded-2xl shadow-lg"
+      className="flex justify-center items-center gap-[30px] w-fit h-fit px-[90px] py-[90px] bg-surface rounded-2xl shadow-lg"
       onSubmit={handleSubmit}
     >
-      {transactionReady &&
-      walletsReady &&
-      subjectsReady &&
+      {subjectsReady &&
       methodsReady &&
       superCategoriesReady &&
       categoriesReady ? (

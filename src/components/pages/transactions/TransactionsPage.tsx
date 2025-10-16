@@ -20,6 +20,7 @@ export default function TransactionsPage({
   transactions,
   walletsReady,
   transactionsReady,
+  reloadWallets,
   reloadTransactions,
   userId,
 }: {
@@ -27,6 +28,7 @@ export default function TransactionsPage({
   transactions: TransactionT[];
   walletsReady: boolean;
   transactionsReady: boolean;
+  reloadWallets: () => void;
   reloadTransactions: () => void;
   userId: number;
 }) {
@@ -36,10 +38,13 @@ export default function TransactionsPage({
 
   const [operation, setOperation] = useState<string>("");
   const [id, setId] = useState<number>(0);
+  const [focusEl, setFocusEl] = useState<HTMLElement>(null);
 
   const successOperation = () => {
     setOperation("");
-    reloadTransactions()
+    reloadWallets();
+    reloadTransactions();
+    console.log("xdd")
   };
   const cancelOperation = () => setOperation("");
 
@@ -49,11 +54,28 @@ export default function TransactionsPage({
       formEl.current.classList.add("flex");
       formEl.current.classList.remove("opacity-0");
       formEl.current.classList.add("opacity-100");
+      if (focusEl) {
+        focusEl.classList.add("transition-all");
+        focusEl.classList.add("shadow-sm");
+        focusEl.classList.add("bg-surface");
+        focusEl.classList.add("border-1");
+        operation === "edit"
+          ? focusEl.classList.add("border-yellow-500")
+          : focusEl.classList.add("border-error");
+      }
     } else {
       formEl.current.classList.remove("flex");
       formEl.current.classList.add("hidden");
       formEl.current.classList.remove("opacity-100");
       formEl.current.classList.add("opacity-0");
+      if (focusEl) {
+        focusEl.classList.remove("transition-all");
+        focusEl.classList.remove("shadow-sm");
+        focusEl.classList.remove("bg-surface");
+        focusEl.classList.remove("border-1");
+        focusEl.classList.remove("border-yellow-500");
+        focusEl.classList.remove("border-error");
+      }
     }
   }, [operation]);
 
@@ -90,6 +112,7 @@ export default function TransactionsPage({
               key={transaction.id}
               setOperation={setOperation}
               setId={setId}
+              setFocusEl={setFocusEl}
             />
           ))}
         <div className={`${walletsReady && transactionsReady && " hidden"}`}>
@@ -115,7 +138,8 @@ export default function TransactionsPage({
         {operation === "edit" && (
           <EditTransactionForm
             userId={userId}
-            transactionId={id}
+            wallets={wallets.filter(wallet => wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2)}
+            transaction={transactions.find(transaction => transaction.id === id)}
             successOperation={successOperation}
             cancelOperation={cancelOperation}
           />
@@ -123,7 +147,7 @@ export default function TransactionsPage({
         {operation === "delete" && (
           <DeleteTransactionForm
             userId={userId}
-            transactionId={id}
+            transaction={transactions.find(transaction => transaction.id === id)}
             successOperation={successOperation}
             cancelOperation={cancelOperation}
           />
@@ -138,21 +162,32 @@ export function Transaction({
   wallets,
   setOperation,
   setId,
+  setFocusEl,
 }: {
   transaction: TransactionT;
   wallets: WalletT[];
   setOperation: (operation: string) => void;
   setId: (id: number) => void;
+  setFocusEl: (focusEl: HTMLElement) => void;
 }) {
   const router = useRouter();
 
+  const transactionEl = useRef(null);
+  const amountEl = useRef(null);
+
   const [hover, setHover] = useState(false);
+
+  useEffect(() => {
+    if (transaction.income) amountEl.current.classList.add("text-green-800");
+    else amountEl.current.classList.add("text-red-800");
+    if (transaction.important) amountEl.current.classList.remove("opacity-50");
+    else  amountEl.current.classList.add("opacity-50");
+  }, [transaction]);
 
   return (
     <div
-      className={`flex justify-center items-center gap-[20px] font-normal text-on-surface-variant text-base w-full h-[30px] rounded-lg hover:shadow-sm hover:bg-surface  ${
-        !transaction.important && "opacity-100"
-      }`}
+      ref={transactionEl}
+      className="flex justify-center items-center gap-[20px] font-normal text-on-surface-variant text-base w-full h-[30px] rounded-lg hover:bg-surface"
       key={transaction.id}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
@@ -163,9 +198,8 @@ export function Transaction({
         <div className="text-[15px]">{parseTime(transaction.date)}</div>
       </div>
       <div
-        className={`flex justify-center items-center font-semibold text-xl w-[160px] ${
-          transaction.income ? "text-green-800" : "text-red-800"
-        } ${!transaction.important && "opacity-50"}`}
+        ref={amountEl}
+        className="flex justify-center items-center font-semibold text-xl w-[160px]"
       >
         {parseMoney(transaction.amount)} zł
       </div>
@@ -196,6 +230,7 @@ export function Transaction({
           onClick={() => {
             setOperation("edit");
             setId(transaction.id);
+            setFocusEl(transactionEl.current);
           }}
         >
           <Icon>edit</Icon>
@@ -205,6 +240,7 @@ export function Transaction({
           onClick={() => {
             setOperation("delete");
             setId(transaction.id);
+            setFocusEl(transactionEl.current);
           }}
         >
           <Icon>delete</Icon>

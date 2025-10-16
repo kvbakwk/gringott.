@@ -196,7 +196,7 @@ insert into public.subject (user_id, name, normal, atm) values (1, 'Tata', true,
 
 insert into public.transaction (date, amount, description, category_id, subject_id, income, important, user_id, wallet_id, method_id, transaction_type_id) values 
 ('2025-04-01 12:00:00', 10, 'kieszonkowe', 58, 1, true, true, 1, 1, 1, 1),
-('2025-04-01 12:00:00', 100, 'kieszonkowe', 58, 1, true, true, 1, 4, 4, 1);
+('2025-04-01 12:00:00', 100, 'kieszonkowe', 58, 1, true, true, 1, 3, 4, 1);
 
 insert into public.trade (date, amount, deposit, atm, user_id, wallet_id, user_method_id, subject_id, subject_method_id) values 
 ('2025-04-02 12:00:00', 40, false, true, 1, 3, 1, 4, 3),

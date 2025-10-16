@@ -11,27 +11,21 @@ import { FilledButton, OutlinedButton } from "../../material/Button";
 
 export default function DeleteTransactionForm({
   userId,
-  transactionId,
+  transaction,
   successOperation,
   cancelOperation,
 }: {
   userId: number;
-  transactionId: number;
+  transaction: TransactionT;
   successOperation: () => void;
   cancelOperation: () => void;
 }) {
   const errorEl = useRef(null);
 
-  const [transaction, setTransaction] = useState<TransactionT>(null);
-
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
-    getTransaction(transactionId).then((res) => setTransaction(res));
-  }, []);
-  useEffect(() => {
-    console.log(error, errorEl.current)
-    if (!error) {
+    if (error) {
       errorEl.current.classList.remove("hidden");
       errorEl.current.classList.add("flex");
     } else {
@@ -46,13 +40,13 @@ export default function DeleteTransactionForm({
     e.preventDefault();
 
     deleteTransactionAPI(
-      transactionId,
+      transaction.id,
       transaction.wallet_id,
       transaction.amount,
       transaction.income,
       userId
     )
-      .then((res) => res.createTransaction ?? setError(true))
+      .then((res) => res.createTransaction ? successOperation() : setError(true))
       .catch(() => setError(true));
   };
 

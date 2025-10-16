@@ -6,6 +6,13 @@ export enum RouteSegments {
   HistoryPage = "historia",
 
   Wallets = "portfele",
+  Accounts = "konta",
+  Investments = "inwestycje",
+  Savings = "oszczednosci",
+  Piggybanks = "skarbonki",
+  Goals = "cele",
+  Loans = "naleznosci",
+
   Transactions = "transakcje",
   Trades = "wymiany",
   Transfers = "transfery",

@@ -12,6 +12,12 @@ export default function DashboardNav() {
   return (
     <div className="flex flex-col items-center gap-[10px] text-primary w-full mt-[30px] px-[30px] py-[10px]">
       <DashboardNavItem icon="home" text="główna" path={`/${RouteSegments.HomePage}`}  />
+      <DashboardNavSubitem icon="credit_card" text="konta" path={`/${RouteSegments.Wallets}/${RouteSegments.Accounts}`} show={pathname === `/${RouteSegments.HomePage}` || pathname.startsWith(`/${RouteSegments.Wallets}`)} />
+      <DashboardNavSubitem icon="finance_mode" text="inwestycje" path={`/${RouteSegments.Wallets}/${RouteSegments.Investments}`} show={pathname === `/${RouteSegments.HomePage}` || pathname.startsWith(`/${RouteSegments.Wallets}`)} />
+      <DashboardNavSubitem icon="nest_eco_leaf" text="oszczędności" path={`/${RouteSegments.Wallets}/${RouteSegments.Savings}`} show={pathname === `/${RouteSegments.HomePage}` || pathname.startsWith(`/${RouteSegments.Wallets}`)} />
+      <DashboardNavSubitem icon="savings" text="skarbonki" path={`/${RouteSegments.Wallets}/${RouteSegments.Piggybanks}`} show={pathname === `/${RouteSegments.HomePage}` || pathname.startsWith(`/${RouteSegments.Wallets}`)} />
+      <DashboardNavSubitem icon="target" text="cele" path={`/${RouteSegments.Wallets}/${RouteSegments.Goals}`} show={pathname === `/${RouteSegments.HomePage}` || pathname.startsWith(`/${RouteSegments.Wallets}`)} />
+      <DashboardNavSubitem icon="person_shield" text="należności" path={`/${RouteSegments.Wallets}/${RouteSegments.Loans}`} show={pathname === `/${RouteSegments.HomePage}` || pathname.startsWith(`/${RouteSegments.Wallets}`)} />
       <DashboardNavItem icon="history" text="historia" path={`/${RouteSegments.HistoryPage}`} />
       <DashboardNavItem icon="list" text="transakcje" path={`/${RouteSegments.Transactions}`} />
       <DashboardNavSubitem icon="swap_vert" text="wymiany" path={`/${RouteSegments.Transactions}/${RouteSegments.Trades}`} show={pathname.startsWith(`/${RouteSegments.Transactions}`)} />
