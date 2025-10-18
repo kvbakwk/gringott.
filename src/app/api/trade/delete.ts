@@ -6,11 +6,13 @@ import {
   getWalletsByUserId,
   increaseWalletBalance,
 } from "@app/utils/db-actions/wallet";
+import { verifySession } from "@app/utils/session";
 
 export async function deleteTradeAPI(tradeId: number, userId: number) {
+  if (!(await verifySession()).isAuth) return null;
   const trade = await getTradeById(tradeId);
   const cashWalletId = (await getWalletsByUserId(userId))
-    .filter((wallet) => (wallet.wallet_type_id === 1))
+    .filter((wallet) => wallet.wallet_type_id === 1)
     .at(0).id;
 
   const tradeIdErr = !trade || trade.user_id !== userId;

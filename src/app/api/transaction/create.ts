@@ -14,6 +14,7 @@ import {
   validateTransactionMethodId,
   validateTransactionCategoryId,
 } from "@app/utils/validator";
+import { verifySession } from "@app/utils/session";
 
 export async function createTransactionAPI(
   walletId: number,
@@ -28,6 +29,7 @@ export async function createTransactionAPI(
   userId: number,
   transactionTypeId: number
 ) {
+  if (!(await verifySession()).isAuth) return null;
   const walletIdErr = !(await validateTransactionWalletId(walletId, userId));
   const methodIdErr = !(await validateTransactionMethodId(methodId, walletId));
   const dateErr = !validateTransactionDate(date);

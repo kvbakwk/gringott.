@@ -13,6 +13,7 @@ COPY ./next.config.js .
 COPY ./postcss.config.js .
 COPY ./tailwind.config.js .
 COPY ./.eslintrc.json .
+COPY ./.env .
 
 CMD npm run dev
 # CMD npm run lint

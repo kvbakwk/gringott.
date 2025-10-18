@@ -17,6 +17,7 @@ import {
   validateTransactionMethodId,
   validateTransactionCategoryId,
 } from "@app/utils/validator";
+import { verifySession } from "@app/utils/session";
 
 export async function editTransactionAPI(
   transactionId: number,
@@ -32,9 +33,10 @@ export async function editTransactionAPI(
   userId: number,
   transactionTypeId: number
 ) {
+  if (!(await verifySession()).isAuth) return null;
   const walletIdErr = !(await validateTransactionWalletId(walletId, userId));
   const methodIdErr = !(await validateTransactionMethodId(methodId, walletId));
-  console.log(methodId, walletId, methodIdErr)
+  console.log(methodId, walletId, methodIdErr);
   const dateErr = !validateTransactionDate(date);
   const amountErr = !validateTransactionAmount(amount);
   const descriptionErr = !validateTransactionDescription(description);

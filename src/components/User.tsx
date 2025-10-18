@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { logout } from "@app/api/auth/login";
@@ -10,16 +10,16 @@ import { IconButton } from "./material/IconButton";
 export default function User({ name }: { name: string }) {
   const router = useRouter();
 
-  const moreButton = useRef(null);
+  const moreButtonEl = useRef(null);
   const moreEl = useRef(null);
 
   useEffect(() => {
     document.addEventListener("click", (e: PointerEvent) => {
       if (
         moreEl.current &&
-        moreButton.current &&
+        moreButtonEl.current &&
         !moreEl.current.contains(e.target) &&
-        !moreButton.current.contains(e.target)
+        !moreButtonEl.current.contains(e.target)
       ) {
         moreEl.current.classList.add("hidden");
         moreEl.current.classList.remove("flex");
@@ -37,22 +37,19 @@ export default function User({ name }: { name: string }) {
       <div className="relative flex justify-between items-center gap-[18px] font-light text-[22px] w-full h-[70px] pl-[32px] pr-[18px] rounded-2xl border-primary">
         <div className="text-on-surface-variant">{name}</div>
         <IconButton
-          ref={moreButton}
+          ref={moreButtonEl}
           onClick={() => {
-            moreEl.current.classList.remove("hidden");
-            moreEl.current.classList.add("flex");
-          }}
-        >
+            moreEl.current.classList.toggle("hidden");
+            moreEl.current.classList.toggle("flex");
+          }}>
           <Icon className="fill">more_vert</Icon>
         </IconButton>
         <div
           className="absolute bottom-[100%] right-0 hidden flex-col gap-[1px] font-medium text-primary text-sm w-[180px] py-[8px] bg-surface shadow-sm rounded-xl"
-          ref={moreEl}
-        >
+          ref={moreEl}>
           <div
             className="flex justify-start items-center gap-[8px] w-full h-[36px] px-[16px] hover:bg-surface-container cursor-pointer"
-            onClick={handleLogout}
-          >
+            onClick={handleLogout}>
             <Icon className="text-on-surface-variant">move_item</Icon>
             wyloguj się
           </div>

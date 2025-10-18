@@ -4,6 +4,7 @@ import { UserT } from "@app/utils/db-actions/user";
 import { WalletT } from "@app/utils/db-actions/wallet";
 import { TransactionT } from "@app/utils/db-actions/transaction";
 import { TradeT } from "@app/utils/db-actions/trade";
+import { MethodT } from "@app/utils/db-actions/method";
 
 import { useEffect, useState } from "react";
 
@@ -12,16 +13,14 @@ import { RouteSegments } from "@app/utils/routes";
 import { getWallets } from "@app/api/wallet/get";
 import { getTransactions } from "@app/api/transaction/get";
 import { getTrades } from "@app/api/trade/get";
+import { getMethodsAPI } from "@app/api/method/get";
 
 import WalletsList from "../WalletsList";
 
 import HomePage from "./HomePage";
 import HistoryPage from "./HistoryPage";
 
-import TransactionsPage from "./transactions/TransactionsPage";
-import NewTransactionPage from "./transactions/NewTransactionPage";
-import EditTransactionPage from "./transactions/EditTransactionPage";
-import DeleteTransactionPage from "./transactions/DeleteTransactionPage";
+import TransactionsPage from "./TransactionsPage";
 
 import SubjectsPage from "./subjects/SubjectsPage";
 import NewSubjectPage from "./subjects/NewSubjectPage";
@@ -34,6 +33,12 @@ import TradesPage from "./trades/TradesPage";
 import DeleteTradePage from "./trades/DeleteTradePage";
 import EditTradePage from "./trades/EditTradePage";
 import NewTransferPage from "./transfers/NewTransferPage";
+import { CategoryT } from "@app/utils/db-actions/category";
+import { SuperCategoryT } from "@app/utils/db-actions/super_category";
+import { SubjectT } from "@app/utils/db-actions/subject";
+import { getSubjects } from "@app/api/subject/get";
+import { getSuperCategoriesAPI } from "@app/api/super_category/get";
+import { getCategoriessAPI } from "@app/api/category/get";
 
 export default function DashboardPage({
   slug,
@@ -45,9 +50,19 @@ export default function DashboardPage({
   const [wallets, setWallets] = useState<WalletT[]>([]);
   const [transactions, setTransactions] = useState<TransactionT[]>([]);
   const [trades, setTrades] = useState<TradeT[]>([]);
+  const [methods, setMethods] = useState<MethodT[]>([]);
+  const [categories, setCategories] = useState<CategoryT[]>([]);
+  const [superCategories, setSuperCategories] = useState<SuperCategoryT[]>([]);
+  const [subjects, setSubjects] = useState<SubjectT[]>([]);
+
   const [walletsReady, setWalletsReady] = useState<boolean>(false);
   const [transactionsReady, setTransactionsReady] = useState<boolean>(false);
   const [tradesReady, setTradesReady] = useState<boolean>(false);
+  const [methodsReady, setMethodsReady] = useState<boolean>(false);
+  const [subjectsReady, setSubjectsReady] = useState<boolean>(false);
+  const [superCategoriesReady, setSuperCategoriesReady] =
+    useState<boolean>(false);
+  const [categoriesReady, setCategoriesReady] = useState<boolean>(false);
 
   useEffect(() => {
     getWallets(user.id)
@@ -60,8 +75,24 @@ export default function DashboardPage({
       .finally(() => setTransactionsReady(true));
     getTrades(user.id)
       .then((trades) => setTrades(trades))
-      .catch((err) => console.log("failed to fetch transactions:", err))
+      .catch((err) => console.log("failed to fetch trades:", err))
       .finally(() => setTradesReady(true));
+    getMethodsAPI()
+      .then((methods) => setMethods(methods))
+      .catch((err) => console.log("failed to fetch methods:", err))
+      .finally(() => setMethodsReady(true));
+    getSubjects(user.id)
+      .then((subjects) => setSubjects(subjects))
+      .catch((err) => console.log("failed to fetch subjects:", err))
+      .finally(() => setSubjectsReady(true));
+    getSuperCategoriesAPI()
+      .then((superCategories) => setSuperCategories(superCategories))
+      .catch((err) => console.log("failed to fetch super categories:", err))
+      .finally(() => setSuperCategoriesReady(true));
+    getCategoriessAPI()
+      .then((categories) => setCategories(categories))
+      .catch((err) => console.log("failed to fetch categories:", err))
+      .finally(() => setCategoriesReady(true));
   }, [user.id]);
 
   const reloadWallets = () =>
@@ -106,8 +137,16 @@ export default function DashboardPage({
           <TransactionsPage
             wallets={wallets}
             transactions={transactions}
+            methods={methods}
+            subjects={subjects.filter((subject) => subject.normal)}
+            superCategories={superCategories}
+            categories={categories}
             walletsReady={walletsReady}
             transactionsReady={transactionsReady}
+            methodsReady={methodsReady}
+            subjectsReady={subjectsReady}
+            superCategoriesReady={superCategoriesReady}
+            categoriesReady={categoriesReady}
             reloadWallets={reloadWallets}
             reloadTransactions={reloadTransactions}
             userId={user.id}

@@ -1,6 +1,7 @@
 "use server";
 
 import { editSubject } from "@app/utils/db-actions/subject";
+import { verifySession } from "@app/utils/session";
 import {
   validateSubjectAddress,
   validateSubjectAtm,
@@ -15,6 +16,7 @@ export async function editSubjectAPI(
   normal: boolean,
   atm: boolean
 ) {
+  if (!(await verifySession()).isAuth) return null;
   const isValid: boolean =
     validateSubjectName(name) &&
     validateSubjectAddress(address) &&

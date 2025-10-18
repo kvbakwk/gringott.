@@ -16,6 +16,7 @@ import {
   validateTradeUserMethodId,
   validateTradeWalletId,
 } from "@app/utils/validator";
+import { verifySession } from "@app/utils/session";
 
 export async function createTradeAPI(
   atm: boolean,
@@ -38,6 +39,7 @@ export async function createTradeAPI(
   subjectIdErr: boolean;
   subjectMethodIdErr: boolean;
 }> {
+  if (!(await verifySession()).isAuth) return null;
   const atmErr = !validateTradeAtm(atm);
   const walletIdErr = !(await validateTradeWalletId(walletId, userId));
   const depositErr = !validateTradeDeposit(deposit);

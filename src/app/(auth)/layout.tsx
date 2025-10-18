@@ -4,9 +4,10 @@ import { Metadata } from "next";
 
 import { redirect } from "next/navigation";
 
-import { loginCheck } from "@app/api/auth/login";
 import AuthMainNav from "@components/navs/AuthMainNav";
 import AuthOtherNav from "@components/navs/AuthOtherNav";
+import { RouteSegments } from "@app/utils/routes";
+import { verifySession } from "@app/utils/session";
 
 export const metadata: Metadata = {
   title: "portfel.",
@@ -22,7 +23,7 @@ export default async function Layout({
 }: {
   children: React.ReactNode;
 }) {
-  if (await loginCheck()) redirect(`/`);
+  if ((await verifySession()).isAuth) redirect(`/${RouteSegments.HomePage}`);
 
   return (
     <html lang="pl" className="font-noto">

@@ -5,13 +5,6 @@ create table if not exists public.user (
     password varchar(100) not null
 );
 
-create table if not exists public.user_device (
-    user_id integer NOT NULL,
-    device_id CHAR(36) NOT NULL,
-    expire_date TIMESTAMP NOT NULL,
-    foreign key (user_id) references public.user(id)
-);
-
 create table if not exists public.wallet_type (
     id serial primary key,
     name varchar(255) not null

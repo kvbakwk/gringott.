@@ -41,11 +41,6 @@ export default function WalletsList({
       <div className="flex items-end gap-[12px] max-w-[calc(100vw-300px)] h-full pl-[40px] pr-[70px] pb-[8px] overflow-x-auto overflow-y-hidden scroll-none">
         {walletsReady && (
           <>
-            <WalletItem
-              name="gotówka"
-              balance={cashBalance}
-              show={walletsReady}
-            />
             {wallets
               .filter((wallet) => wallet.wallet_type_id === 2)
               .sort((a, b) => a.name.localeCompare(b.name))

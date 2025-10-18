@@ -1,5 +1,6 @@
 "use server";
 
+import { verifySession } from "@app/utils/session";
 import { createSubject } from "@app/utils/db-actions/subject";
 import {
   validateSubjectAddress,
@@ -15,6 +16,7 @@ export async function createSubjectAPI(
   normal: boolean,
   atm: boolean
 ) {
+  if (!(await verifySession()).isAuth) return null;
   const nameErr = !validateSubjectName(name);
   const addressErr = !validateSubjectAddress(name);
   const normalErr = !validateSubjectNormal(normal);

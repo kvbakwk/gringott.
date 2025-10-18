@@ -14,10 +14,10 @@ export interface UserIdT {
   id: number;
 }
 
-export async function getUserByUuid(uuid: string): Promise<UserT> {
+export async function getUserById(id: string): Promise<UserT> {
   const res: QueryResult = await pool.query(
-    "SELECT id, name, email FROM public.user JOIN public.user_device ON public.user.id = public.user_device.user_id WHERE public.user_device.device_id = $1",
-    [uuid]
+    "SELECT id, name, email FROM public.user WHERE public.user.id = $1",
+    [id]
   );
   return mapRowToUser(res.rows[0]);
 }
@@ -45,11 +45,11 @@ export async function validateUser(
   email: string,
   password: string
 ): Promise<number> {
-  const res: QueryResult<UserIdT> = await pool.query(
+  const res: QueryResult = await pool.query(
     "SELECT id FROM public.user WHERE email = $1 AND password = $2;",
     [email, password]
   );
-  if (res.rowCount === 1) return res.rows[0].id;
+  if (res.rowCount === 1) return parseInt(res.rows[0].id);
   return 0;
 }
 

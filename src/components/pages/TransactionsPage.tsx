@@ -4,7 +4,6 @@ import { WalletT } from "@app/utils/db-actions/wallet";
 import { TransactionT } from "@app/utils/db-actions/transaction";
 
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 
 import { parseDate, parseMoney, parseTime } from "@app/utils/parser";
 import { CircularProgress } from "@components/material/Progress";
@@ -14,26 +13,44 @@ import { IconButton } from "@components/material/IconButton";
 import NewTransactionForm from "@components/forms/transactions/NewTransactionForm";
 import EditTransactionForm from "@components/forms/transactions/EditTransactionForm";
 import DeleteTransactionForm from "@components/forms/transactions/DeleteTransactionForm";
+import { MethodT } from "@app/utils/db-actions/method";
+import { SubjectT } from "@app/utils/db-actions/subject";
+import { SuperCategoryT } from "@app/utils/db-actions/super_category";
+import { CategoryT } from "@app/utils/db-actions/category";
 
 export default function TransactionsPage({
   wallets,
   transactions,
+  methods,
+  subjects,
+  superCategories,
+  categories,
   walletsReady,
   transactionsReady,
+  methodsReady,
+  subjectsReady,
+  superCategoriesReady,
+  categoriesReady,
   reloadWallets,
   reloadTransactions,
   userId,
 }: {
   wallets: WalletT[];
   transactions: TransactionT[];
+  methods: MethodT[];
+  subjects: SubjectT[];
+  superCategories: SuperCategoryT[];
+  categories: CategoryT[];
   walletsReady: boolean;
   transactionsReady: boolean;
+  methodsReady: boolean;
+  subjectsReady: boolean;
+  superCategoriesReady: boolean;
+  categoriesReady: boolean;
   reloadWallets: () => void;
   reloadTransactions: () => void;
   userId: number;
 }) {
-  const router = useRouter();
-
   const formEl = useRef(null);
 
   const [operation, setOperation] = useState<string>("");
@@ -44,7 +61,6 @@ export default function TransactionsPage({
     setOperation("");
     reloadWallets();
     reloadTransactions();
-    console.log("xdd")
   };
   const cancelOperation = () => setOperation("");
 
@@ -52,9 +68,10 @@ export default function TransactionsPage({
     if (["new", "edit", "delete"].includes(operation)) {
       formEl.current.classList.remove("hidden");
       formEl.current.classList.add("flex");
-      formEl.current.classList.remove("opacity-0");
-      formEl.current.classList.add("opacity-100");
-      if (focusEl) {
+      setTimeout(() => {
+        formEl.current.classList.remove("opacity-0");
+      }, 1);
+      if (["edit", "delete"].includes(operation) && focusEl) {
         focusEl.classList.add("transition-all");
         focusEl.classList.add("shadow-sm");
         focusEl.classList.add("bg-surface");
@@ -66,15 +83,18 @@ export default function TransactionsPage({
     } else {
       formEl.current.classList.remove("flex");
       formEl.current.classList.add("hidden");
-      formEl.current.classList.remove("opacity-100");
-      formEl.current.classList.add("opacity-0");
+      setTimeout(() => {
+        formEl.current.classList.add("opacity-0");
+      }, 1);
       if (focusEl) {
-        focusEl.classList.remove("transition-all");
         focusEl.classList.remove("shadow-sm");
         focusEl.classList.remove("bg-surface");
         focusEl.classList.remove("border-1");
         focusEl.classList.remove("border-yellow-500");
         focusEl.classList.remove("border-error");
+        setTimeout(() => {
+          focusEl.classList.remove("transition-all");
+        }, 10);
       }
     }
   }, [operation]);
@@ -98,24 +118,43 @@ export default function TransactionsPage({
       </div>
       <div
         className={`flex w-full h-[calc(100vh-106px)] px-[20px] pb-[106px] overflow-y-auto scroll-none ${
-          walletsReady && transactionsReady
+          walletsReady &&
+          transactionsReady &&
+          methodsReady &&
+          subjectsReady &&
+          superCategoriesReady &&
+          categoriesReady
             ? "flex-col"
             : "justify-center items-center"
-        }`}
-      >
-        {transactions
-          .sort((a, b) => b.date.getTime() - a.date.getTime())
-          .map((transaction) => (
-            <Transaction
-              transaction={transaction}
-              wallets={wallets}
-              key={transaction.id}
-              setOperation={setOperation}
-              setId={setId}
-              setFocusEl={setFocusEl}
-            />
-          ))}
-        <div className={`${walletsReady && transactionsReady && " hidden"}`}>
+        }`}>
+        {walletsReady &&
+          transactionsReady &&
+          methodsReady &&
+          subjectsReady &&
+          superCategoriesReady &&
+          categoriesReady &&
+          transactions
+            .sort((a, b) => b.date.getTime() - a.date.getTime())
+            .map((transaction) => (
+              <Transaction
+                transaction={transaction}
+                wallets={wallets}
+                key={transaction.id}
+                setOperation={setOperation}
+                setId={setId}
+                setFocusEl={setFocusEl}
+              />
+            ))}
+        <div
+          className={`${
+            walletsReady &&
+            transactionsReady &&
+            methodsReady &&
+            subjectsReady &&
+            superCategoriesReady &&
+            categoriesReady &&
+            " hidden"
+          }`}>
           <CircularProgress indeterminate />
         </div>
       </div>
@@ -126,11 +165,19 @@ export default function TransactionsPage({
       </div>
       <div
         ref={formEl}
-        className="absolute flex justify-center items-center w-full h-full opacity-100 transition-opacity"
-      >
+        className="absolute flex justify-center items-center w-full h-full opacity-0 transition-all">
         {operation === "new" && (
           <NewTransactionForm
             userId={userId}
+            wallets={wallets.filter(
+              (wallet) =>
+                wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2
+            )}
+            methods={methods}
+            subjects={subjects}
+            superCategories={superCategories}
+            categories={categories}
+            operation={operation}
             successOperation={successOperation}
             cancelOperation={cancelOperation}
           />
@@ -138,8 +185,18 @@ export default function TransactionsPage({
         {operation === "edit" && (
           <EditTransactionForm
             userId={userId}
-            wallets={wallets.filter(wallet => wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2)}
-            transaction={transactions.find(transaction => transaction.id === id)}
+            wallets={wallets.filter(
+              (wallet) =>
+                wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2
+            )}
+            transaction={transactions.find(
+              (transaction) => transaction.id === id
+            )}
+            methods={methods}
+            subjects={subjects}
+            superCategories={superCategories}
+            categories={categories}
+            operation={operation}
             successOperation={successOperation}
             cancelOperation={cancelOperation}
           />
@@ -147,7 +204,10 @@ export default function TransactionsPage({
         {operation === "delete" && (
           <DeleteTransactionForm
             userId={userId}
-            transaction={transactions.find(transaction => transaction.id === id)}
+            transaction={transactions.find(
+              (transaction) => transaction.id === id
+            )}
+            operation={operation}
             successOperation={successOperation}
             cancelOperation={cancelOperation}
           />
@@ -170,8 +230,6 @@ export function Transaction({
   setId: (id: number) => void;
   setFocusEl: (focusEl: HTMLElement) => void;
 }) {
-  const router = useRouter();
-
   const transactionEl = useRef(null);
   const amountEl = useRef(null);
 
@@ -181,7 +239,7 @@ export function Transaction({
     if (transaction.income) amountEl.current.classList.add("text-green-800");
     else amountEl.current.classList.add("text-red-800");
     if (transaction.important) amountEl.current.classList.remove("opacity-50");
-    else  amountEl.current.classList.add("opacity-50");
+    else amountEl.current.classList.add("opacity-50");
   }, [transaction]);
 
   return (
@@ -190,8 +248,7 @@ export function Transaction({
       className="flex justify-center items-center gap-[20px] font-normal text-on-surface-variant text-base w-full h-[30px] rounded-lg hover:bg-surface"
       key={transaction.id}
       onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
-    >
+      onMouseLeave={() => setHover(false)}>
       <div className="w-[20px] h-full"></div>
       <div className="flex justify-center items-center gap-[6px] w-[200px]">
         <div>{parseDate(transaction.date)}</div>
@@ -199,8 +256,7 @@ export function Transaction({
       </div>
       <div
         ref={amountEl}
-        className="flex justify-center items-center font-semibold text-xl w-[160px]"
-      >
+        className="flex justify-center items-center font-semibold text-xl w-[160px]">
         {parseMoney(transaction.amount)} zł
       </div>
       <div className="flex justify-center items-center truncate w-[200px]">
@@ -223,16 +279,14 @@ export function Transaction({
       <div
         className={`flex justify-center items-center w-[100px] h-full transition-opacity ${
           hover ? "opacity-100" : "opacity-0"
-        }`}
-      >
+        }`}>
         <IconButton
           className="mini"
           onClick={() => {
             setOperation("edit");
             setId(transaction.id);
             setFocusEl(transactionEl.current);
-          }}
-        >
+          }}>
           <Icon>edit</Icon>
         </IconButton>
         <IconButton
@@ -241,8 +295,7 @@ export function Transaction({
             setOperation("delete");
             setId(transaction.id);
             setFocusEl(transactionEl.current);
-          }}
-        >
+          }}>
           <Icon>delete</Icon>
         </IconButton>
       </div>

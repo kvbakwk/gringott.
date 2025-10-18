@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState } from "react";
 import { useRouter } from "next/navigation";
 
 import { login } from "@app/api/auth/login";
-import { validateEmail, validatePassword } from "@app/utils/validator";
 
 import { TextFieldOutlined } from "@components/material/TextField";
 import { Checkbox } from "@components/material/Checkbox";
@@ -13,67 +12,43 @@ import { FilledButton } from "@components/material/Button";
 export default function LoginForm() {
   const router = useRouter();
 
-  const [emailErr, setEmailErr] = useState<boolean>(false);
-  const [passwordErr, setPasswordErr] = useState<boolean>(false);
-  const [accountErr, setAccountErr] = useState<boolean>(false);
-
-  const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
-  ): Promise<void> => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    if (
-      validateEmail(formData.get("email").toString()) &&
-      validatePassword(formData.get("password").toString())
-    ) {
-      const res = await login(
-        formData.get("email").toString(),
-        formData.get("password").toString(),
-        formData.get("remember") ? true : false
-      );
-      if (res.login) router.push("/");
-      else {
-        setEmailErr(res.emailErr);
-        setPasswordErr(res.passwordErr);
-        setAccountErr(res.accountErr);
-      }
-    } else {
-      setEmailErr(!validateEmail(formData.get("email").toString()));
-      setPasswordErr(!validatePassword(formData.get("password").toString()));
-    }
-  };
+  const [state, action, pending] = useActionState(login, undefined);
 
   return (
     <form
       className="flex flex-col justify-center items-center gap-[16px] w-[500px] h-fit py-[60px] bg-surface rounded-2xl shadow-md"
-      onSubmit={handleSubmit}
-    >
+      action={action}>
       <div className="flex flex-col justify-center items-center gap-[25px] w-[320px] px-[10px] py-[20px]">
         <TextFieldOutlined
           className="w-full"
           label="twój e-mail"
           name="email"
-          error={emailErr}
-          errorText="wpisany adres e-mail jest niepoprawny"
+          error={state?.errors?.email ? true : false}
+          errorText={state?.errors?.email ? state.errors.email[0] : ""}
         />
         <TextFieldOutlined
           className="w-full"
           label="twoje hasło"
           name="password"
           type="password"
-          error={passwordErr || accountErr}
-          errorText="wpisane hasło jest niepoprawne"
+          error={state?.errors?.password || state?.message ? true : false}
+          errorText={
+            state?.errors?.password
+              ? state.errors.password[0]
+              : state?.message
+              ? state.message
+              : ""
+          }
         />
       </div>
       <div className="flex justify-center items-center gap-[70px] pr-[10px]">
         <label
           className="flex justify-center items-center text-[14px] text-outline tracking-wider"
-          htmlFor="remember"
-        >
+          htmlFor="remember">
           <Checkbox className="m-[15px]" name="remember" id="remember" />
           zapamiętaj
         </label>
-        <FilledButton>zaloguj się</FilledButton>
+        <FilledButton disabled={pending}>zaloguj się</FilledButton>
       </div>
     </form>
   );

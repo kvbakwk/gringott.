@@ -10,6 +10,7 @@ import {
   getWalletsByUserId,
   increaseWalletBalance,
 } from "@app/utils/db-actions/wallet";
+import { verifySession } from "@app/utils/session";
 import {
   validateTradeAmount,
   validateTradeAtm,
@@ -44,6 +45,7 @@ export async function editTradeAPI(
   subjectIdErr: boolean;
   subjectMethodIdErr: boolean;
 }> {
+  if (!(await verifySession()).isAuth) return null;
   const trade = await getTradeById(tradeId);
   const cashWalletId = (await getWalletsByUserId(userId))
     .filter((wallet) => wallet.wallet_type_id === 1)

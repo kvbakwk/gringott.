@@ -6,6 +6,7 @@ import {
   validateWalletBalance,
   validateWalletName,
 } from "@app/utils/validator";
+import { verifySession } from "@app/utils/session";
 
 export async function createWalletAPI(
   name: string | null,
@@ -13,9 +14,10 @@ export async function createWalletAPI(
   userId: number,
   walletTypeId: number
 ) {
-  const nameErr = !validateWalletName(name)
-  const balanceErr = !validateWalletBalance(balance)
-  
+  if (!(await verifySession()).isAuth) return null;
+  const nameErr = !validateWalletName(name);
+  const balanceErr = !validateWalletBalance(balance);
+
   const isValid: boolean = !nameErr && !balanceErr;
 
   if (isValid) {

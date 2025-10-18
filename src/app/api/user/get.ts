@@ -1,11 +1,11 @@
 "use server";
 
-import { UserT } from "@app/utils/db-actions/user";
+import { getUserById, UserT } from "@app/utils/db-actions/user";
 
-import { cookies } from "next/headers";
-
-import { getUserByUuid } from "@app/utils/db-actions/user";
+import { verifySession } from "@app/utils/session";
 
 export async function getUser(): Promise<UserT> {
-  return await getUserByUuid((await cookies()).get("device_id").value);
+  const session = await verifySession();
+  if (!session.isAuth) return null;
+  return await getUserById(session.userId.toString());
 }
