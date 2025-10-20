@@ -37,10 +37,18 @@ export default function WalletsList({
   }, [wallets, walletsReady]);
 
   return (
-    <div className="flex justify-end items-center gap-[30px] w-full h-full">
+    <div className="flex justify-center items-center gap-[30px] w-fit h-full">
       <div className="flex items-end gap-[12px] max-w-[calc(100vw-300px)] h-full pl-[40px] pr-[70px] pb-[8px] overflow-x-auto overflow-y-hidden scroll-none">
         {walletsReady && (
           <>
+            <WalletItem
+              name="gotówka"
+              balance={
+                wallets.find((wallet) => wallet.wallet_type_id === 1).balance
+              }
+              show
+              key={wallets.find((wallet) => wallet.wallet_type_id === 1).id}
+            />
             {wallets
               .filter((wallet) => wallet.wallet_type_id === 2)
               .sort((a, b) => a.name.localeCompare(b.name))

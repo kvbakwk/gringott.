@@ -65,19 +65,17 @@ export default function HistoryPage({
         </div>
       </div>
       <div
-        className={`flex gap-[5px] w-full h-[calc(100vh-106px)] px-[60px] pb-[106px] overflow-y-auto scroll-none ${
+        className={`flex gap-[5px] w-full h-[calc(100vh-50px)] px-[60px] pb-[50px] overflow-y-auto scroll-none ${
           walletsReady && transactionsReady && tradesReady
             ? "flex-col"
             : "justify-center items-center"
-        }`}
-      >
+        }`}>
         {days.map((day) => (
           <div
             className={`flex justify-center items-center gap-[20px] font-normal text-on-surface-variant text-md w-full rounded-md hover:bg-surface ${
               !(walletsReady && transactionsReady && tradesReady) && " hidden"
             }`}
-            key={day.getTime()}
-          >
+            key={day.getTime()}>
             <div className="flex justify-center items-center w-[110px]">
               {parseDate(day)}
             </div>

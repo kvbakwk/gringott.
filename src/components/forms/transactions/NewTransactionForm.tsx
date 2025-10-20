@@ -186,7 +186,7 @@ export default function NewTransactionForm({
 
   return (
     <form
-      className="flex justify-center items-center gap-[30px] w-fit h-fit px-[90px] py-[60px] bg-surface border-1 border-green-600 rounded-2xl shadow-lg"
+      className="flex justify-center items-center gap-[30px] w-fit h-fit px-[90px] py-[60px] bg-surface border-1 border-green-700 rounded-2xl shadow-lg"
       onSubmit={handleSubmit}>
       <div className="flex flex-col justify-center items-center gap-[25px] w-[230px] px-[10px] py-[10px]">
         <SelectOutlined

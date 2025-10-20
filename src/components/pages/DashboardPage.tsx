@@ -107,8 +107,7 @@ export default function DashboardPage({
       .finally(() => setTransactionsReady(true));
 
   return (
-    <div className="grid grid-rows-[56px_1fr]">
-      <WalletsList wallets={wallets} walletsReady={walletsReady} />
+    <div className="flex justify-center items-center w-full h-full">
       {(slug === undefined || (slug && slug[0] === RouteSegments.HomePage)) && (
         <HomePage
           wallets={wallets}

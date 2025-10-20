@@ -17,6 +17,7 @@ import { MethodT } from "@app/utils/db-actions/method";
 import { SubjectT } from "@app/utils/db-actions/subject";
 import { SuperCategoryT } from "@app/utils/db-actions/super_category";
 import { CategoryT } from "@app/utils/db-actions/category";
+import WalletsList from "@components/WalletsList";
 
 export default function TransactionsPage({
   wallets,
@@ -52,44 +53,64 @@ export default function TransactionsPage({
   userId: number;
 }) {
   const formEl = useRef(null);
+  const newTransactionEl = useRef(null);
 
   const [operation, setOperation] = useState<string>("");
   const [id, setId] = useState<number>(0);
   const [focusEl, setFocusEl] = useState<HTMLElement>(null);
 
   const successOperation = () => {
+    hideForm();
     setOperation("");
     reloadWallets();
     reloadTransactions();
   };
-  const cancelOperation = () => setOperation("");
+  const cancelOperation = () => {
+    hideForm();
+    setOperation("");
+  };
 
   useEffect(() => {
+    console.log(operation);
     if (["new", "edit", "delete"].includes(operation)) {
       formEl.current.classList.remove("hidden");
       formEl.current.classList.add("flex");
       setTimeout(() => {
         formEl.current.classList.remove("opacity-0");
       }, 1);
-      if (["edit", "delete"].includes(operation) && focusEl) {
+      if (focusEl) {
         focusEl.classList.add("transition-all");
         focusEl.classList.add("shadow-sm");
         focusEl.classList.add("bg-surface");
         focusEl.classList.add("border-1");
-        operation === "edit"
+        operation === "new"
+          ? focusEl.classList.add("border-green-700")
+          : operation === "edit"
           ? focusEl.classList.add("border-yellow-500")
           : focusEl.classList.add("border-error");
       }
-    } else {
-      formEl.current.classList.remove("flex");
-      formEl.current.classList.add("hidden");
-      setTimeout(() => {
-        formEl.current.classList.add("opacity-0");
-      }, 1);
-      if (focusEl) {
+    }
+  }, [operation]);
+
+  const hideForm = () => {
+    formEl.current.classList.remove("flex");
+    formEl.current.classList.add("hidden");
+    setTimeout(() => {
+      formEl.current.classList.add("opacity-0");
+    }, 1);
+    if (focusEl) {
+      if (operation === "new") {
+        focusEl.classList.remove("shadow-sm");
+        focusEl.classList.add("border-surface");
+        focusEl.classList.remove("border-green-700");
+        setTimeout(() => {
+          focusEl.classList.remove("transition-all");
+        }, 10);
+      } else {
         focusEl.classList.remove("shadow-sm");
         focusEl.classList.remove("bg-surface");
         focusEl.classList.remove("border-1");
+        focusEl.classList.remove("border-green-700");
         focusEl.classList.remove("border-yellow-500");
         focusEl.classList.remove("border-error");
         setTimeout(() => {
@@ -97,76 +118,90 @@ export default function TransactionsPage({
         }, 10);
       }
     }
-  }, [operation]);
+  };
 
   return (
-    <div className="relative flex flex-col w-[calc(100%-50px)] h-full">
-      <div className="flex justify-center items-end gap-[20px] font-bold text-primary text-md w-full h-[50px] pb-[10px]">
-        <div className="flex justify-center items-center w-[20px]"></div>
-        <div className="flex justify-center items-center w-[200px]">data</div>
-        <div className="flex justify-center items-center w-[160px]">kwota</div>
-        <div className="flex justify-center items-center w-[200px]">opis</div>
-        <div className="flex justify-center items-center w-[200px]">z..</div>
-        <div className="flex justify-center items-center w-[200px]">
-          kategoria
-        </div>
-        <div className="flex justify-center items-center w-[120px]">
-          portfel
-        </div>
-        <div className="flex justify-center items-center w-[150px]">metoda</div>
-        <div className="flex justify-center items-center w-[100px]"></div>
-      </div>
-      <div
-        className={`flex w-full h-[calc(100vh-106px)] px-[20px] pb-[106px] overflow-y-auto scroll-none ${
-          walletsReady &&
-          transactionsReady &&
-          methodsReady &&
-          subjectsReady &&
-          superCategoriesReady &&
-          categoriesReady
-            ? "flex-col"
-            : "justify-center items-center"
-        }`}>
-        {walletsReady &&
-          transactionsReady &&
-          methodsReady &&
-          subjectsReady &&
-          superCategoriesReady &&
-          categoriesReady &&
-          transactions
-            .sort((a, b) => b.date.getTime() - a.date.getTime())
-            .map((transaction) => (
-              <Transaction
-                transaction={transaction}
-                wallets={wallets}
-                key={transaction.id}
-                setOperation={setOperation}
-                setId={setId}
-                setFocusEl={setFocusEl}
-              />
-            ))}
+    <div className="relative grid grid-rows-[50px_1fr] w-full h-full">
+      <div className="flex justify-between items-center w-full h-full px-[20px]">
         <div
-          className={`${
+          ref={newTransactionEl}
+          className="flex items-center gap-[18px] text-base text-primary w-[230px] h-[30px] p-[18px] rounded-xl cursor-pointer bg-surface border-1 border-surface"
+          onClick={() => {
+            setOperation("new");
+            setFocusEl(newTransactionEl.current);
+          }}>
+          <Icon slot="icon">add</Icon>
+          <div className="text-on-surface-variant">nowa transakcja</div>
+        </div>
+        <WalletsList wallets={wallets} walletsReady={walletsReady} />
+      </div>
+      <div className="flex flex-col w-[calc(100%-50px)] h-full">
+        <div className="flex justify-center items-end gap-[20px] font-bold text-primary text-md w-full h-[50px] pb-[10px]">
+          <div className="flex justify-center items-center w-[20px]"></div>
+          <div className="flex justify-center items-center w-[200px]">data</div>
+          <div className="flex justify-center items-center w-[160px]">
+            kwota
+          </div>
+          <div className="flex justify-center items-center w-[200px]">opis</div>
+          <div className="flex justify-center items-center w-[200px]">z..</div>
+          <div className="flex justify-center items-center w-[200px]">
+            kategoria
+          </div>
+          <div className="flex justify-center items-center w-[120px]">
+            portfel
+          </div>
+          <div className="flex justify-center items-center w-[150px]">
+            metoda
+          </div>
+          <div className="flex justify-center items-center w-[100px]"></div>
+        </div>
+        <div
+          className={`flex w-full h-[calc(100vh-106px)] px-[20px] pb-[106px] overflow-y-auto scroll-none ${
             walletsReady &&
             transactionsReady &&
             methodsReady &&
             subjectsReady &&
             superCategoriesReady &&
-            categoriesReady &&
-            " hidden"
+            categoriesReady
+              ? "flex-col"
+              : "justify-center items-center"
           }`}>
-          <CircularProgress indeterminate />
+          {walletsReady &&
+            transactionsReady &&
+            methodsReady &&
+            subjectsReady &&
+            superCategoriesReady &&
+            categoriesReady &&
+            transactions
+              .sort((a, b) => b.date.getTime() - a.date.getTime())
+              .map((transaction) => (
+                <Transaction
+                  transaction={transaction}
+                  wallets={wallets}
+                  key={transaction.id}
+                  setOperation={setOperation}
+                  setId={setId}
+                  setFocusEl={setFocusEl}
+                />
+              ))}
+          <div
+            className={`${
+              walletsReady &&
+              transactionsReady &&
+              methodsReady &&
+              subjectsReady &&
+              superCategoriesReady &&
+              categoriesReady &&
+              " hidden"
+            }`}>
+            <CircularProgress indeterminate />
+          </div>
         </div>
-      </div>
-      <div className="absolute bottom-10 right-10">
-        <Fab lowered onClick={() => setOperation("new")}>
-          <Icon slot="icon">add</Icon>
-        </Fab>
       </div>
       <div
         ref={formEl}
-        className="absolute flex justify-center items-center w-full h-full opacity-0 transition-all">
-        {operation === "new" && (
+        className="absolute hidden justify-center items-center w-full h-full opacity-0 transition-all">
+        {operation === "new" ? (
           <NewTransactionForm
             userId={userId}
             wallets={wallets.filter(
@@ -181,8 +216,7 @@ export default function TransactionsPage({
             successOperation={successOperation}
             cancelOperation={cancelOperation}
           />
-        )}
-        {operation === "edit" && (
+        ) : operation === "edit" ? (
           <EditTransactionForm
             userId={userId}
             wallets={wallets.filter(
@@ -200,8 +234,7 @@ export default function TransactionsPage({
             successOperation={successOperation}
             cancelOperation={cancelOperation}
           />
-        )}
-        {operation === "delete" && (
+        ) : operation === "delete" ? (
           <DeleteTransactionForm
             userId={userId}
             transaction={transactions.find(
@@ -211,6 +244,8 @@ export default function TransactionsPage({
             successOperation={successOperation}
             cancelOperation={cancelOperation}
           />
+        ) : (
+          <></>
         )}
       </div>
     </div>
