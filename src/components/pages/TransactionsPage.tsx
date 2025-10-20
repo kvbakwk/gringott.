@@ -71,7 +71,6 @@ export default function TransactionsPage({
   };
 
   useEffect(() => {
-    console.log(operation);
     if (["new", "edit", "delete"].includes(operation)) {
       formEl.current.classList.remove("hidden");
       formEl.current.classList.add("flex");
@@ -83,6 +82,7 @@ export default function TransactionsPage({
         focusEl.classList.add("shadow-sm");
         focusEl.classList.add("bg-surface");
         focusEl.classList.add("border-1");
+        focusEl.classList.remove("border-surface");
         operation === "new"
           ? focusEl.classList.add("border-green-700")
           : operation === "edit"
@@ -125,7 +125,7 @@ export default function TransactionsPage({
       <div className="flex justify-between items-center w-full h-full px-[20px]">
         <div
           ref={newTransactionEl}
-          className="flex items-center gap-[18px] text-base text-primary w-[230px] h-[30px] p-[18px] rounded-xl cursor-pointer bg-surface border-1 border-surface"
+          className="flex items-center gap-[18px] text-base text-primary w-[230px] h-[30px] p-[18px] rounded-2xl cursor-pointer bg-surface border-1 border-surface"
           onClick={() => {
             setOperation("new");
             setFocusEl(newTransactionEl.current);

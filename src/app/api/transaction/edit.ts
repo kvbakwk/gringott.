@@ -36,7 +36,6 @@ export async function editTransactionAPI(
   if (!(await verifySession()).isAuth) return null;
   const walletIdErr = !(await validateTransactionWalletId(walletId, userId));
   const methodIdErr = !(await validateTransactionMethodId(methodId, walletId));
-  console.log(methodId, walletId, methodIdErr);
   const dateErr = !validateTransactionDate(date);
   const amountErr = !validateTransactionAmount(amount);
   const descriptionErr = !validateTransactionDescription(description);

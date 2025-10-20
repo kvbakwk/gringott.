@@ -19,7 +19,6 @@ export async function getUserById(id: string): Promise<UserT> {
     "SELECT id, name, email FROM public.user WHERE public.user.id = $1",
     [id]
   );
-  console.log(res.rows);
   return mapRowToUser(res.rows[0]);
 }
 export async function getUsersIdsByEmail(email: string): Promise<UserIdT[]> {
