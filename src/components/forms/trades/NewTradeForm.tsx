@@ -25,20 +25,33 @@ import { SelectOption, SelectOutlined } from "@components/material/Select";
 import { FilledButton, OutlinedButton } from "@components/material/Button";
 import { createTradeAPI } from "@app/api/trade/create";
 
-export default function NewTradeForm({ userId }: { userId: number }) {
-  const router = useRouter();
-
-  const [walletsReady, setWalletsReady] = useState<boolean>(false);
-  const [methodsReady, setMethodsReady] = useState<boolean>(false);
-  const [subjectsReady, setSubjectsReady] = useState<boolean>(false);
-
+export default function NewTradeForm({
+  userId,
+  wallets,
+  methods,
+  subjects,
+  successOperation,
+  cancelOperation,
+}: {
+  userId: number;
+  wallets: WalletT[];
+  methods: MethodT[];
+  subjects: SubjectT[];
+  successOperation: () => void;
+  cancelOperation: () => void;
+}) {
   const [atm, setAtm] = useState<boolean>(true);
   const [deposit, setDeposit] = useState<boolean>(false);
 
-  const [wallets, setWallets] = useState<WalletT[]>([]);
-  const [cashMethods, setCashMethods] = useState<MethodT[]>([]);
-  const [bankMethods, setBankMethods] = useState<MethodT[]>([]);
-  const [subjects, setSubjects] = useState<SubjectT[]>([]);
+  const [tempWallets, setTempWallets] = useState<WalletT[]>(
+    wallets.filter((wallet) => wallet.wallet_type_id === 2)
+  );
+  const [cashMethods, setCashMethods] = useState<MethodT[]>(
+    methods.filter((method) => method.cash === true)
+  );
+  const [bankMethods, setBankMethods] = useState<MethodT[]>(
+    methods.filter((method) => method.bank === true)
+  );
 
   const [success, setSuccess] = useState<boolean>(false);
   const [atmErr, setAtmErr] = useState<boolean>(false);
@@ -50,27 +63,6 @@ export default function NewTradeForm({ userId }: { userId: number }) {
   const [subjectIdErr, setSubjectIdErr] = useState<boolean>(false);
   const [subjectMethodIdErr, setSubjectMethodIdErr] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-
-  useEffect(() => {
-    getWallets(userId)
-      .then((res) => {
-        setWallets(res.filter((wallet) => wallet.wallet_type_id === 2));
-      })
-      .finally(() => setWalletsReady(true));
-  }, []);
-  useEffect(() => {
-    getMethods()
-      .then((res) => {
-        setCashMethods(res.filter((method) => method.cash === true));
-        setBankMethods(res.filter((method) => method.bank === true));
-      })
-      .finally(() => setMethodsReady(true));
-  }, [deposit]);
-  useEffect(() => {
-    getSubjects(userId)
-      .then((res) => setSubjects(res))
-      .finally(() => setSubjectsReady(true));
-  }, []);
 
   const handleSubmit = async (
     e: React.FormEvent<HTMLFormElement>
@@ -109,19 +101,21 @@ export default function NewTradeForm({ userId }: { userId: number }) {
         subjectId,
         subjectMethodId,
         userId
-      ).then((res) => {
-        setSuccess(res.createTrade);
-        setAtmErr(res.atmErr);
-        setWalletIdErr(res.walletIdErr);
-        setDepositErr(res.depositErr);
-        setUserMethodIdErr(res.userMethodIdErr);
-        setDateErr(res.dateErr);
-        setAmountErr(res.amountErr);
-        setSubjectIdErr(res.subjectIdErr);
-        setSubjectMethodIdErr(res.subjectMethodIdErr);
-        setError(false);
-        if(res.createTrade) router.back()
-      })
+      )
+        .then((res) => {
+          setSuccess(res.createTrade);
+          setAtmErr(res.atmErr);
+          setWalletIdErr(res.walletIdErr);
+          setDepositErr(res.depositErr);
+          setUserMethodIdErr(res.userMethodIdErr);
+          setDateErr(res.dateErr);
+          setAmountErr(res.amountErr);
+          setSubjectIdErr(res.subjectIdErr);
+          setSubjectMethodIdErr(res.subjectMethodIdErr);
+          setError(false);
+          if (res.createTrade) successOperation();
+        })
+        .catch(() => setError(true));
     } else {
       setSuccess(false);
       setAtmErr(!validateTradeAtm(atm));
@@ -136,12 +130,11 @@ export default function NewTradeForm({ userId }: { userId: number }) {
     }
   };
 
-  if (walletsReady && methodsReady && subjectsReady)
-    return (
-      <form
-        className="flex flex-col justify-center items-center gap-[30px] w-fit h-fit py-[60px]"
-        onSubmit={handleSubmit}
-      >
+  return (
+    <form
+      className="flex justify-center items-center w-fit h-fit px-[90px] py-[60px] bg-surface border-1 border-green-700 rounded-2xl shadow-lg"
+      onSubmit={handleSubmit}>
+      <div className="flex flex-col justify-center items-center gap-[30px] w-fit h-fit">
         <SelectOutlined
           className="w-[300px]"
           label="wymiana.."
@@ -151,8 +144,7 @@ export default function NewTradeForm({ userId }: { userId: number }) {
           }
           value={atm ? "1" : "0"}
           error={atmErr}
-          errorText="wybierz typ wymiany"
-        >
+          errorText="wybierz typ wymiany">
           {atm ? (
             <Icon className="fill" slot="leading-icon">
               atm
@@ -169,19 +161,18 @@ export default function NewTradeForm({ userId }: { userId: number }) {
             <div slot="headline">z kimś</div>
           </SelectOption>
         </SelectOutlined>
-        <div className="flex gap-[30px]">
-          <div className="flex flex-col gap-[25px] w-[260px]">
+        <div className="flex gap-[30px] w-fit h-fit">
+          <div className="flex flex-col gap-[25px] w-[230px]">
             <SelectOutlined
               className="w-full"
               label="konto"
               name="walletId"
               error={walletIdErr}
-              errorText="wybierz portfel"
-            >
+              errorText="wybierz portfel">
               <Icon className="fill" slot="leading-icon">
                 wallet
               </Icon>
-              {wallets.map((wallet) => (
+              {tempWallets.map((wallet) => (
                 <SelectOption key={wallet.id} value={wallet.id.toString()}>
                   <div slot="headline">{wallet.name}</div>
                 </SelectOption>
@@ -196,8 +187,7 @@ export default function NewTradeForm({ userId }: { userId: number }) {
               }
               value={deposit ? "1" : "0"}
               error={depositErr}
-              errorText="wybierz rodzaj wymiany"
-            >
+              errorText="wybierz rodzaj wymiany">
               <Icon className="fill" slot="leading-icon">
                 swap_vert
               </Icon>
@@ -214,8 +204,7 @@ export default function NewTradeForm({ userId }: { userId: number }) {
               name="userMethodId"
               error={userMethodIdErr}
               errorText="wybierz swoją metodę"
-              disabled={atm}
-            >
+              disabled={atm}>
               <Icon className="fill" slot="leading-icon">
                 tactic
               </Icon>
@@ -232,7 +221,7 @@ export default function NewTradeForm({ userId }: { userId: number }) {
                   ))}
             </SelectOutlined>
           </div>
-          <div className="flex flex-col gap-[25px] w-[230px]">
+          <div className="flex flex-col gap-[25px] w-[250px]">
             <TextFieldOutlined
               className="w-full"
               label="data"
@@ -242,8 +231,7 @@ export default function NewTradeForm({ userId }: { userId: number }) {
                 .toISOString()
                 .slice(0, 16)}
               error={dateErr}
-              errorText="wybierz datę"
-            >
+              errorText="wybierz datę">
               <Icon slot="leading-icon">event</Icon>
             </TextFieldOutlined>
             <TextFieldOutlined
@@ -255,27 +243,27 @@ export default function NewTradeForm({ userId }: { userId: number }) {
               min="0"
               suffixText="zł"
               error={amountErr}
-              errorText="wpisz poprawną kwotę"
-            >
+              errorText="wpisz poprawną kwotę">
               <Icon slot="leading-icon">toll</Icon>
             </TextFieldOutlined>
           </div>
-          <div className="flex flex-col gap-[25px] w-[260px]">
+          <div className="flex flex-col gap-[25px] w-[230px]">
             <SelectOutlined
               className="w-full"
               label="druga strona"
               name="subjectId"
               error={subjectIdErr}
-              errorText="wybierz drugą stronę"
-            >
+              errorText="wybierz drugą stronę">
               <Icon className="fill" slot="leading-icon">
                 person
               </Icon>
-              {subjects.map((subject) => (
-                <SelectOption key={subject.id} value={subject.id.toString()}>
-                  <div slot="headline">{subject.name}</div>
-                </SelectOption>
-              ))}
+              {subjects
+                .filter((subject) => (atm ? subject.atm : subject.normal))
+                .map((subject) => (
+                  <SelectOption key={subject.id} value={subject.id.toString()}>
+                    <div slot="headline">{subject.name}</div>
+                  </SelectOption>
+                ))}
             </SelectOutlined>
             <SelectOutlined
               className="w-full"
@@ -283,8 +271,7 @@ export default function NewTradeForm({ userId }: { userId: number }) {
               name="subjectMethodId"
               error={subjectMethodIdErr}
               errorText="wybierz metodę drugiej strony"
-              disabled={atm}
-            >
+              disabled={atm}>
               <Icon className="fill" slot="leading-icon">
                 tactic
               </Icon>
@@ -303,12 +290,12 @@ export default function NewTradeForm({ userId }: { userId: number }) {
           </div>
         </div>
         <div className="flex justify-end items-center gap-[10px] w-full">
-          <OutlinedButton type="button" onClick={() => router.back()}>
+          <OutlinedButton type="button" onClick={() => cancelOperation()}>
             anuluj
           </OutlinedButton>
           <FilledButton>dodaj wymianę</FilledButton>
         </div>
-      </form>
-    );
-  else return <Loading />;
+      </div>
+    </form>
+  );
 }

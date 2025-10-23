@@ -1,59 +1,52 @@
 "use client";
 
 import { WalletT } from "@app/utils/db-actions/wallet";
-import { TransactionT } from "@app/utils/db-actions/transaction";
+import { TradeT } from "@app/utils/db-actions/trade";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { RouteSegments } from "@app/utils/routes";
 
 import { parseDate, parseMoney, parseTime } from "@app/utils/parser";
 import { CircularProgress } from "@components/material/Progress";
 import { Fab } from "@components/material/Fab";
 import { Icon } from "@components/material/Icon";
 import { IconButton } from "@components/material/IconButton";
-import NewTransactionForm from "@components/forms/transactions/NewTransactionForm";
-import EditTransactionForm from "@components/forms/transactions/EditTransactionForm";
-import DeleteTransactionForm from "@components/forms/transactions/DeleteTransactionForm";
+import WalletsList from "@components/WalletsList";
 import { MethodT } from "@app/utils/db-actions/method";
 import { SubjectT } from "@app/utils/db-actions/subject";
-import { SuperCategoryT } from "@app/utils/db-actions/super_category";
-import { CategoryT } from "@app/utils/db-actions/category";
-import WalletsList from "@components/WalletsList";
+import NewTradeForm from "@components/forms/trades/NewTradeForm";
+import EditTradeForm from "@components/forms/trades/EditTradeForm";
+import DeleteTradeForm from "@components/forms/trades/DeleteTradeForm";
 
-export default function TransactionsPage({
+export default function TradesPage({
   wallets,
-  transactions,
+  trades,
   methods,
   subjects,
-  superCategories,
-  categories,
   walletsReady,
-  transactionsReady,
+  tradesReady,
   methodsReady,
   subjectsReady,
-  superCategoriesReady,
-  categoriesReady,
   reloadWallets,
-  reloadTransactions,
+  reloadTrades,
   userId,
 }: {
   wallets: WalletT[];
-  transactions: TransactionT[];
+  trades: TradeT[];
   methods: MethodT[];
   subjects: SubjectT[];
-  superCategories: SuperCategoryT[];
-  categories: CategoryT[];
   walletsReady: boolean;
-  transactionsReady: boolean;
+  tradesReady: boolean;
   methodsReady: boolean;
   subjectsReady: boolean;
-  superCategoriesReady: boolean;
-  categoriesReady: boolean;
   reloadWallets: () => void;
-  reloadTransactions: () => void;
+  reloadTrades: () => void;
   userId: number;
 }) {
   const formEl = useRef(null);
-  const newTransactionEl = useRef(null);
+  const newTradeEl = useRef(null);
 
   const [operation, setOperation] = useState<string>("");
   const [id, setId] = useState<number>(0);
@@ -63,7 +56,7 @@ export default function TransactionsPage({
     hideForm();
     setOperation("");
     reloadWallets();
-    reloadTransactions();
+    reloadTrades();
   };
   const cancelOperation = () => {
     hideForm();
@@ -124,61 +117,53 @@ export default function TransactionsPage({
     <div className="relative grid grid-rows-[50px_1fr] w-full h-full">
       <div className="flex justify-between items-center w-full h-full px-[20px]">
         <div
-          ref={newTransactionEl}
+          ref={newTradeEl}
           className="flex items-center gap-[18px] text-base text-primary w-[230px] h-[30px] p-[18px] rounded-2xl cursor-pointer bg-surface border-1 border-surface"
           onClick={() => {
             setOperation("new");
-            setFocusEl(newTransactionEl.current);
+            setFocusEl(newTradeEl.current);
           }}>
           <Icon slot="icon">add</Icon>
-          <div className="text-on-surface-variant">nowa transakcja</div>
+          <div className="text-on-surface-variant">nowa wymiana</div>
         </div>
         <WalletsList wallets={wallets} walletsReady={walletsReady} />
       </div>
       <div className="flex flex-col w-[calc(100%-50px)] h-full">
         <div className="flex justify-center items-end gap-[20px] font-bold text-primary text-md w-full h-[50px] pb-[10px]">
-          <div className="flex justify-center items-center w-[20px]"></div>
           <div className="flex justify-center items-center w-[200px]">data</div>
           <div className="flex justify-center items-center w-[160px]">
             kwota
           </div>
-          <div className="flex justify-center items-center w-[200px]">opis</div>
-          <div className="flex justify-center items-center w-[200px]">z..</div>
           <div className="flex justify-center items-center w-[200px]">
-            kategoria
+            konto
           </div>
-          <div className="flex justify-center items-center w-[120px]">
-            portfel
-          </div>
-          <div className="flex justify-center items-center w-[150px]">
+          <div className="flex justify-center items-center w-[200px]">
             metoda
           </div>
-          <div className="flex justify-center items-center w-[100px]"></div>
+          <div className="flex justify-center items-center w-[200px]">
+            druga strona
+          </div>
+          <div className="flex justify-center items-center w-[200px]">
+            metoda
+          </div>
         </div>
         <div
-          className={`flex w-full h-[calc(100vh-106px)] px-[20px] pb-[106px] overflow-y-auto scroll-none ${
-            walletsReady &&
-            transactionsReady &&
-            methodsReady &&
-            subjectsReady &&
-            superCategoriesReady &&
-            categoriesReady
+          className={`flex w-full h-[calc(100vh-160px)] px-[20px] pb-[30px] overflow-y-auto scroll-none ${
+            walletsReady && tradesReady && methodsReady && subjectsReady
               ? "flex-col"
               : "justify-center items-center"
           }`}>
           {walletsReady &&
-            transactionsReady &&
+            tradesReady &&
             methodsReady &&
             subjectsReady &&
-            superCategoriesReady &&
-            categoriesReady &&
-            transactions
+            trades
               .sort((a, b) => b.date.getTime() - a.date.getTime())
-              .map((transaction) => (
-                <Transaction
-                  transaction={transaction}
+              .map((trade) => (
+                <Trade
+                  trade={trade}
                   wallets={wallets}
-                  key={transaction.id}
+                  key={trade.id}
                   setOperation={setOperation}
                   setId={setId}
                   setFocusEl={setFocusEl}
@@ -187,11 +172,9 @@ export default function TransactionsPage({
           <div
             className={`${
               walletsReady &&
-              transactionsReady &&
+              tradesReady &&
               methodsReady &&
               subjectsReady &&
-              superCategoriesReady &&
-              categoriesReady &&
               " hidden"
             }`}>
             <CircularProgress indeterminate />
@@ -202,7 +185,7 @@ export default function TransactionsPage({
         ref={formEl}
         className="absolute hidden justify-center items-center w-full h-full opacity-0 transition-all">
         {operation === "new" ? (
-          <NewTransactionForm
+          <NewTradeForm
             userId={userId}
             wallets={wallets.filter(
               (wallet) =>
@@ -210,34 +193,26 @@ export default function TransactionsPage({
             )}
             methods={methods}
             subjects={subjects}
-            superCategories={superCategories}
-            categories={categories}
             successOperation={successOperation}
             cancelOperation={cancelOperation}
           />
         ) : operation === "edit" ? (
-          <EditTransactionForm
+          <EditTradeForm
             userId={userId}
             wallets={wallets.filter(
               (wallet) =>
                 wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2
             )}
-            transaction={transactions.find(
-              (transaction) => transaction.id === id
-            )}
+            trade={trades.find((trade) => trade.id === id)}
             methods={methods}
             subjects={subjects}
-            superCategories={superCategories}
-            categories={categories}
             successOperation={successOperation}
             cancelOperation={cancelOperation}
           />
         ) : operation === "delete" ? (
-          <DeleteTransactionForm
+          <DeleteTradeForm
             userId={userId}
-            transaction={transactions.find(
-              (transaction) => transaction.id === id
-            )}
+            trade={trades.find((trade) => trade.id === id)}
             successOperation={successOperation}
             cancelOperation={cancelOperation}
           />
@@ -249,64 +224,60 @@ export default function TransactionsPage({
   );
 }
 
-export function Transaction({
-  transaction,
+export function Trade({
+  trade,
   wallets,
   setOperation,
   setId,
   setFocusEl,
 }: {
-  transaction: TransactionT;
+  trade: TradeT;
   wallets: WalletT[];
   setOperation: (operation: string) => void;
   setId: (id: number) => void;
   setFocusEl: (focusEl: HTMLElement) => void;
 }) {
-  const transactionEl = useRef(null);
+  const tradeEl = useRef(null);
   const amountEl = useRef(null);
 
   const [hover, setHover] = useState(false);
 
   useEffect(() => {
-    if (transaction.income) amountEl.current.classList.add("text-green-800");
-    else amountEl.current.classList.add("text-red-800");
-    if (transaction.important) amountEl.current.classList.remove("opacity-50");
-    else amountEl.current.classList.add("opacity-50");
-  }, [transaction]);
+    if (trade.deposit) amountEl.current.classList.add("text-blue-600");
+    else amountEl.current.classList.add("text-yellow-700");
+  }, [trade]);
 
   return (
     <div
-      ref={transactionEl}
-      className="flex justify-center items-center gap-[20px] font-normal text-on-surface-variant text-base w-full h-[30px] rounded-lg hover:bg-surface"
-      key={transaction.id}
+      ref={tradeEl}
+      className={`flex justify-center items-center gap-[20px] font-normal text-on-surface-variant text-base w-full h-[30px] rounded-lg hover:shadow-sm hover:bg-surface`}
+      key={trade.id}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}>
-      <div className="w-[20px] h-full"></div>
+      <div className="w-[100px] h-full"></div>
       <div className="flex justify-center items-center gap-[6px] w-[200px]">
-        <div>{parseDate(transaction.date)}</div>
-        <div className="text-[15px]">{parseTime(transaction.date)}</div>
+        <div>{parseDate(trade.date)}</div>
+        <div className="text-[15px]">{parseTime(trade.date)}</div>
       </div>
       <div
         ref={amountEl}
-        className="flex justify-center items-center font-semibold text-xl w-[160px]">
-        {parseMoney(transaction.amount)} zł
+        className="flex justify-center items-center font-semibold text-lg w-[160px]">
+        {parseMoney(trade.amount)} zł
       </div>
       <div className="flex justify-center items-center truncate w-[200px]">
-        {transaction.description}
+        {
+          wallets.filter((wallet: WalletT) => wallet.id === trade.wallet_id)[0]
+            .name
+        }
+      </div>
+      <div className="flex justify-center items-center w-[200px]">
+        {trade.atm ? "-" : trade.user_method.name}
       </div>
       <div className="flex justify-center items-center truncate w-[200px]">
-        {transaction.subject.name}
+        {trade.subject.name}
       </div>
-      <div className="flex justify-center items-center truncate w-[200px]">
-        {transaction.category.name}
-      </div>
-      <div className="flex justify-center items-center truncate w-[120px]">
-        {wallets.filter(
-          (wallet: WalletT) => wallet.id === transaction.wallet_id
-        )[0].name ?? "gotówka"}
-      </div>
-      <div className="flex justify-center items-center w-[150px]">
-        {transaction.method.name}
+      <div className="flex justify-center items-center w-[200px]">
+        {trade.atm ? "-" : trade.subject_method.name}
       </div>
       <div
         className={`flex justify-center items-center w-[100px] h-full transition-opacity ${
@@ -316,8 +287,8 @@ export function Transaction({
           className="mini"
           onClick={() => {
             setOperation("edit");
-            setId(transaction.id);
-            setFocusEl(transactionEl.current);
+            setId(trade.id);
+            setFocusEl(tradeEl.current);
           }}>
           <Icon>edit</Icon>
         </IconButton>
@@ -325,8 +296,8 @@ export function Transaction({
           className="mini error"
           onClick={() => {
             setOperation("delete");
-            setId(transaction.id);
-            setFocusEl(transactionEl.current);
+            setId(trade.id);
+            setFocusEl(tradeEl.current);
           }}>
           <Icon>delete</Icon>
         </IconButton>

@@ -17,7 +17,6 @@ export default function DeleteTransactionForm({
 }: {
   userId: number;
   transaction: TransactionT;
-  operation: string;
   successOperation: () => void;
   cancelOperation: () => void;
 }) {

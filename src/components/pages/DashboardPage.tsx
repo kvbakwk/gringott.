@@ -29,7 +29,7 @@ import DeleteSubjectPage from "./subjects/DeleteSubjectPage";
 
 import NewWalletPage from "./wallets/NewWalletPage";
 import NewTradePage from "./trades/NewTradePage";
-import TradesPage from "./trades/TradesPage";
+import TradesPage from "./TradesPage";
 import DeleteTradePage from "./trades/DeleteTradePage";
 import EditTradePage from "./trades/EditTradePage";
 import NewTransferPage from "./transfers/NewTransferPage";
@@ -105,6 +105,11 @@ export default function DashboardPage({
       .then((transactions) => setTransactions(transactions))
       .catch((err) => console.log("failed to fetch transactions:", err))
       .finally(() => setTransactionsReady(true));
+  const reloadTrades = () =>
+    getTrades(user.id)
+      .then((trades) => setTrades(trades))
+      .catch((err) => console.log("failed to fetch trades:", err))
+      .finally(() => setTradesReady(true));
 
   return (
     <div className="flex justify-center items-center w-full h-full">
@@ -132,6 +137,8 @@ export default function DashboardPage({
           RouteSegments.Trades.toString(),
           RouteSegments.Transfers.toString(),
           RouteSegments.Subjects.toString(),
+          RouteSegments.Categories.toString(),
+          RouteSegments.Methods.toString(),
         ].includes(slug[1]) && (
           <TransactionsPage
             wallets={wallets}
@@ -153,30 +160,20 @@ export default function DashboardPage({
         )}
       {slug &&
         slug[0] === RouteSegments.Transactions &&
-        slug[1] === RouteSegments.Trades &&
-        slug[2] === undefined && (
+        slug[1] === RouteSegments.Trades && (
           <TradesPage
             wallets={wallets}
             trades={trades}
+            methods={methods}
+            subjects={subjects}
             walletsReady={walletsReady}
             tradesReady={transactionsReady}
+            methodsReady={methodsReady}
+            subjectsReady={subjectsReady}
+            reloadWallets={reloadWallets}
+            reloadTrades={reloadTrades}
+            userId={user.id}
           />
-        )}
-      {slug &&
-        slug[0] === RouteSegments.Transactions &&
-        slug[1] === RouteSegments.Trades &&
-        slug[2] === RouteSegments.New && <NewTradePage userId={user.id} />}
-      {slug &&
-        slug[0] === RouteSegments.Transactions &&
-        slug[1] === RouteSegments.Trades &&
-        slug[2] === RouteSegments.Edit && (
-          <EditTradePage userId={user.id} tradeId={parseInt(slug[3])} />
-        )}
-      {slug &&
-        slug[0] === RouteSegments.Transactions &&
-        slug[1] === RouteSegments.Trades &&
-        slug[2] === RouteSegments.Delete && (
-          <DeleteTradePage userId={user.id} tradeId={parseInt(slug[3])} />
         )}
       {slug &&
         slug[0] === RouteSegments.Transactions &&

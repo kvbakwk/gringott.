@@ -38,7 +38,6 @@ export default function NewTransactionForm({
   subjects: SubjectT[];
   superCategories: SuperCategoryT[];
   categories: CategoryT[];
-  operation: string;
   successOperation: () => void;
   cancelOperation: () => void;
 }) {
