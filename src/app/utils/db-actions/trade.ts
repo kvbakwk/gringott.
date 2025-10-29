@@ -135,13 +135,10 @@ export async function editTrade(
   );
   return res.rowCount;
 }
-export async function deleteTrade(
-  tradeId: number
-): Promise<number> {
-  const res = await pool.query(
-    `DELETE FROM public.trade WHERE id = $1;`,
-    [tradeId]
-  );
+export async function deleteTrade(tradeId: number): Promise<number> {
+  const res = await pool.query(`DELETE FROM public.trade WHERE id = $1;`, [
+    tradeId,
+  ]);
   return res.rowCount;
 }
 

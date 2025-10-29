@@ -98,9 +98,9 @@ create table if not exists public.trade (
 
 create table if not exists public.transfer (
     id serial primary key,
-    user_id integer not null,
     date timestamp not null,
     amount numeric(10, 2) not null,
+    user_id integer not null,
     method_id integer not null,
     from_wallet_id integer not null,
     to_wallet_id integer not null,

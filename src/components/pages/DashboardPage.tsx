@@ -28,17 +28,16 @@ import EditSubjectPage from "./subjects/EditSubjectPage";
 import DeleteSubjectPage from "./subjects/DeleteSubjectPage";
 
 import NewWalletPage from "./wallets/NewWalletPage";
-import NewTradePage from "./trades/NewTradePage";
 import TradesPage from "./TradesPage";
-import DeleteTradePage from "./trades/DeleteTradePage";
-import EditTradePage from "./trades/EditTradePage";
-import NewTransferPage from "./transfers/NewTransferPage";
 import { CategoryT } from "@app/utils/db-actions/category";
 import { SuperCategoryT } from "@app/utils/db-actions/super_category";
 import { SubjectT } from "@app/utils/db-actions/subject";
 import { getSubjects } from "@app/api/subject/get";
 import { getSuperCategoriesAPI } from "@app/api/super_category/get";
 import { getCategoriessAPI } from "@app/api/category/get";
+import TransfersPage from "./TransfersPage";
+import { TransferT } from "@app/utils/db-actions/transfer";
+import { getTransfers } from "@app/api/transfer/get";
 
 export default function DashboardPage({
   slug,
@@ -50,6 +49,7 @@ export default function DashboardPage({
   const [wallets, setWallets] = useState<WalletT[]>([]);
   const [transactions, setTransactions] = useState<TransactionT[]>([]);
   const [trades, setTrades] = useState<TradeT[]>([]);
+  const [transfers, setTransfers] = useState<TransferT[]>([]);
   const [methods, setMethods] = useState<MethodT[]>([]);
   const [categories, setCategories] = useState<CategoryT[]>([]);
   const [superCategories, setSuperCategories] = useState<SuperCategoryT[]>([]);
@@ -58,6 +58,7 @@ export default function DashboardPage({
   const [walletsReady, setWalletsReady] = useState<boolean>(false);
   const [transactionsReady, setTransactionsReady] = useState<boolean>(false);
   const [tradesReady, setTradesReady] = useState<boolean>(false);
+  const [transfersReady, setTransfersReady] = useState<boolean>(false);
   const [methodsReady, setMethodsReady] = useState<boolean>(false);
   const [subjectsReady, setSubjectsReady] = useState<boolean>(false);
   const [superCategoriesReady, setSuperCategoriesReady] =
@@ -77,6 +78,10 @@ export default function DashboardPage({
       .then((trades) => setTrades(trades))
       .catch((err) => console.log("failed to fetch trades:", err))
       .finally(() => setTradesReady(true));
+    getTransfers(user.id)
+      .then((transfers) => setTransfers(transfers))
+      .catch((err) => console.log("failed to fetch transfers:", err))
+      .finally(() => setTransfersReady(true));
     getMethodsAPI()
       .then((methods) => setMethods(methods))
       .catch((err) => console.log("failed to fetch methods:", err))
@@ -167,7 +172,7 @@ export default function DashboardPage({
             methods={methods}
             subjects={subjects}
             walletsReady={walletsReady}
-            tradesReady={transactionsReady}
+            tradesReady={tradesReady}
             methodsReady={methodsReady}
             subjectsReady={subjectsReady}
             reloadWallets={reloadWallets}
@@ -177,8 +182,21 @@ export default function DashboardPage({
         )}
       {slug &&
         slug[0] === RouteSegments.Transactions &&
-        slug[1] === RouteSegments.Transfers &&
-        slug[2] === RouteSegments.New && <NewTransferPage userId={user.id} />}
+        slug[1] === RouteSegments.Transfers && (
+          <TransfersPage
+            wallets={wallets}
+            transfers={transfers}
+            methods={methods}
+            subjects={subjects}
+            walletsReady={walletsReady}
+            transfersReady={transfersReady}
+            methodsReady={methodsReady}
+            subjectsReady={subjectsReady}
+            reloadWallets={reloadWallets}
+            reloadTrades={reloadTrades}
+            userId={user.id}
+          />
+        )}
       {slug &&
         slug[0] === RouteSegments.Transactions &&
         slug[1] === RouteSegments.Subjects &&

@@ -1,7 +1,7 @@
 "use client";
 
 import { WalletT } from "@app/utils/db-actions/wallet";
-import { TradeT } from "@app/utils/db-actions/trade";
+import { TransferT } from "@app/utils/db-actions/transfer";
 
 import { useEffect, useRef, useState } from "react";
 
@@ -16,14 +16,15 @@ import { SubjectT } from "@app/utils/db-actions/subject";
 import NewTradeForm from "@components/forms/trades/NewTradeForm";
 import EditTradeForm from "@components/forms/trades/EditTradeForm";
 import DeleteTradeForm from "@components/forms/trades/DeleteTradeForm";
+import NewTransferForm from "@components/forms/transfers/NewTransferForm";
 
-export default function TradesPage({
+export default function TransfersPage({
   wallets,
-  trades,
+  transfers,
   methods,
   subjects,
   walletsReady,
-  tradesReady,
+  transfersReady,
   methodsReady,
   subjectsReady,
   reloadWallets,
@@ -31,11 +32,11 @@ export default function TradesPage({
   userId,
 }: {
   wallets: WalletT[];
-  trades: TradeT[];
+  transfers: TransferT[];
   methods: MethodT[];
   subjects: SubjectT[];
   walletsReady: boolean;
-  tradesReady: boolean;
+  transfersReady: boolean;
   methodsReady: boolean;
   subjectsReady: boolean;
   reloadWallets: () => void;
@@ -43,7 +44,7 @@ export default function TradesPage({
   userId: number;
 }) {
   const formEl = useRef(null);
-  const newTradeEl = useRef(null);
+  const newTransferEl = useRef(null);
 
   const [operation, setOperation] = useState<string>("");
   const [id, setId] = useState<number>(0);
@@ -114,14 +115,15 @@ export default function TradesPage({
     <div className="relative grid grid-rows-[50px_1fr] w-full h-full">
       <div className="flex justify-between items-center w-full h-full px-[20px]">
         <div
-          ref={newTradeEl}
+          ref={newTransferEl}
           className="flex items-center gap-[18px] text-base text-primary w-[230px] h-[30px] p-[18px] rounded-2xl cursor-pointer bg-surface border-1 border-surface"
           onClick={() => {
             setOperation("new");
-            setFocusEl(newTradeEl.current);
-          }}>
+            setFocusEl(newTransferEl.current);
+          }}
+        >
           <Icon slot="icon">add</Icon>
-          <div className="text-on-surface-variant">nowa wymiana</div>
+          <div className="text-on-surface-variant">nowy transfer</div>
         </div>
         <WalletsList wallets={wallets} walletsReady={walletsReady} />
       </div>
@@ -146,21 +148,22 @@ export default function TradesPage({
         </div>
         <div
           className={`flex w-full h-[calc(100vh-160px)] px-[20px] pb-[30px] overflow-y-auto scroll-none ${
-            walletsReady && tradesReady && methodsReady && subjectsReady
+            walletsReady && transfersReady && methodsReady && subjectsReady
               ? "flex-col"
               : "justify-center items-center"
-          }`}>
+          }`}
+        >
           {walletsReady &&
-            tradesReady &&
+            transfersReady &&
             methodsReady &&
             subjectsReady &&
-            trades
+            transfers
               .sort((a, b) => b.date.getTime() - a.date.getTime())
-              .map((trade) => (
-                <Trade
-                  trade={trade}
+              .map((transfer) => (
+                <Transfer
+                  transfer={transfer}
                   wallets={wallets}
-                  key={trade.id}
+                  key={transfer.id}
                   setOperation={setOperation}
                   setId={setId}
                   setFocusEl={setFocusEl}
@@ -169,50 +172,37 @@ export default function TradesPage({
           <div
             className={`${
               walletsReady &&
-              tradesReady &&
+              transfersReady &&
               methodsReady &&
               subjectsReady &&
               " hidden"
-            }`}>
+            }`}
+          >
             <CircularProgress indeterminate />
           </div>
         </div>
       </div>
       <div
         ref={formEl}
-        className="absolute hidden justify-center items-center w-full h-full opacity-0 transition-all">
+        className="absolute hidden justify-center items-center w-full h-full opacity-0 transition-all"
+      >
         {operation === "new" ? (
-          <NewTradeForm
+          <NewTransferForm
             userId={userId}
             wallets={wallets.filter(
               (wallet) =>
                 wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2
             )}
             methods={methods}
-            subjects={subjects}
+            walletsReady={walletsReady}
+            methodsReady={methodsReady}
             successOperation={successOperation}
             cancelOperation={cancelOperation}
           />
         ) : operation === "edit" ? (
-          <EditTradeForm
-            userId={userId}
-            wallets={wallets.filter(
-              (wallet) =>
-                wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2
-            )}
-            trade={trades.find((trade) => trade.id === id)}
-            methods={methods}
-            subjects={subjects}
-            successOperation={successOperation}
-            cancelOperation={cancelOperation}
-          />
+          <></>
         ) : operation === "delete" ? (
-          <DeleteTradeForm
-            userId={userId}
-            trade={trades.find((trade) => trade.id === id)}
-            successOperation={successOperation}
-            cancelOperation={cancelOperation}
-          />
+          <></>
         ) : (
           <></>
         )}
@@ -221,14 +211,14 @@ export default function TradesPage({
   );
 }
 
-export function Trade({
-  trade,
+export function Transfer({
+  transfer,
   wallets,
   setOperation,
   setId,
   setFocusEl,
 }: {
-  trade: TradeT;
+  transfer: TransferT;
   wallets: WalletT[];
   setOperation: (operation: string) => void;
   setId: (id: number) => void;
@@ -239,63 +229,65 @@ export function Trade({
 
   const [hover, setHover] = useState(false);
 
-  useEffect(() => {
-    if (trade.deposit) amountEl.current.classList.add("text-blue-600");
-    else amountEl.current.classList.add("text-yellow-700");
-  }, [trade]);
-
   return (
     <div
       ref={tradeEl}
       className={`flex justify-center items-center gap-[20px] font-normal text-on-surface-variant text-base w-full h-[30px] rounded-lg hover:shadow-sm hover:bg-surface`}
-      key={trade.id}
+      key={transfer.id}
       onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}>
+      onMouseLeave={() => setHover(false)}
+    >
       <div className="w-[100px] h-full"></div>
       <div className="flex justify-center items-center gap-[6px] w-[200px]">
-        <div>{parseDate(trade.date)}</div>
-        <div className="text-[15px]">{parseTime(trade.date)}</div>
+        <div>{parseDate(transfer.date)}</div>
+        <div className="text-[15px]">{parseTime(transfer.date)}</div>
       </div>
       <div
         ref={amountEl}
-        className="flex justify-center items-center font-semibold text-lg w-[160px]">
-        {parseMoney(trade.amount)} zł
+        className="flex justify-center items-center font-semibold text-lg w-[160px]"
+      >
+        {parseMoney(transfer.amount)} zł
       </div>
       <div className="flex justify-center items-center truncate w-[200px]">
         {
-          wallets.filter((wallet: WalletT) => wallet.id === trade.wallet_id)[0]
-            .name
+          wallets.filter(
+            (wallet: WalletT) => wallet.id === transfer.from_wallet_id
+          )[0].name
+        }
+      </div>
+      <div className="flex justify-center items-center truncate w-[200px]">
+        {
+          wallets.filter(
+            (wallet: WalletT) => wallet.id === transfer.from_wallet_id
+          )[0].name
         }
       </div>
       <div className="flex justify-center items-center w-[200px]">
-        {trade.atm ? "-" : trade.user_method.name}
-      </div>
-      <div className="flex justify-center items-center truncate w-[200px]">
-        {trade.subject.name}
-      </div>
-      <div className="flex justify-center items-center w-[200px]">
-        {trade.atm ? "-" : trade.subject_method.name}
+        {transfer.method.name}
       </div>
       <div
         className={`flex justify-center items-center w-[100px] h-full transition-opacity ${
           hover ? "opacity-100" : "opacity-0"
-        }`}>
+        }`}
+      >
         <IconButton
           className="mini"
           onClick={() => {
             setOperation("edit");
-            setId(trade.id);
+            setId(transfer.id);
             setFocusEl(tradeEl.current);
-          }}>
+          }}
+        >
           <Icon>edit</Icon>
         </IconButton>
         <IconButton
           className="mini error"
           onClick={() => {
             setOperation("delete");
-            setId(trade.id);
+            setId(transfer.id);
             setFocusEl(tradeEl.current);
-          }}>
+          }}
+        >
           <Icon>delete</Icon>
         </IconButton>
       </div>

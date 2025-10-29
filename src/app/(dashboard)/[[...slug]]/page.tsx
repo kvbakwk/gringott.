@@ -32,21 +32,8 @@ export async function generateMetadata({ params }) {
         !path.slug[2]
       ? "wymiany"
       : path.slug[0] === RouteSegments.Transactions &&
-        path.slug[1] === RouteSegments.Trades &&
-        path.slug[2] === RouteSegments.New
-      ? "nowa wymiana"
-      : path.slug[0] === RouteSegments.Transactions &&
-        path.slug[1] === RouteSegments.Trades &&
-        path.slug[2] === RouteSegments.Edit
-      ? "edycja wymiany"
-      : path.slug[0] === RouteSegments.Transactions &&
-        path.slug[1] === RouteSegments.Trades &&
-        path.slug[2] === RouteSegments.Delete
-      ? "usuwanie wymiany"
-      : path.slug[0] === RouteSegments.Transactions &&
-        path.slug[1] === RouteSegments.Transfers &&
-        path.slug[2] === RouteSegments.New
-      ? "nowy transfer"
+        path.slug[1] === RouteSegments.Transfers
+      ? "transfery"
       : path.slug[0] === RouteSegments.Transactions &&
         path.slug[1] === RouteSegments.Subjects &&
         !path.slug[2]
