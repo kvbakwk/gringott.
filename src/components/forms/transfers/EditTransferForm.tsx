@@ -10,10 +10,13 @@ import { FilledButton, OutlinedButton } from "@components/material/Button";
 import { SelectOption, SelectOutlined } from "@components/material/Select";
 import { TextFieldOutlined } from "@components/material/TextField";
 import { Icon } from "@components/material/Icon";
+import { TransferT } from "@app/utils/db-actions/transfer";
+import editTransferAPI from "@app/api/transfer/edit";
 
-export default function NewTransferForm({
+export default function EditTransferForm({
   userId,
   wallets,
+  transfer,
   methods,
   walletsReady,
   methodsReady,
@@ -22,6 +25,7 @@ export default function NewTransferForm({
 }: {
   userId: number;
   wallets: WalletT[];
+  transfer: TransferT;
   methods: MethodT[];
   walletsReady: boolean;
   methodsReady: boolean;
@@ -33,14 +37,26 @@ export default function NewTransferForm({
   );
   const [pending, setPending] = useState<boolean>(false);
 
-  const [fromType, setFromType] = useState<number>(null);
-  const [toType, setToType] = useState<number>(null);
+  const [amount, setAmount] = useState<number>(transfer.amount);
+  const [fromWallet, setFromWallet] = useState<WalletT>(
+    wallets.find((wallet) => wallet.id === transfer.from_wallet_id)
+  );
+  const [toWallet, setToWallet] = useState<WalletT>(
+    wallets.find((wallet) => wallet.id === transfer.to_wallet_id)
+  );
+  const [method, setMethod] = useState<MethodT>(
+    methods.find((method) => method.id === transfer.method.id)
+  );
+  const [fromType, setFromType] = useState<number>(
+    fromWallet.wallet_type_id - 1
+  );
+  const [toType, setToType] = useState<number>(toWallet.wallet_type_id - 1);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     setPending(true);
-    createTransferAPI(new FormData(e.currentTarget))
+    editTransferAPI(transfer.id, new FormData(e.currentTarget), transfer.date)
       .then((res) => (!res?.errors ? successOperation() : setState(res)))
       .finally(() => setPending(false));
   };
@@ -59,11 +75,19 @@ export default function NewTransferForm({
             className="w-full"
             label="portfel"
             name="fromWalletId"
+            onChange={(e) =>
+              setFromWallet(
+                wallets.find(
+                  (wallet) => wallet.id === parseInt(e.currentTarget.value)
+                )
+              )
+            }
             error={state?.errors?.fromWalletId ? true : false}
             errorText={
               state?.errors?.fromWalletId ? state.errors.fromWalletId[0] : ""
             }
             disabled={fromType === null}
+            value={fromWallet.id.toString()}
           >
             <Icon className="fill" slot="leading-icon">
               wallet
@@ -125,6 +149,7 @@ export default function NewTransferForm({
             className="w-full"
             label="typ"
             onChange={(e) => setFromType(parseInt(e.currentTarget.value))}
+            value={fromType.toString()}
           >
             <Icon className="fill" slot="leading-icon">
               category
@@ -161,6 +186,7 @@ export default function NewTransferForm({
             suffixText="zł"
             error={state?.errors?.amount ? true : false}
             errorText={state?.errors?.amount ? state.errors.amount[0] : ""}
+            value={amount.toString()}
           >
             <Icon slot="leading-icon">toll</Icon>
           </TextFieldOutlined>
@@ -168,9 +194,17 @@ export default function NewTransferForm({
             className="w-full"
             label="metoda"
             name="methodId"
+            onChange={(e) =>
+              setMethod(
+                methods.find(
+                  (method) => method.id === parseInt(e.currentTarget.value)
+                )
+              )
+            }
             error={state?.errors?.methodId ? true : false}
             errorText={state?.errors?.methodId ? state.errors.methodId[0] : ""}
             disabled={fromType === null || toType === null}
+            value={method.id.toString()}
           >
             <Icon className="fill" slot="leading-icon">
               tactic
@@ -198,11 +232,19 @@ export default function NewTransferForm({
             className="w-full"
             label="portfel"
             name="toWalletId"
+            onChange={(e) =>
+              setToWallet(
+                wallets.find(
+                  (wallet) => wallet.id === parseInt(e.currentTarget.value)
+                )
+              )
+            }
             error={state?.errors?.toWalletId ? true : false}
             errorText={
               state?.errors?.toWalletId ? state.errors.toWalletId[0] : ""
             }
             disabled={toType === null}
+            value={toWallet.id.toString()}
           >
             <Icon className="fill" slot="leading-icon">
               wallet
@@ -264,6 +306,7 @@ export default function NewTransferForm({
             className="w-full"
             label="typ"
             onChange={(e) => setToType(parseInt(e.currentTarget.value))}
+            value={toType.toString()}
           >
             <Icon className="fill" slot="leading-icon">
               category

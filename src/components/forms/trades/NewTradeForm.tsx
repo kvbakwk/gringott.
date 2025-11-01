@@ -4,12 +4,7 @@ import { WalletT } from "@app/utils/db-actions/wallet";
 import { MethodT } from "@app/utils/db-actions/method";
 import { SubjectT } from "@app/utils/db-actions/subject";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-
-import { getWallets } from "@app/api/wallet/get";
-import { getMethods } from "@app/utils/db-actions/method";
-import { getSubjects } from "@app/api/subject/get";
+import { useState } from "react";
 
 import {
   validateTradeAmount,
@@ -18,7 +13,6 @@ import {
   validateTradeDeposit,
 } from "@app/utils/validator";
 
-import Loading from "@components/Loading";
 import { Icon } from "@components/material/Icon";
 import { TextFieldOutlined } from "@components/material/TextField";
 import { SelectOption, SelectOutlined } from "@components/material/Select";

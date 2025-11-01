@@ -47,17 +47,19 @@ export async function deleteSession() {
   cookieStore.delete("session");
 }
 
-export const verifySession = cache(async () => {
-  const cookie = (await cookies()).get("session")?.value;
+export const verifySession = cache(
+  async (): Promise<{ isAuth: boolean; userId?: number }> => {
+    const cookie = (await cookies()).get("session")?.value;
 
-  if (!cookie) return { isAuth: false };
+    if (!cookie) return { isAuth: false };
 
-  const session = await decrypt(cookie);
+    const session = await decrypt(cookie);
 
-  if (!session?.userId) redirect("/logowanie");
+    if (!session?.userId) redirect("/logowanie");
 
-  return { isAuth: true, userId: session.userId };
-});
+    return { isAuth: true, userId: parseInt(session.userId.toString()) };
+  }
+);
 
 export async function encrypt(payload: SessionPayload) {
   return new SignJWT(payload)

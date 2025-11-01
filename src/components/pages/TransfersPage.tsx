@@ -3,7 +3,7 @@
 import { WalletT } from "@app/utils/db-actions/wallet";
 import { TransferT } from "@app/utils/db-actions/transfer";
 
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 
 import { parseDate, parseMoney, parseTime } from "@app/utils/parser";
 import { CircularProgress } from "@components/material/Progress";
@@ -17,6 +17,8 @@ import NewTradeForm from "@components/forms/trades/NewTradeForm";
 import EditTradeForm from "@components/forms/trades/EditTradeForm";
 import DeleteTradeForm from "@components/forms/trades/DeleteTradeForm";
 import NewTransferForm from "@components/forms/transfers/NewTransferForm";
+import EditTransferForm from "@components/forms/transfers/EditTransferForm";
+import DeleteTransferForm from "@components/forms/transfers/DeleteTransferForm";
 
 export default function TransfersPage({
   wallets,
@@ -28,7 +30,7 @@ export default function TransfersPage({
   methodsReady,
   subjectsReady,
   reloadWallets,
-  reloadTrades,
+  reloadTransfers,
   userId,
 }: {
   wallets: WalletT[];
@@ -40,7 +42,7 @@ export default function TransfersPage({
   methodsReady: boolean;
   subjectsReady: boolean;
   reloadWallets: () => void;
-  reloadTrades: () => void;
+  reloadTransfers: () => void;
   userId: number;
 }) {
   const formEl = useRef(null);
@@ -54,7 +56,7 @@ export default function TransfersPage({
     hideForm();
     setOperation("");
     reloadWallets();
-    reloadTrades();
+    reloadTransfers();
   };
   const cancelOperation = () => {
     hideForm();
@@ -128,23 +130,22 @@ export default function TransfersPage({
         <WalletsList wallets={wallets} walletsReady={walletsReady} />
       </div>
       <div className="flex flex-col w-[calc(100%-50px)] h-full">
-        <div className="flex justify-center items-end gap-[20px] font-bold text-primary text-md w-full h-[50px] pb-[10px]">
+        <div className="flex justify-around items-end gap-[20px] font-bold text-primary text-md w-full h-[50px] px-[20px] pb-[10px]">
+          <div className="flex w-[100px]"></div>
           <div className="flex justify-center items-center w-[200px]">data</div>
           <div className="flex justify-center items-center w-[160px]">
             kwota
           </div>
           <div className="flex justify-center items-center w-[200px]">
-            konto
+            z portfela..
+          </div>
+          <div className="flex justify-center items-center w-[200px]">
+            do portfela..
           </div>
           <div className="flex justify-center items-center w-[200px]">
             metoda
           </div>
-          <div className="flex justify-center items-center w-[200px]">
-            druga strona
-          </div>
-          <div className="flex justify-center items-center w-[200px]">
-            metoda
-          </div>
+          <div className="flex w-[100px]"></div>
         </div>
         <div
           className={`flex w-full h-[calc(100vh-160px)] px-[20px] pb-[30px] overflow-y-auto scroll-none ${
@@ -189,10 +190,7 @@ export default function TransfersPage({
         {operation === "new" ? (
           <NewTransferForm
             userId={userId}
-            wallets={wallets.filter(
-              (wallet) =>
-                wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2
-            )}
+            wallets={wallets}
             methods={methods}
             walletsReady={walletsReady}
             methodsReady={methodsReady}
@@ -200,9 +198,23 @@ export default function TransfersPage({
             cancelOperation={cancelOperation}
           />
         ) : operation === "edit" ? (
-          <></>
+          <EditTransferForm
+            userId={userId}
+            wallets={wallets}
+            transfer={transfers.find((transfer) => transfer.id === id)}
+            methods={methods}
+            walletsReady={walletsReady}
+            methodsReady={methodsReady}
+            successOperation={successOperation}
+            cancelOperation={cancelOperation}
+          />
         ) : operation === "delete" ? (
-          <></>
+          <DeleteTransferForm
+            userId={userId}
+            transfer={transfers.find((transfer) => transfer.id === id)}
+            successOperation={successOperation}
+            cancelOperation={cancelOperation}
+          />
         ) : (
           <></>
         )}
@@ -232,7 +244,7 @@ export function Transfer({
   return (
     <div
       ref={tradeEl}
-      className={`flex justify-center items-center gap-[20px] font-normal text-on-surface-variant text-base w-full h-[30px] rounded-lg hover:shadow-sm hover:bg-surface`}
+      className={`flex justify-around items-center gap-[20px] font-normal text-on-surface-variant text-base w-full h-[30px] rounded-lg hover:shadow-sm hover:bg-surface`}
       key={transfer.id}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
@@ -258,7 +270,7 @@ export function Transfer({
       <div className="flex justify-center items-center truncate w-[200px]">
         {
           wallets.filter(
-            (wallet: WalletT) => wallet.id === transfer.from_wallet_id
+            (wallet: WalletT) => wallet.id === transfer.to_wallet_id
           )[0].name
         }
       </div>

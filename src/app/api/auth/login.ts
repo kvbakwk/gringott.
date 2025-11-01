@@ -6,6 +6,7 @@ import { validateUser } from "@app/utils/db-actions/user";
 import { FormState, LoginFormSchema } from "@app/utils/definitions";
 import { createSession, deleteSession } from "@app/utils/session";
 import { redirect } from "next/navigation";
+import z from "zod";
 
 export async function login(state: FormState, formData: FormData) {
   const validatedFields = LoginFormSchema.safeParse({
@@ -16,7 +17,7 @@ export async function login(state: FormState, formData: FormData) {
 
   if (!validatedFields.success)
     return {
-      errors: validatedFields.error.flatten().fieldErrors,
+      errors: z.flattenError(validatedFields.error).fieldErrors,
     };
 
   const { email, password, remember } = validatedFields.data;

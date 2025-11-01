@@ -115,6 +115,11 @@ export default function DashboardPage({
       .then((trades) => setTrades(trades))
       .catch((err) => console.log("failed to fetch trades:", err))
       .finally(() => setTradesReady(true));
+  const reloadTransfers = () =>
+    getTransfers(user.id)
+      .then((transfers) => setTransfers(transfers))
+      .catch((err) => console.log("failed to fetch transfers:", err))
+      .finally(() => setTransfersReady(true));
 
   return (
     <div className="flex justify-center items-center w-full h-full">
@@ -193,7 +198,7 @@ export default function DashboardPage({
             methodsReady={methodsReady}
             subjectsReady={subjectsReady}
             reloadWallets={reloadWallets}
-            reloadTrades={reloadTrades}
+            reloadTransfers={reloadTransfers}
             userId={user.id}
           />
         )}
