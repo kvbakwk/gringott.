@@ -22,6 +22,7 @@ export default function WalletsList({
 
   useEffect(() => {
     if (walletsReady) {
+      console.log(wallets);
       setBalance(
         wallets
           .filter(

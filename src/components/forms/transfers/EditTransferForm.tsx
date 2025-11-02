@@ -2,24 +2,23 @@
 
 import { WalletT } from "@app/utils/db-actions/wallet";
 import { MethodT } from "@app/utils/db-actions/method";
+import { TransferT } from "@app/utils/db-actions/transfer";
 
 import { FormEvent, useState } from "react";
 
-import createTransferAPI from "@app/api/transfer/create";
+import editTransferAPI from "@app/api/transfer/edit";
+
 import { FilledButton, OutlinedButton } from "@components/material/Button";
 import { SelectOption, SelectOutlined } from "@components/material/Select";
 import { TextFieldOutlined } from "@components/material/TextField";
 import { Icon } from "@components/material/Icon";
-import { TransferT } from "@app/utils/db-actions/transfer";
-import editTransferAPI from "@app/api/transfer/edit";
+import { FormState } from "@app/utils/definitions";
 
 export default function EditTransferForm({
   userId,
   wallets,
   transfer,
   methods,
-  walletsReady,
-  methodsReady,
   successOperation,
   cancelOperation,
 }: {
@@ -27,25 +26,21 @@ export default function EditTransferForm({
   wallets: WalletT[];
   transfer: TransferT;
   methods: MethodT[];
-  walletsReady: boolean;
-  methodsReady: boolean;
   successOperation: () => void;
   cancelOperation: () => void;
 }) {
-  const [state, setState] = useState<{ errors?: Record<string, string[]> }>(
-    null
-  );
+  const [state, setState] = useState<FormState>(null);
   const [pending, setPending] = useState<boolean>(false);
 
   const [amount, setAmount] = useState<number>(transfer.amount);
   const [fromWallet, setFromWallet] = useState<WalletT>(
-    wallets.find((wallet) => wallet.id === transfer.from_wallet_id)
+    wallets.find((w) => w.id === transfer.from_wallet_id)
   );
   const [toWallet, setToWallet] = useState<WalletT>(
-    wallets.find((wallet) => wallet.id === transfer.to_wallet_id)
+    wallets.find((w) => w.id === transfer.to_wallet_id)
   );
   const [method, setMethod] = useState<MethodT>(
-    methods.find((method) => method.id === transfer.method.id)
+    methods.find((m) => m.id === transfer.method.id)
   );
   const [fromType, setFromType] = useState<number>(
     fromWallet.wallet_type_id - 1
@@ -83,9 +78,7 @@ export default function EditTransferForm({
               )
             }
             error={state?.errors?.fromWalletId ? true : false}
-            errorText={
-              state?.errors?.fromWalletId ? state.errors.fromWalletId[0] : ""
-            }
+            errorText={state?.errors?.fromWalletId[0] ?? ""}
             disabled={fromType === null}
             value={fromWallet.id.toString()}
           >
@@ -184,8 +177,9 @@ export default function EditTransferForm({
             step="0.01"
             min="0"
             suffixText="zł"
+            onChange={(e) => setAmount(parseFloat(e.currentTarget.value))}
             error={state?.errors?.amount ? true : false}
-            errorText={state?.errors?.amount ? state.errors.amount[0] : ""}
+            errorText={state?.errors?.amount[0] ?? ""}
             value={amount.toString()}
           >
             <Icon slot="leading-icon">toll</Icon>
@@ -202,7 +196,7 @@ export default function EditTransferForm({
               )
             }
             error={state?.errors?.methodId ? true : false}
-            errorText={state?.errors?.methodId ? state.errors.methodId[0] : ""}
+            errorText={state?.errors?.methodId[0] ?? ""}
             disabled={fromType === null || toType === null}
             value={method.id.toString()}
           >
@@ -240,9 +234,7 @@ export default function EditTransferForm({
               )
             }
             error={state?.errors?.toWalletId ? true : false}
-            errorText={
-              state?.errors?.toWalletId ? state.errors.toWalletId[0] : ""
-            }
+            errorText={state?.errors?.toWalletId[0] ?? ""}
             disabled={toType === null}
             value={toWallet.id.toString()}
           >

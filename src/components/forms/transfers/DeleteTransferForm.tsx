@@ -11,6 +11,7 @@ import Loading from "@components/Loading";
 import { deleteTradeAPI } from "@app/api/trade/delete";
 import { TransferT } from "@app/utils/db-actions/transfer";
 import deleteTransferAPI from "@app/api/transfer/delete";
+import { FormState } from "@app/utils/definitions";
 
 export default function DeleteTransferForm({
   userId,
@@ -23,11 +24,9 @@ export default function DeleteTransferForm({
   successOperation: () => void;
   cancelOperation: () => void;
 }) {
-  const [state, setState] = useState<{ errors?: Record<string, string[]> }>(
-    null
-  );
-  const [pending, setPending] = useState<boolean>(false);
   const errorEl = useRef(null);
+
+  const [pending, setPending] = useState<boolean>(false);
 
   const [error, setError] = useState<boolean>(false);
 

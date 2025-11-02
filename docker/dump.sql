@@ -149,7 +149,7 @@ insert into public.category (name, super_category_id) values
 
 insert into public.wallet_type (name) values 
 ('gotówka'), 
-('bank'), 
+('konto'), 
 ('należności'), 
 ('oszczędności'), 
 ('skarbonka'),
@@ -163,7 +163,7 @@ insert into public.wallet_type (name) values
 ('kryptowaluta'), 
 ('surowiec');
 
-insert into public.wallet (user_id, balance, wallet_type_id) values (1, 40, 1), (1, 0, 3);
+insert into public.wallet (user_id, balance, wallet_type_id) values (1, 40, 1), (1, 100, 3);
 insert into public.wallet (user_id, name, balance, wallet_type_id) values (1, 'mBank', 70, 2), (1, 'iPKO', 0, 2);
 insert into public.wallet (user_id, balance, wallet_type_id) values (4, 3.14, 1), (4, 0, 3);
 insert into public.wallet (user_id, name, balance, wallet_type_id) values (4, 'mBank', 4, 2);
@@ -181,16 +181,18 @@ insert into public.method (name, cash, bank) values
 insert into public.transaction_type (name) values 
 ('normalna'),
 ('przyszła'),
-('transfer'),
-('bankomat'),
 ('wstępna');
 
 insert into public.subject (user_id, name, normal, atm) values (1, 'Tata', true, false), (1, 'Mama', true, false), (1, 'Ola Kawka', true, false), (1, 'Bankomat', false, true), (1, 'Ty', true, false);
 
 insert into public.transaction (date, amount, description, category_id, subject_id, income, important, user_id, wallet_id, method_id, transaction_type_id) values 
 ('2025-04-01 12:00:00', 10, 'kieszonkowe', 58, 1, true, true, 1, 1, 1, 1),
-('2025-04-01 12:00:00', 100, 'kieszonkowe', 58, 1, true, true, 1, 3, 4, 1);
+('2025-04-01 12:00:00', 100, 'kieszonkowe', 58, 1, true, true, 1, 3, 4, 1),
+('2025-04-01 12:00:00', 100, 'wypłata', 58, 1, true, true, 1, 1, 1, 1);
 
 insert into public.trade (date, amount, deposit, atm, user_id, wallet_id, user_method_id, subject_id, subject_method_id) values 
 ('2025-04-02 12:00:00', 40, false, true, 1, 3, 1, 4, 3),
 ('2025-04-02 13:00:00', 10, true, false, 1, 3, 1, 3, 4);
+
+insert into public.transfer (date, amount, user_id, method_id, from_wallet_id, to_wallet_id) values 
+('2025-04-03 12:00:00', 100, 1, 1, 1, 2);

@@ -1,4 +1,4 @@
-'use server'
+"use server";
 
 import { QueryResult } from "pg";
 
@@ -14,9 +14,7 @@ export interface WalletIdT {
   id: number;
 }
 
-export async function getWalletsByUserId(
-  userId: number
-): Promise<WalletT[]> {
+export async function getWalletsByUserId(userId: number): Promise<WalletT[]> {
   const res: QueryResult = await pool.query(
     "SELECT id, name, balance, wallet_type_id FROM public.wallet WHERE user_id = $1",
     [userId]
@@ -42,7 +40,12 @@ export async function isWalletCash(walletId: number): Promise<boolean> {
   return Boolean(res.rows[0].wallet_type_id === 1);
 }
 
-export async function createWallet(name: string, balance: number, userId: number, walletTypeId: number): Promise<number> {
+export async function createWallet(
+  name: string,
+  balance: number,
+  userId: number,
+  walletTypeId: number
+): Promise<number> {
   const res: QueryResult = await pool.query(
     `INSERT INTO wallet 
       (name, balance, user_id, wallet_type_id) 
@@ -55,14 +58,20 @@ export async function createWallet(name: string, balance: number, userId: number
   return res.rows[0].id;
 }
 
-export async function increaseWalletBalance(walletId: number, amount: number): Promise<number> {
+export async function increaseWalletBalance(
+  walletId: number,
+  amount: number
+): Promise<number> {
   const res = await pool.query(
     "UPDATE public.wallet SET balance = balance + $1 WHERE id = $2",
     [amount, walletId]
   );
   return res.rowCount;
 }
-export async function decreaseWalletBalance(walletId: number, amount: number): Promise<number> {
+export async function decreaseWalletBalance(
+  walletId: number,
+  amount: number
+): Promise<number> {
   const res = await pool.query(
     "UPDATE public.wallet SET balance = balance - $1 WHERE id = $2",
     [amount, walletId]
@@ -70,13 +79,17 @@ export async function decreaseWalletBalance(walletId: number, amount: number): P
   return res.rowCount;
 }
 
-
 function mapRowToWallet(row: any): WalletT {
   return {
     id: parseInt(row.id),
-    name: row.name,
+    name:
+      row.wallet_type_id === 1
+        ? "gotówka"
+        : row.wallet_type_id === 3
+        ? "oszczędności"
+        : row.name,
     balance: parseFloat(row.balance),
-    wallet_type_id: parseInt(row.wallet_type_id)
+    wallet_type_id: parseInt(row.wallet_type_id),
   };
 }
 function mapRowToWalletId(row: any): WalletIdT {

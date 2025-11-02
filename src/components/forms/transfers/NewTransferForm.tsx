@@ -1,11 +1,13 @@
 "use client";
 
-import { WalletT } from "@app/utils/db-actions/wallet";
-import { MethodT } from "@app/utils/db-actions/method";
-
 import { FormEvent, useState } from "react";
 
+import { WalletT } from "@app/utils/db-actions/wallet";
+import { MethodT } from "@app/utils/db-actions/method";
+import { FormState } from "@app/utils/definitions";
+
 import createTransferAPI from "@app/api/transfer/create";
+
 import { FilledButton, OutlinedButton } from "@components/material/Button";
 import { SelectOption, SelectOutlined } from "@components/material/Select";
 import { TextFieldOutlined } from "@components/material/TextField";
@@ -15,22 +17,16 @@ export default function NewTransferForm({
   userId,
   wallets,
   methods,
-  walletsReady,
-  methodsReady,
   successOperation,
   cancelOperation,
 }: {
   userId: number;
   wallets: WalletT[];
   methods: MethodT[];
-  walletsReady: boolean;
-  methodsReady: boolean;
   successOperation: () => void;
   cancelOperation: () => void;
 }) {
-  const [state, setState] = useState<{ errors?: Record<string, string[]> }>(
-    null
-  );
+  const [state, setState] = useState<FormState>(null);
   const [pending, setPending] = useState<boolean>(false);
 
   const [fromType, setFromType] = useState<number>(null);
@@ -60,9 +56,7 @@ export default function NewTransferForm({
             label="portfel"
             name="fromWalletId"
             error={state?.errors?.fromWalletId ? true : false}
-            errorText={
-              state?.errors?.fromWalletId ? state.errors.fromWalletId[0] : ""
-            }
+            errorText={state?.errors?.fromWalletId[0] ?? ""}
             disabled={fromType === null}
           >
             <Icon className="fill" slot="leading-icon">
@@ -160,7 +154,7 @@ export default function NewTransferForm({
             min="0"
             suffixText="zł"
             error={state?.errors?.amount ? true : false}
-            errorText={state?.errors?.amount ? state.errors.amount[0] : ""}
+            errorText={state?.errors?.amount[0] ?? ""}
           >
             <Icon slot="leading-icon">toll</Icon>
           </TextFieldOutlined>
@@ -169,7 +163,7 @@ export default function NewTransferForm({
             label="metoda"
             name="methodId"
             error={state?.errors?.methodId ? true : false}
-            errorText={state?.errors?.methodId ? state.errors.methodId[0] : ""}
+            errorText={state?.errors?.methodId[0] ?? ""}
             disabled={fromType === null || toType === null}
           >
             <Icon className="fill" slot="leading-icon">
@@ -199,9 +193,7 @@ export default function NewTransferForm({
             label="portfel"
             name="toWalletId"
             error={state?.errors?.toWalletId ? true : false}
-            errorText={
-              state?.errors?.toWalletId ? state.errors.toWalletId[0] : ""
-            }
+            errorText={state?.errors?.toWalletId[0] ?? ""}
             disabled={toType === null}
           >
             <Icon className="fill" slot="leading-icon">

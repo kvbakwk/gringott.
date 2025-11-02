@@ -4,7 +4,11 @@ import { UserT } from "@app/utils/db-actions/user";
 import { WalletT } from "@app/utils/db-actions/wallet";
 import { TransactionT } from "@app/utils/db-actions/transaction";
 import { TradeT } from "@app/utils/db-actions/trade";
+import { TransferT } from "@app/utils/db-actions/transfer";
 import { MethodT } from "@app/utils/db-actions/method";
+import { SubjectT } from "@app/utils/db-actions/subject";
+import { CategoryT } from "@app/utils/db-actions/category";
+import { SuperCategoryT } from "@app/utils/db-actions/super_category";
 
 import { useEffect, useState } from "react";
 
@@ -13,31 +17,19 @@ import { RouteSegments } from "@app/utils/routes";
 import { getWallets } from "@app/api/wallet/get";
 import { getTransactions } from "@app/api/transaction/get";
 import { getTrades } from "@app/api/trade/get";
+import { getTransfers } from "@app/api/transfer/get";
 import { getMethodsAPI } from "@app/api/method/get";
-
-import WalletsList from "../WalletsList";
+import { getSubjects } from "@app/api/subject/get";
+import { getCategoriessAPI } from "@app/api/category/get";
+import { getSuperCategoriesAPI } from "@app/api/super_category/get";
 
 import HomePage from "./HomePage";
+import AccountsPage from "./AccountsPage";
 import HistoryPage from "./HistoryPage";
-
 import TransactionsPage from "./TransactionsPage";
-
-import SubjectsPage from "./subjects/SubjectsPage";
-import NewSubjectPage from "./subjects/NewSubjectPage";
-import EditSubjectPage from "./subjects/EditSubjectPage";
-import DeleteSubjectPage from "./subjects/DeleteSubjectPage";
-
-import NewWalletPage from "./wallets/NewWalletPage";
 import TradesPage from "./TradesPage";
-import { CategoryT } from "@app/utils/db-actions/category";
-import { SuperCategoryT } from "@app/utils/db-actions/super_category";
-import { SubjectT } from "@app/utils/db-actions/subject";
-import { getSubjects } from "@app/api/subject/get";
-import { getSuperCategoriesAPI } from "@app/api/super_category/get";
-import { getCategoriessAPI } from "@app/api/category/get";
 import TransfersPage from "./TransfersPage";
-import { TransferT } from "@app/utils/db-actions/transfer";
-import { getTransfers } from "@app/api/transfer/get";
+import SubjectsPage from "./subjects/SubjectsPage";
 
 export default function DashboardPage({
   slug,
@@ -131,6 +123,11 @@ export default function DashboardPage({
           transactionsReady={transactionsReady}
         />
       )}
+      {slug &&
+        slug[0] === RouteSegments.Wallets &&
+        slug[1] === RouteSegments.Accounts && (
+          <AccountsPage wallets={wallets} walletsReady={walletsReady} />
+        )}
       {slug && slug[0] === RouteSegments.HistoryPage && (
         <HistoryPage
           wallets={wallets}
@@ -206,27 +203,6 @@ export default function DashboardPage({
         slug[0] === RouteSegments.Transactions &&
         slug[1] === RouteSegments.Subjects &&
         slug[2] === undefined && <SubjectsPage userId={user.id} />}
-      {slug &&
-        slug[0] === RouteSegments.Transactions &&
-        slug[1] === RouteSegments.Subjects &&
-        slug[2] === RouteSegments.New && <NewSubjectPage userId={user.id} />}
-      {slug &&
-        slug[0] === RouteSegments.Transactions &&
-        slug[1] === RouteSegments.Subjects &&
-        slug[2] === RouteSegments.Edit &&
-        !isNaN(parseInt(slug[3])) && (
-          <EditSubjectPage userId={user.id} subjectId={parseInt(slug[3])} />
-        )}
-      {slug &&
-        slug[0] === RouteSegments.Transactions &&
-        slug[1] === RouteSegments.Subjects &&
-        slug[2] === RouteSegments.Delete &&
-        !isNaN(parseInt(slug[3])) && (
-          <DeleteSubjectPage userId={user.id} subjectId={parseInt(slug[3])} />
-        )}
-      {slug &&
-        slug[0] === RouteSegments.Wallets &&
-        slug[1] === RouteSegments.New && <NewWalletPage userId={user.id} />}
     </div>
   );
 }

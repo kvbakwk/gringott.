@@ -11,22 +11,28 @@ export async function generateMetadata({ params }) {
     "portfel. | " +
     (!path.slug
       ? "strona główna"
+      : path.slug[0] === RouteSegments.Wallets &&
+        path.slug[1] === RouteSegments.Accounts
+      ? "konta"
+      : path.slug[0] === RouteSegments.Wallets &&
+        path.slug[1] === RouteSegments.Investments
+      ? "inwestycje"
+      : path.slug[0] === RouteSegments.Wallets &&
+        path.slug[1] === RouteSegments.Savings
+      ? "oszczędności"
+      : path.slug[0] === RouteSegments.Wallets &&
+        path.slug[1] === RouteSegments.Piggybanks
+      ? "skarbonki"
+      : path.slug[0] === RouteSegments.Wallets &&
+        path.slug[1] === RouteSegments.Goals
+      ? "cele"
+      : path.slug[0] === RouteSegments.Wallets &&
+        path.slug[1] === RouteSegments.Loans
+      ? "należności"
       : path.slug[0] === RouteSegments.HistoryPage
       ? "historia"
       : path.slug[0] === RouteSegments.Transactions && !path.slug[1]
       ? "transakcje"
-      : path.slug[0] === RouteSegments.Wallets &&
-        path.slug[1] === RouteSegments.New
-      ? "nowy portfel"
-      : path.slug[0] === RouteSegments.Transactions &&
-        path.slug[1] === RouteSegments.New
-      ? "nowa transakcja"
-      : path.slug[0] === RouteSegments.Transactions &&
-        path.slug[1] === RouteSegments.Edit
-      ? "edycja transakcji"
-      : path.slug[0] === RouteSegments.Transactions &&
-        path.slug[1] === RouteSegments.Delete
-      ? "usuwanie transakcji"
       : path.slug[0] === RouteSegments.Transactions &&
         path.slug[1] === RouteSegments.Trades &&
         !path.slug[2]

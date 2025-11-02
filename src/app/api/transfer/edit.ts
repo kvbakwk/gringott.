@@ -1,29 +1,14 @@
 "use server";
 
+import z from "zod";
+
+import { NewTransferFormSchema } from "@app/utils/definitions";
+import { verifySession } from "@app/utils/session";
 import {
   decreaseWalletBalance,
-  getWalletsByUserId,
   increaseWalletBalance,
 } from "@app/utils/db-actions/wallet";
-import { createTrade } from "@app/utils/db-actions/trade";
-import {
-  validateTradeAmount,
-  validateTradeAtm,
-  validateTradeDate,
-  validateTradeDeposit,
-  validateTradeSubjectId,
-  validateTradeSubjectMethodId,
-  validateTradeUserMethodId,
-  validateTradeWalletId,
-} from "@app/utils/validator";
-import { verifySession } from "@app/utils/session";
-import { FormState, NewTransferFormSchema } from "@app/utils/definitions";
-import z from "zod";
-import {
-  createTransfer,
-  editTransfer,
-  getTransferById,
-} from "@app/utils/db-actions/transfer";
+import { editTransfer, getTransferById } from "@app/utils/db-actions/transfer";
 
 export default async function editTransferAPI(
   id: number,
@@ -56,7 +41,6 @@ export default async function editTransferAPI(
       errors: z.flattenError(validatedFields.error).fieldErrors,
     };
 
-  const userId = (await verifySession()).userId;
   const { fromWalletId, amount, methodId, toWalletId } = validatedFields.data;
 
   await editTransfer(id, date, amount, fromWalletId, methodId, toWalletId);

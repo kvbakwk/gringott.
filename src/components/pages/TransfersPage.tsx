@@ -3,7 +3,7 @@
 import { WalletT } from "@app/utils/db-actions/wallet";
 import { TransferT } from "@app/utils/db-actions/transfer";
 
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { parseDate, parseMoney, parseTime } from "@app/utils/parser";
 import { CircularProgress } from "@components/material/Progress";
@@ -13,9 +13,6 @@ import { IconButton } from "@components/material/IconButton";
 import WalletsList from "@components/WalletsList";
 import { MethodT } from "@app/utils/db-actions/method";
 import { SubjectT } from "@app/utils/db-actions/subject";
-import NewTradeForm from "@components/forms/trades/NewTradeForm";
-import EditTradeForm from "@components/forms/trades/EditTradeForm";
-import DeleteTradeForm from "@components/forms/trades/DeleteTradeForm";
 import NewTransferForm from "@components/forms/transfers/NewTransferForm";
 import EditTransferForm from "@components/forms/transfers/EditTransferForm";
 import DeleteTransferForm from "@components/forms/transfers/DeleteTransferForm";
@@ -192,8 +189,6 @@ export default function TransfersPage({
             userId={userId}
             wallets={wallets}
             methods={methods}
-            walletsReady={walletsReady}
-            methodsReady={methodsReady}
             successOperation={successOperation}
             cancelOperation={cancelOperation}
           />
@@ -203,8 +198,6 @@ export default function TransfersPage({
             wallets={wallets}
             transfer={transfers.find((transfer) => transfer.id === id)}
             methods={methods}
-            walletsReady={walletsReady}
-            methodsReady={methodsReady}
             successOperation={successOperation}
             cancelOperation={cancelOperation}
           />
@@ -261,18 +254,10 @@ export function Transfer({
         {parseMoney(transfer.amount)} zł
       </div>
       <div className="flex justify-center items-center truncate w-[200px]">
-        {
-          wallets.filter(
-            (wallet: WalletT) => wallet.id === transfer.from_wallet_id
-          )[0].name
-        }
+        {wallets.find((w: WalletT) => w.id === transfer.from_wallet_id).name}
       </div>
       <div className="flex justify-center items-center truncate w-[200px]">
-        {
-          wallets.filter(
-            (wallet: WalletT) => wallet.id === transfer.to_wallet_id
-          )[0].name
-        }
+        {wallets.find((w: WalletT) => w.id === transfer.to_wallet_id).name}
       </div>
       <div className="flex justify-center items-center w-[200px]">
         {transfer.method.name}
