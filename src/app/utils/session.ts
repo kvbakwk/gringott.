@@ -1,8 +1,7 @@
 import "server-only";
-import { jwtVerify, SignJWT } from "jose";
+import { JWTPayload, jwtVerify, SignJWT } from "jose";
 import { cookies } from "next/headers";
 import { SessionPayload } from "./definitions";
-import { redirect } from "next/navigation";
 import { cache } from "react";
 
 const secretKey = process.env.SESSION_SECRET;
@@ -55,7 +54,7 @@ export const verifySession = cache(
 
     const session = await decrypt(cookie);
 
-    if (!session?.userId) redirect("/logowanie");
+    if (!session?.userId) return { isAuth: false };
 
     return { isAuth: true, userId: parseInt(session.userId.toString()) };
   }
@@ -68,7 +67,9 @@ export async function encrypt(payload: SessionPayload) {
     .setExpirationTime("7d")
     .sign(encodedKey);
 }
-export async function decrypt(session: string | undefined = "") {
+export async function decrypt(
+  session: string | undefined = ""
+): Promise<JWTPayload | null> {
   try {
     const { payload } = await jwtVerify(session, encodedKey, {
       algorithms: ["HS256"],
@@ -76,5 +77,6 @@ export async function decrypt(session: string | undefined = "") {
     return payload;
   } catch (error) {
     console.log("failed to verify session, please delete your cookies");
+    return null;
   }
 }
