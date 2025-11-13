@@ -1,17 +1,15 @@
 "use client";
 
 import { useActionState } from "react";
-import { useRouter } from "next/navigation";
 
 import { login } from "@app/api/auth/login";
 
 import { TextFieldOutlined } from "@components/material/TextField";
 import { Checkbox } from "@components/material/Checkbox";
 import { FilledButton } from "@components/material/Button";
+import { CircularProgress } from "@components/material/CircularProgress";
 
 export default function LoginForm() {
-  const router = useRouter();
-
   const [state, action, pending] = useActionState(login, undefined);
 
   return (
@@ -48,7 +46,9 @@ export default function LoginForm() {
           <Checkbox className="m-[15px]" name="remember" id="remember" />
           zapamiętaj
         </label>
-        <FilledButton disabled={pending}>zaloguj się</FilledButton>
+        <FilledButton className="w-[125px] h-[40px]" disabled={pending}>
+          {pending ? <CircularProgress /> : "zaloguj się"}
+        </FilledButton>
       </div>
     </form>
   );

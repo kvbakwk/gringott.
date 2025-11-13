@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { logout } from "@app/api/auth/login";
+import { logout } from "@app/api/auth/logout";
 import { Icon } from "./material/Icon";
 import { IconButton } from "./material/IconButton";
 
