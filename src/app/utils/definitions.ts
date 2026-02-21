@@ -5,7 +5,6 @@ export type FormState =
       errors?: {
         email?: string[];
         password?: string[];
-        remember?: string[];
         amount?: string[];
         fromWalletId?: string[];
         methodId?: string[];
@@ -17,6 +16,7 @@ export type FormState =
 
 export type SessionPayload = {
   userId: number;
+  type: "access" | "refresh";
   expiresAt: Date;
 };
 
@@ -24,14 +24,8 @@ export const LoginFormSchema = z.object({
   email: z.email({ message: "wpisany adres e-mail jest niepoprawny" }).trim(),
   password: z
     .string()
-    .min(8, { message: "wpisane hasło jest niepoprawne" })
-    .regex(/[a-zA-Z]/, { message: "wpisane hasło jest niepoprawne" })
-    .regex(/[0-9]/, { message: "wpisane hasło jest niepoprawne" })
-    .regex(/[^a-zA-Z0-9]/, {
-      message: "wpisane hasło jest niepoprawne",
-    })
+    .min(1, { message: "wpisane hasło jest za krótkie" })
     .trim(),
-  remember: z.any(),
 });
 
 export const NewTransferFormSchema = z.object({

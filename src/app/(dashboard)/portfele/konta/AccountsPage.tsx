@@ -3,7 +3,7 @@
 import { useMemo, useState, useRef, useEffect } from "react";
 import { WalletT } from "@app/utils/db-actions/wallet";
 import { parseMoney } from "@app/utils/parser";
-import { CircularProgress } from "../material/Progress";
+import { CircularProgress } from "@components/material/Progress";
 import { Icon } from "@components/material/Icon";
 import NewAccountForm from "@components/forms/wallets/NewAccountForm";
 import DeleteAccountForm from "@components/forms/wallets/DeleteAccountForm";

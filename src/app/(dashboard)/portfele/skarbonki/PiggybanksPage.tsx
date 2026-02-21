@@ -3,14 +3,14 @@
 import { WalletT } from "@app/utils/db-actions/wallet";
 import { TransactionT } from "@app/utils/db-actions/transaction";
 import { MethodT } from "@app/utils/db-actions/method";
-import WalletsGridLayout from "../layouts/WalletsGridLayout";
-import PiggybankCard from "../features/piggybanks/PiggybankCard";
+import WalletsGridLayout from "@components/layouts/WalletsGridLayout";
+import PiggybankCard from "@components/features/piggybanks/PiggybankCard";
 import { useState, useRef, useEffect } from "react";
-import NewPiggybankForm from "../forms/wallets/NewPiggybankForm";
-import NewPiggybankDepositForm from "../forms/transfers/NewPiggybankDepositForm";
-import NewPiggybankWithdrawalForm from "../forms/transfers/NewPiggybankWithdrawalForm";
-import DeletePiggybankForm from "../forms/wallets/DeletePiggybankForm";
-import EditPiggybankForm from "../forms/wallets/EditPiggybankForm";
+import NewPiggybankForm from "@components/forms/wallets/NewPiggybankForm";
+import NewPiggybankDepositForm from "@components/forms/transfers/NewPiggybankDepositForm";
+import NewPiggybankWithdrawalForm from "@components/forms/transfers/NewPiggybankWithdrawalForm";
+import DeletePiggybankForm from "@components/forms/wallets/DeletePiggybankForm";
+import EditPiggybankForm from "@components/forms/wallets/EditPiggybankForm";
 
 export default function PiggybanksPage({
   wallets,

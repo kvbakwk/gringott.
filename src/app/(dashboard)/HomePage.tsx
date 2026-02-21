@@ -10,8 +10,8 @@ import { useEffect, useState, useMemo } from "react";
 
 import { parseMoney } from "@app/utils/parser";
 import { generateTimeLimits } from "@app/utils/generator";
-import { CircularProgress } from "../material/Progress";
-import { Icon } from "../material/Icon";
+import { CircularProgress } from "@components/material/Progress";
+import { Icon } from "@components/material/Icon";
 
 export default function HomePage({
   user,

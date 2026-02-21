@@ -4,9 +4,9 @@ import { AssetT } from "@app/utils/db-actions/asset";
 import { WalletT, WalletTypeT } from "@app/utils/db-actions/wallet";
 import { Icon } from "@components/material/Icon";
 
-import PortfolioSummary from "../investments/PortfolioSummary";
-import PortfolioDistribution from "../investments/PortfolioDistribution";
-import AssetsTable from "../investments/AssetsTable";
+import PortfolioSummary from "@components/investments/PortfolioSummary";
+import PortfolioDistribution from "@components/investments/PortfolioDistribution";
+import AssetsTable from "@components/investments/AssetsTable";
 
 export default function InvestmentsPage({
   wallets,

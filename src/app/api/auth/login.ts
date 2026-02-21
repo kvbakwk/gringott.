@@ -12,15 +12,15 @@ export async function login(state: FormState, formData: FormData) {
   const validatedFields = LoginFormSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
-    remember: formData.get("remember"),
   });
 
-  if (!validatedFields.success)
+  if (!validatedFields.success) {
     return {
       errors: z.flattenError(validatedFields.error).fieldErrors,
     };
+  }
 
-  const { email, password, remember } = validatedFields.data;
+  const { email, password } = validatedFields.data;
 
   const userId = await validateUser(email, password);
 
@@ -29,7 +29,7 @@ export async function login(state: FormState, formData: FormData) {
       message: "wpisany email lub hasło są niepoprawne",
     };
 
-  await createSession(userId, remember);
+  await createSession(userId);
   redirect("/");
 }
 

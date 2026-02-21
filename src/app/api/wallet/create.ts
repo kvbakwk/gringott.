@@ -12,7 +12,9 @@ export async function createWalletAPI(
   name: string | null,
   balance: number,
   userId: number,
-  walletTypeId: number
+  walletTypeId: number,
+  icon?: string,
+  targetAmount?: number
 ) {
   if (!(await verifySession()).isAuth) return null;
   const nameErr = !validateWalletName(name);
@@ -21,7 +23,14 @@ export async function createWalletAPI(
   const isValid: boolean = !nameErr && !balanceErr;
 
   if (isValid) {
-    const walletId = await createWallet(name, balance, userId, walletTypeId);
+    const walletId = await createWallet(
+      name || "Konto", 
+      balance, 
+      userId, 
+      walletTypeId, 
+      icon, 
+      targetAmount
+    );
 
     if (balance > 0)
       await createTransaction(

@@ -1,4 +1,3 @@
-"use client";
 import "@app/utils/globals.css";
 
 import { Metadata } from "next";

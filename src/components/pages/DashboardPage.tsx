@@ -18,19 +18,19 @@ import { useEffect, useState } from "react";
 
 import { RouteSegments } from "@app/utils/routes";
 
-import HomePage from "./HomePage";
-import AccountsPage from "./AccountsPage";
-import HistoryPage from "./HistoryPage";
-import TransactionsPage from "./TransactionsPage";
-import TradesPage from "./TradesPage";
-import TransfersPage from "./TransfersPage";
-import SubjectsPage from "./subjects/SubjectsPage";
-import LoansSummaryPage from "./LoansSummaryPage";
-import LoansHistoryPage from "./LoansHistoryPage";
-import InvestmentsPage from "./InvestmentsPage";
-import SavingsPage from "./SavingsPage";
-import PiggybanksPage from "./PiggybanksPage";
-import GoalsPage from "./GoalsPage";
+import HomePage from "@app/(dashboard)/HomePage";
+import AccountsPage from "@app/(dashboard)/portfele/konta/AccountsPage";
+import HistoryPage from "@app/(dashboard)/historia/HistoryPage";
+import TransactionsPage from "@app/(dashboard)/transakcje/TransactionsPage";
+import TradesPage from "@app/(dashboard)/transakcje/wymiany/TradesPage";
+import TransfersPage from "@app/(dashboard)/transakcje/transfery/TransfersPage";
+import SubjectsPage from "@app/(dashboard)/transakcje/podmioty/SubjectsPage";
+import LoansSummaryPage from "@app/(dashboard)/portfele/naleznosci/LoansSummaryPage";
+import LoansHistoryPage from "@app/(dashboard)/transakcje/splaty/LoansHistoryPage";
+import InvestmentsPage from "@app/(dashboard)/portfele/inwestycje/InvestmentsPage";
+import SavingsPage from "@app/(dashboard)/portfele/oszczednosci/SavingsPage";
+import PiggybanksPage from "@app/(dashboard)/portfele/skarbonki/PiggybanksPage";
+import GoalsPage from "@app/(dashboard)/portfele/cele/GoalsPage";
 
 export default function DashboardPage({
   slug,

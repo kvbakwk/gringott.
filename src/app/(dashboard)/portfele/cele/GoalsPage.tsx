@@ -3,14 +3,14 @@
 import { WalletT } from "@app/utils/db-actions/wallet";
 import { TransactionT } from "@app/utils/db-actions/transaction";
 import { MethodT } from "@app/utils/db-actions/method";
-import WalletsGridLayout from "../layouts/WalletsGridLayout";
-import GoalCard from "../features/goals/GoalCard";
+import WalletsGridLayout from "@components/layouts/WalletsGridLayout";
+import GoalCard from "@components/features/goals/GoalCard";
 import { useState, useRef, useEffect } from "react";
-import NewGoalForm from "../forms/wallets/NewGoalForm";
-import EditGoalForm from "../forms/wallets/EditGoalForm";
-import DeleteGoalForm from "../forms/wallets/DeleteGoalForm";
-import NewGoalDepositForm from "../forms/transfers/NewGoalDepositForm";
-import NewGoalWithdrawalForm from "../forms/transfers/NewGoalWithdrawalForm";
+import NewGoalForm from "@components/forms/wallets/NewGoalForm";
+import EditGoalForm from "@components/forms/wallets/EditGoalForm";
+import DeleteGoalForm from "@components/forms/wallets/DeleteGoalForm";
+import NewGoalDepositForm from "@components/forms/transfers/NewGoalDepositForm";
+import NewGoalWithdrawalForm from "@components/forms/transfers/NewGoalWithdrawalForm";
 
 export default function GoalsPage({
   wallets,

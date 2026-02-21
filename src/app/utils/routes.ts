@@ -12,6 +12,7 @@ export enum RouteSegments {
   Piggybanks = "skarbonki",
   Goals = "cele",
   Loans = "naleznosci",
+  Lending = "splaty",
 
   Transactions = "transakcje",
   Trades = "wymiany",

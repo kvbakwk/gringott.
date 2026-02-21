@@ -30,6 +30,7 @@ export interface TransactionT {
     name: string;
   };
   transaction_type_id: number;
+  loan_id?: number | null;
 }
 export interface TransactionIdT {
   id: number;

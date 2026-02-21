@@ -1,4 +1,3 @@
-"use client";
 import { redirect } from "next/navigation";
 
 import { getUser } from "@app/api/user/get";

@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 import { parseDate, parseMoney } from "@app/utils/parser";
 import { generateAllDaysFromOldestTransactionToToday } from "@app/utils/generator";
-import { CircularProgress } from "../material/Progress";
+import { CircularProgress } from "@components/material/Progress";
 import { da } from "zod/v4/locales";
 
 export default function HistoryPage({

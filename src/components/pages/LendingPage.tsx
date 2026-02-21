@@ -203,12 +203,15 @@ export default function LendingPage({
                         subjects={subjects}
                         onSubmit={handleAddLoan}
                         onCancel={cancelOperation}
+                        userId={userId}
                     />
                 ) : operation === "repay" && selectedLoan ? (
                     <RepaymentForm
                         loan={selectedLoan}
+                        wallets={wallets}
                         onSubmit={handleRepay}
                         onCancel={cancelOperation}
+                        userId={userId}
                     />
                 ) : null}
             </div>
