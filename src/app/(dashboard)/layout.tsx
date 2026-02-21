@@ -19,6 +19,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { DataProvider } from "@app/context/DataContext";
+
 export default async function Layout({
   children,
 }: {
@@ -43,7 +45,9 @@ export default async function Layout({
               <User name={user?.name} />
             </div>
           </div>
-          {children}
+          <DataProvider user={user}>
+            {children}
+          </DataProvider>
         </div>
       </body>
     </html>
