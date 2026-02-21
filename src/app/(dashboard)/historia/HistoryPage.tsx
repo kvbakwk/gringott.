@@ -80,11 +80,10 @@ export default function HistoryPage({
         )}
       </div>
       <div
-        className={`flex gap-[5px] w-full h-[calc(100vh-80px)] px-[60px] pt-[6px] pb-[50px] overflow-y-auto scroll-none ${
-          walletsReady && transactionsReady && tradesReady
+        className={`flex gap-[5px] w-full h-[calc(100vh-80px)] px-[60px] pt-[6px] pb-[50px] overflow-y-auto scroll-none ${walletsReady && transactionsReady && tradesReady
             ? "flex-col"
             : "justify-center items-center"
-        }`}>
+          }`}>
         {days
           .filter((day, i) => i !== 0)
           .map((day) => (
@@ -129,9 +128,8 @@ function Day({
 }) {
   return (
     <div
-      className={`flex justify-center items-center gap-[20px] font-normal text-on-surface-variant text-md w-full rounded-md ${
-        active ? "bg-surface" : "hover:bg-surface"
-      } ${!(walletsReady && transactionsReady && tradesReady) && " hidden"}`}
+      className={`flex justify-center items-center gap-[20px] font-normal text-on-surface-variant text-md w-full rounded-md ${active ? "bg-surface" : "hover:bg-surface"
+        } ${!(walletsReady && transactionsReady && tradesReady) && " hidden"}`}
       key={day.getTime()}>
       <div className="flex justify-center items-center w-[110px]">
         {parseDate(day)}
@@ -153,16 +151,16 @@ function Day({
             .filter(
               (transaction) =>
                 transaction.date.getTime() - 86399999 <= day.getTime() &&
-                wallets.filter(
+                wallets.find(
                   (wallet) => wallet.id === transaction.wallet_id
-                )[0].wallet_type_id === 1
+                )?.wallet_type_id === 1
             )
             .reduce((a, b) => (b.income ? a + b.amount : a - b.amount), 0) +
-            trades
-              .filter(
-                (trade) => trade.date.getTime() - 86399999 <= day.getTime()
-              )
-              .reduce((a, b) => (b.deposit ? a - b.amount : a + b.amount), 0)
+          trades
+            .filter(
+              (trade) => trade.date.getTime() - 86399999 <= day.getTime()
+            )
+            .reduce((a, b) => (b.deposit ? a - b.amount : a + b.amount), 0)
         )}{" "}
         zł
       </div>
@@ -172,16 +170,16 @@ function Day({
             .filter(
               (transaction) =>
                 transaction.date.getTime() - 86399999 <= day.getTime() &&
-                wallets.filter(
+                wallets.find(
                   (wallet) => wallet.id === transaction.wallet_id
-                )[0].wallet_type_id === 2
+                )?.wallet_type_id === 2
             )
             .reduce((a, b) => (b.income ? a + b.amount : a - b.amount), 0) +
-            trades
-              .filter(
-                (trade) => trade.date.getTime() - 86399999 <= day.getTime()
-              )
-              .reduce((a, b) => (b.deposit ? a + b.amount : a - b.amount), 0)
+          trades
+            .filter(
+              (trade) => trade.date.getTime() - 86399999 <= day.getTime()
+            )
+            .reduce((a, b) => (b.deposit ? a + b.amount : a - b.amount), 0)
         )}{" "}
         zł
       </div>

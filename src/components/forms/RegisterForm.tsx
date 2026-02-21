@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -34,13 +36,13 @@ export default function RegisterForm() {
 
     if (
       validateFullname(formData.get("fullname").toString()) &&
-      validateEmail(formData.get("email").toString()) &&
-      validatePassword(formData.get("password").toString()) &&
-      validatePasswords(
-        formData.get("password").toString(),
-        formData.get("passwordValid").toString()
-      ) &&
-      formData.get("rules")
+        validateEmail(formData.get("email").toString()) &&
+        validatePassword(formData.get("password").toString()) &&
+        validatePasswords(
+          formData.get("password").toString(),
+          formData.get("passwordValid").toString()
+        ) &&
+        formData.get("rules")
         ? true
         : false
     ) {
@@ -75,16 +77,23 @@ export default function RegisterForm() {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.currentTarget.closest("form")?.requestSubmit();
+    }
+  };
+
   return (
     <form
-      className="flex flex-col justify-center items-center gap-[40px] w-[540px] h-fit py-[70px] bg-surface rounded-2xl shadow-md"
+      className="flex flex-col w-full max-w-[540px] h-fit px-24 py-20 bg-surface rounded-[32px] shadow-lg border border-black/5 select-none transition-shadow hover:shadow-xl"
       onSubmit={handleSubmit}
     >
-      <div className="flex flex-col justify-center items-center gap-[25px] w-[360px] px-[10px] py-[20px]">
+      <div className="flex flex-col gap-6 w-full">
         <TextFieldOutlined
           className="w-full"
           label="twoje imię i nazwisko"
           name="fullname"
+          onKeyDown={handleKeyDown}
           error={fullnameErr}
           errorText="wpisane imię i nazwisko są niepoprawne"
         />
@@ -92,6 +101,7 @@ export default function RegisterForm() {
           className="w-full"
           label="twój e-mail"
           name="email"
+          onKeyDown={handleKeyDown}
           error={emailErr || accountErr}
           errorText="wpisany adres e-mail jest niepoprawny lub zajęty"
         />
@@ -100,6 +110,7 @@ export default function RegisterForm() {
           label="twoje hasło"
           name="password"
           type="password"
+          onKeyDown={handleKeyDown}
           error={passwordErr}
           errorText="wymagane: 8+ znaków, duża litera, liczba i znak"
         />
@@ -108,19 +119,31 @@ export default function RegisterForm() {
           label="powtórz hasło"
           name="passwordValid"
           type="password"
+          onKeyDown={handleKeyDown}
           error={passwordsErr}
           errorText="wpisane hasła nie są identyczne"
         />
       </div>
-      <div className="flex justify-center items-center gap-[40px] pr-[10px]">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-6 w-full mt-8">
         <label
-          className="flex justify-center items-center text-[14px] text-outline tracking-wider"
+          className="flex items-center gap-3 text-[14px] text-outline tracking-wider cursor-pointer group"
           htmlFor="rules"
         >
-          <Checkbox className="m-[15px]" name="rules" id="rules" required />
-          akceptuję regulamin
+          <Checkbox className="flex-shrink-0 transition-transform group-hover:scale-105" name="rules" id="rules" required />
+          <span className="leading-snug">
+            akceptuję{" "}
+            <Link
+              href="/regulamin"
+              className="underline hover:text-primary transition-colors font-medium"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              regulamin
+            </Link>
+          </span>
         </label>
-        <FilledButton>zarejestuj się</FilledButton>
+        <FilledButton type="submit" className="w-full sm:w-auto shrink-0 shadow-md">zarejestruj się</FilledButton>
+        <button type="submit" className="hidden" aria-hidden="true" />
       </div>
     </form>
   );

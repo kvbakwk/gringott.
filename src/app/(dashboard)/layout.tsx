@@ -1,3 +1,4 @@
+"use client";
 import "@app/utils/globals.css";
 
 import { Metadata } from "next";
@@ -24,10 +25,14 @@ export default async function Layout({
 }: {
   children: React.ReactNode;
 }) {
-  if (!(await verifySession()).isAuth) redirect(`/${RouteSegments.Login}`);
+  const user = await getUser();
+  
+  if (!user) {
+    redirect(RouteSegments.Login);
+  }
 
   return (
-    <html lang="pl" className="font-noto">
+    <html lang="pl" className="font-noto" suppressHydrationWarning>
       <body>
         <div className="grid grid-cols-[300px_1fr] w-screen h-screen bg-surface-container">
           <div className="grid grid-rows-[110px_1fr]">
@@ -36,7 +41,7 @@ export default async function Layout({
             </div>
             <div className="flex flex-col justify-between items-center">
               <DashboardNav />
-              <User name={(await getUser()).name} />
+              <User name={user?.name} />
             </div>
           </div>
           {children}

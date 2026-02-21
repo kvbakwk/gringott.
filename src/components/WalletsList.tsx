@@ -32,7 +32,7 @@ export default function WalletsList({
           .reduce((a, b) => a + b.balance, 0)
       );
       setCashBalance(
-        wallets.filter((wallet) => wallet.wallet_type_id === 1)[0].balance
+        wallets.find((wallet) => wallet.wallet_type_id === 1)?.balance || 0
       );
     }
   }, [wallets, walletsReady]);
@@ -45,10 +45,10 @@ export default function WalletsList({
             <WalletItem
               name="gotówka"
               balance={
-                wallets.find((wallet) => wallet.wallet_type_id === 1).balance
+                wallets.find((wallet) => wallet.wallet_type_id === 1)?.balance || 0
               }
               show
-              key={wallets.find((wallet) => wallet.wallet_type_id === 1).id}
+              key={wallets.find((wallet) => wallet.wallet_type_id === 1)?.id || 'cash'}
             />
             {wallets
               .filter((wallet) => wallet.wallet_type_id === 2)

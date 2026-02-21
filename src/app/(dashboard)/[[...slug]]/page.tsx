@@ -1,3 +1,4 @@
+"use client";
 import { redirect } from "next/navigation";
 
 import { getUser } from "@app/api/user/get";
@@ -13,60 +14,63 @@ export async function generateMetadata({ params }) {
       ? "strona główna"
       : path.slug[0] === RouteSegments.Wallets &&
         path.slug[1] === RouteSegments.Accounts
-      ? "konta"
-      : path.slug[0] === RouteSegments.Wallets &&
-        path.slug[1] === RouteSegments.Investments
-      ? "inwestycje"
-      : path.slug[0] === RouteSegments.Wallets &&
-        path.slug[1] === RouteSegments.Savings
-      ? "oszczędności"
-      : path.slug[0] === RouteSegments.Wallets &&
-        path.slug[1] === RouteSegments.Piggybanks
-      ? "skarbonki"
-      : path.slug[0] === RouteSegments.Wallets &&
-        path.slug[1] === RouteSegments.Goals
-      ? "cele"
-      : path.slug[0] === RouteSegments.Wallets &&
-        path.slug[1] === RouteSegments.Loans
-      ? "należności"
-      : path.slug[0] === RouteSegments.HistoryPage
-      ? "historia"
-      : path.slug[0] === RouteSegments.Transactions && !path.slug[1]
-      ? "transakcje"
-      : path.slug[0] === RouteSegments.Transactions &&
-        path.slug[1] === RouteSegments.Trades &&
-        !path.slug[2]
-      ? "wymiany"
-      : path.slug[0] === RouteSegments.Transactions &&
-        path.slug[1] === RouteSegments.Transfers
-      ? "transfery"
-      : path.slug[0] === RouteSegments.Transactions &&
-        path.slug[1] === RouteSegments.Subjects &&
-        !path.slug[2]
-      ? "podmioty"
-      : path.slug[0] === RouteSegments.Transactions &&
-        path.slug[1] === RouteSegments.Subjects &&
-        path.slug[2] === RouteSegments.New
-      ? "nowy podmiot"
-      : path.slug[0] === RouteSegments.Transactions &&
-        path.slug[1] === RouteSegments.Subjects &&
-        path.slug[2] === RouteSegments.Edit
-      ? "edycja podmiotu"
-      : path.slug[0] === RouteSegments.Transactions &&
-        path.slug[1] === RouteSegments.Subjects &&
-        path.slug[2] === RouteSegments.Delete
-      ? "usuwanie podmiotu"
-      : path.slug[0] === RouteSegments.Transactions &&
-        path.slug[1] === RouteSegments.Categories
-      ? "kategorie"
-      : path.slug[0] === RouteSegments.Transactions &&
-        path.slug[1] === RouteSegments.Methods
-      ? "metody"
-      : path.slug[0] === RouteSegments.Statistics
-      ? "statystyki"
-      : path.slug[0] === RouteSegments.Calculator
-      ? "kalkulator"
-      : "404");
+        ? "konta"
+        : path.slug[0] === RouteSegments.Wallets &&
+          path.slug[1] === RouteSegments.Investments
+          ? "inwestycje"
+          : path.slug[0] === RouteSegments.Wallets &&
+            path.slug[1] === RouteSegments.Savings
+            ? "oszczędności"
+            : path.slug[0] === RouteSegments.Wallets &&
+              path.slug[1] === RouteSegments.Piggybanks
+              ? "skarbonki"
+              : path.slug[0] === RouteSegments.Wallets &&
+                path.slug[1] === RouteSegments.Goals
+                ? "cele"
+                : path.slug[0] === RouteSegments.Wallets &&
+                  path.slug[1] === RouteSegments.Loans
+                  ? "należności"
+                  : path.slug[0] === RouteSegments.HistoryPage
+                    ? "historia"
+                    : path.slug[0] === RouteSegments.Transactions && !path.slug[1]
+                      ? "transakcje"
+                      : path.slug[0] === RouteSegments.Transactions &&
+                        path.slug[1] === RouteSegments.Trades &&
+                        !path.slug[2]
+                        ? "wymiany"
+                        : path.slug[0] === RouteSegments.Transactions &&
+                          path.slug[1] === RouteSegments.Transfers
+                          ? "transfery"
+                          : path.slug[0] === RouteSegments.Transactions &&
+                            path.slug[1] === RouteSegments.Loans
+                            ? "należności"
+                            : path.slug[0] === RouteSegments.Transactions &&
+                              path.slug[1] === RouteSegments.Subjects &&
+                              !path.slug[2]
+                              ? "podmioty"
+                              : path.slug[0] === RouteSegments.Transactions &&
+                                path.slug[1] === RouteSegments.Subjects &&
+                                path.slug[2] === RouteSegments.New
+                                ? "nowy podmiot"
+                                : path.slug[0] === RouteSegments.Transactions &&
+                                  path.slug[1] === RouteSegments.Subjects &&
+                                  path.slug[2] === RouteSegments.Edit
+                                  ? "edycja podmiotu"
+                                  : path.slug[0] === RouteSegments.Transactions &&
+                                    path.slug[1] === RouteSegments.Subjects &&
+                                    path.slug[2] === RouteSegments.Delete
+                                    ? "usuwanie podmiotu"
+                                    : path.slug[0] === RouteSegments.Transactions &&
+                                      path.slug[1] === RouteSegments.Categories
+                                      ? "kategorie"
+                                      : path.slug[0] === RouteSegments.Transactions &&
+                                        path.slug[1] === RouteSegments.Methods
+                                        ? "metody"
+                                        : path.slug[0] === RouteSegments.Statistics
+                                          ? "statystyki"
+                                          : path.slug[0] === RouteSegments.Calculator
+                                            ? "kalkulator"
+                                            : "404");
 
   return {
     title: title,
@@ -78,7 +82,13 @@ export default async function Page({
 }: {
   params: Promise<{ slug: string[] }>;
 }) {
-  if (!(await verifySession()).isAuth) redirect(`/${RouteSegments.Login}`);
+  const session = await verifySession();
+  if (!session.isAuth) redirect(`/${RouteSegments.Login}`);
 
-  return <DashboardPage slug={(await params).slug} user={await getUser()} />;
+  const user = await getUser();
+  if (!user) {
+    redirect(`/${RouteSegments.Login}`);
+  }
+
+  return <DashboardPage slug={(await params).slug} user={user} />;
 }

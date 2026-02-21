@@ -18,7 +18,6 @@ import { SubjectT } from "@app/utils/db-actions/subject";
 import { SuperCategoryT } from "@app/utils/db-actions/super_category";
 import { CategoryT } from "@app/utils/db-actions/category";
 import WalletsList from "@components/WalletsList";
-
 export default function TransactionsPage({
   wallets,
   transactions,
@@ -86,8 +85,8 @@ export default function TransactionsPage({
         operation === "new"
           ? focusEl.classList.add("border-green-700")
           : operation === "edit"
-          ? focusEl.classList.add("border-yellow-500")
-          : focusEl.classList.add("border-error");
+            ? focusEl.classList.add("border-yellow-500")
+            : focusEl.classList.add("border-error");
       }
     }
   }, [operation]);
@@ -156,16 +155,15 @@ export default function TransactionsPage({
           <div className="flex justify-center items-center w-[100px]"></div>
         </div>
         <div
-          className={`flex w-full h-[calc(100vh-106px)] px-[20px] pb-[106px] overflow-y-auto scroll-none ${
-            walletsReady &&
+          className={`flex w-full h-[calc(100vh-106px)] px-[20px] pb-[106px] overflow-y-auto scroll-none ${walletsReady &&
             transactionsReady &&
             methodsReady &&
             subjectsReady &&
             superCategoriesReady &&
             categoriesReady
-              ? "flex-col"
-              : "justify-center items-center"
-          }`}>
+            ? "flex-col"
+            : "justify-center items-center"
+            }`}>
           {walletsReady &&
             transactionsReady &&
             methodsReady &&
@@ -185,15 +183,14 @@ export default function TransactionsPage({
                 />
               ))}
           <div
-            className={`${
-              walletsReady &&
+            className={`${walletsReady &&
               transactionsReady &&
               methodsReady &&
               subjectsReady &&
               superCategoriesReady &&
               categoriesReady &&
               " hidden"
-            }`}>
+              }`}>
             <CircularProgress indeterminate />
           </div>
         </div>
@@ -283,8 +280,8 @@ export function Transaction({
       onMouseLeave={() => setHover(false)}>
       <div className="w-[20px] h-full"></div>
       <div className="flex justify-center items-center gap-[6px] w-[200px]">
-        <div>{parseDate(transaction.date)}</div>
-        <div className="text-[15px]">{parseTime(transaction.date)}</div>
+        {parseDate(new Date(transaction.date))}
+        <div className="text-[15px]">{parseTime(new Date(transaction.date))}</div>
       </div>
       <div
         ref={amountEl}
@@ -301,17 +298,16 @@ export function Transaction({
         {transaction.category.name}
       </div>
       <div className="flex justify-center items-center truncate w-[120px]">
-        {wallets.filter(
+        {wallets.find(
           (wallet: WalletT) => wallet.id === transaction.wallet_id
-        )[0].name ?? "gotówka"}
+        )?.name ?? "gotówka"}
       </div>
       <div className="flex justify-center items-center w-[150px]">
         {transaction.method.name}
       </div>
       <div
-        className={`flex justify-center items-center w-[100px] h-full transition-opacity ${
-          hover ? "opacity-100" : "opacity-0"
-        }`}>
+        className={`flex justify-center items-center w-[100px] h-full transition-opacity ${hover ? "opacity-100" : "opacity-0"
+          }`}>
         <IconButton
           className="mini"
           onClick={() => {

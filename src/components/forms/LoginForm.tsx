@@ -1,28 +1,32 @@
 "use client";
 
 import { useActionState } from "react";
-import { useRouter } from "next/navigation";
 
 import { login } from "@app/api/auth/login";
 
 import { TextFieldOutlined } from "@components/material/TextField";
-import { Checkbox } from "@components/material/Checkbox";
 import { FilledButton } from "@components/material/Button";
 
 export default function LoginForm() {
-  const router = useRouter();
-
   const [state, action, pending] = useActionState(login, undefined);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.currentTarget.closest("form")?.requestSubmit();
+    }
+  };
 
   return (
     <form
-      className="flex flex-col justify-center items-center gap-[16px] w-[500px] h-fit py-[60px] bg-surface rounded-2xl shadow-md"
-      action={action}>
-      <div className="flex flex-col justify-center items-center gap-[25px] w-[320px] px-[10px] py-[20px]">
+      className="flex flex-col w-full max-w-[540px] h-fit px-24 py-20 bg-surface rounded-[32px] shadow-lg border border-black/5 transition-shadow hover:shadow-xl"
+      action={action}
+    >
+      <div className="flex flex-col gap-6 w-full">
         <TextFieldOutlined
           className="w-full"
           label="twój e-mail"
           name="email"
+          onKeyDown={handleKeyDown}
           error={state?.errors?.email ? true : false}
           errorText={state?.errors?.email ? state.errors.email[0] : ""}
         />
@@ -31,24 +35,21 @@ export default function LoginForm() {
           label="twoje hasło"
           name="password"
           type="password"
+          onKeyDown={handleKeyDown}
           error={state?.errors?.password || state?.message ? true : false}
           errorText={
             state?.errors?.password
               ? state.errors.password[0]
               : state?.message
-              ? state.message
-              : ""
+                ? state.message
+                : ""
           }
         />
       </div>
-      <div className="flex justify-center items-center gap-[70px] pr-[10px]">
-        <label
-          className="flex justify-center items-center text-[14px] text-outline tracking-wider"
-          htmlFor="remember">
-          <Checkbox className="m-[15px]" name="remember" id="remember" />
-          zapamiętaj
-        </label>
-        <FilledButton disabled={pending}>zaloguj się</FilledButton>
+      <div className="flex justify-end items-center w-full mt-8">
+        <FilledButton type="submit" disabled={pending} className="w-full sm:w-auto shadow-md">
+          zaloguj się
+        </FilledButton>
       </div>
     </form>
   );
