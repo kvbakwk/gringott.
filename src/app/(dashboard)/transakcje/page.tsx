@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import TransactionsPage from "./TransactionsPage";
 
 export const metadata: Metadata = {
-  title: "Transakcje",
+  title: "gringott. | transakcje",
 };
 
 export default function Page() {

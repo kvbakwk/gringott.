@@ -30,7 +30,7 @@ module.exports = {
         'cash': '#ccad00',
         'bank': '#0000cc',
         'savings': '#008b00ff',
-        'piggybanks': '#f1c232',
+        'piggybanks': 'hsla(45, 87%, 40%, 1.00)',
         'goals': '#674ea7',
         'investments': '#cc0000',
         'loans': '#a64d79',

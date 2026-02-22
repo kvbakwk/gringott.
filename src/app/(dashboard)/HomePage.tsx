@@ -127,7 +127,7 @@ export default function HomePage() {
       {/* Row 1: Core Assets */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
           <BreakdownCard 
-              title="Gotówka" 
+              title="gotówka" 
               amount={cashBalance} 
               show={walletsReady}
               icon="payments" 
@@ -138,7 +138,7 @@ export default function HomePage() {
               onClick={() => router.push('/portfele/konta')}
           />
           <BreakdownCard 
-              title="Konta bankowe" 
+              title="konta bankowe" 
               amount={bankBalance} 
               show={walletsReady}
               icon="account_balance"
@@ -149,7 +149,7 @@ export default function HomePage() {
               onClick={() => router.push('/portfele/konta')}
           />
           <BreakdownCard 
-              title="Inwestycje" 
+              title="inwestycje" 
               amount={investmentsBalance} 
               show={walletsReady} 
               icon="trending_up"
@@ -164,7 +164,7 @@ export default function HomePage() {
       {/* Row 2: Savings & Goals */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
           <BreakdownCard 
-              title="Oszczędności" 
+              title="oszczędności" 
               amount={savingsBalance} 
               show={walletsReady}
               icon="nest_eco_leaf" 
@@ -175,7 +175,7 @@ export default function HomePage() {
               onClick={() => router.push('/portfele/oszczednosci')}
           />
           <BreakdownCard 
-              title="Skarbonki" 
+              title="skarbonki" 
               amount={piggybanksBalance} 
               show={walletsReady}
               icon="savings"
@@ -186,7 +186,7 @@ export default function HomePage() {
               onClick={() => router.push('/portfele/skarbonki')}
           />
           <BreakdownCard 
-              title="Cele" 
+              title="cele" 
               amount={goalsBalance} 
               show={walletsReady} 
               icon="target"
@@ -202,14 +202,14 @@ export default function HomePage() {
       <div className="grid grid-cols-1 lg:grid-cols-[40%_1fr] gap-6 w-full mb-4">
          <div className="flex flex-col gap-8">
             <SummaryCard 
-                title="Zarobiłeś" 
+                title="zarobiłeś" 
                 amount={currentMonthIncome} 
                 prevAmount={lastMonthIncome} 
                 show={transactionsReady} 
                 isIncome={true}
             />
             <SummaryCard 
-                title="Wydałeś" 
+                title="wydałeś" 
                 amount={currentMonthExpense} 
                 prevAmount={lastMonthExpense} 
                 show={transactionsReady} 
@@ -227,26 +227,23 @@ export default function HomePage() {
 function BreakdownCard({ title, amount, show, icon, percent, trend, textColor, borderColor, onClick }: { title: string, amount: number, show: boolean, icon: string, percent: number, trend: 'up' | 'down', textColor: string, borderColor: string, onClick: () => void }) {
     const isUp = trend === 'up';
     return (
-        <div className={`p-6 pr-8 bg-surface rounded-3xl flex flex-col justify-around gap-2 min-h-[140px] transition-shadow cursor-default border-2 border-transparent ${borderColor} transition-[border-color] cursor-pointer`} onClick={onClick}>
-            <div className="flex justify-between items-start">
-                 <div className={`w-10 h-10 rounded-xl bg-surface-variant flex items-center justify-center ${textColor}`}>
-                    <Icon>{icon}</Icon>
+        <div className={`p-6 bg-surface rounded-3xl flex justify-between gap-4 min-h-[140px] border-2 border-transparent ${borderColor} transition-[border-color] cursor-pointer`} onClick={onClick}>
+            <div className="flex flex-col justify-between items-start">
+                 <div className={`w-[36px] h-[36px] rounded-2xl bg-surface-variant flex items-center justify-start ${textColor}`}>
+                    <Icon className="w-[36px] h-[36px] text-3xl">{icon}</Icon>
                  </div>
+                 <div className="text-xl text-on-surface-variant font-medium pt-10">{title}</div>
             </div>
-            <div className="flex justify-between items-end">
-              <div>
-                  <div className="text-sm text-on-surface-variant mb-1 font-medium">{title}</div>
-                  <div className={`text-2xl font-bold mb-2 ${textColor}`}>
-                      <Value amount={amount} show={show} suffix="zł" />
-                  </div>
-              </div>
-                  {amount > 0 && (
-                      <div className={`flex items-center text-xs font-bold gap-1 ${isUp ? 'text-green-600' : 'text-red-600'}`}>
-                          <Icon className="text-sm">{isUp ? 'trending_up' : 'trending_down'}</Icon>
-                          <span>{isUp ? '+' : '-'}{percent}%</span>
-                          <span className="text-on-surface-variant font-normal ml-1">w tym miesiącu</span>
-                      </div>
-                  )}
+            <div className="flex flex-col justify-between items-end text-right">
+                <div className={`text-3xl font-bold ${textColor}`}>
+                    <Value amount={amount} show={show} suffix="zł" />
+                </div>
+                {amount > 0 && (
+                    <div className={`flex items-center text-base font-bold gap-1 mt-4 ${isUp ? 'text-green-600' : 'text-red-600'}`}>
+                        <Icon className="text-xl">{isUp ? 'trending_up' : 'trending_down'}</Icon>
+                        <span>{isUp ? '+' : '-'}{percent}%</span>
+                    </div>
+                )}
             </div>
         </div>
     )
