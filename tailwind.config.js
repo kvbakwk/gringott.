@@ -25,7 +25,15 @@ module.exports = {
         'error': '#ba1a1a',
         'error-container': '#FFDAD6',
         'on-error-container': '#410002',
-        'outline': '#7F7667'
+        'outline': '#7F7667',
+
+        'cash': '#ccad00',
+        'bank': '#0000cc',
+        'savings': '#008b00ff',
+        'piggybanks': '#f1c232',
+        'goals': '#674ea7',
+        'investments': '#cc0000',
+        'loans': '#a64d79',
       },
       boxShadow: {
         none: "0px 0px 0px 0px rgba(0, 0, 0, 0.1)",

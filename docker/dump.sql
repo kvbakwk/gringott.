@@ -16,6 +16,10 @@ create table if not exists public.wallet (
     name varchar(10),
     balance decimal(10, 2) not null,
     wallet_type_id integer not null,
+    icon varchar(255),
+    target_amount decimal(10, 2),
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp,
     foreign key (user_id) references public.user(id),
     foreign key (wallet_type_id) references public.wallet_type(id)
 );
@@ -52,6 +56,23 @@ create table if not exists public.subject (
     foreign key (user_id) references public.user(id)
 );
 
+create table if not exists public.loan (
+    id serial primary key,
+    user_id integer not null,
+    subject_id integer not null,
+    name varchar(255),
+    total_amount numeric(10, 2) not null,
+    paid_amount numeric(10, 2) default 0 not null,
+    is_given boolean not null,
+    currency varchar(10) default 'PLN' not null,
+    status varchar(50) default 'active' not null,
+    created_at timestamp default CURRENT_TIMESTAMP not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp,
+    foreign key (user_id) references public.user(id),
+    foreign key (subject_id) references public.subject(id)
+);
+
 create table if not exists public.transaction_type (
     id serial primary key,
     name varchar(255) not null
@@ -70,12 +91,14 @@ create table if not exists public.transaction (
     wallet_id integer not null,
     method_id integer not null,
     transaction_type_id integer not null,
+    loan_id integer,
     foreign key (user_id) references public.user(id),
     foreign key (wallet_id) references public.wallet(id),
     foreign key (category_id) references public.category(id),
     foreign key (subject_id) references public.subject(id),
     foreign key (method_id) references public.method(id),
-    foreign key (transaction_type_id) references public.transaction_type(id)
+    foreign key (transaction_type_id) references public.transaction_type(id),
+    foreign key (loan_id) references public.loan(id)
 );
 
 create table if not exists public.trade (
@@ -114,6 +137,22 @@ create table if not exists public.product (
     id serial primary key,
     name varchar(255) not null,
     price integer not null
+);
+
+create table if not exists public.asset (
+    id serial primary key,
+    wallet_id integer not null,
+    name varchar(255) not null,
+    ticker varchar(50),
+    type varchar(50) not null,
+    quantity numeric(10, 4) not null,
+    currency varchar(10) not null,
+    avg_buy_price numeric(10, 2),
+    current_price numeric(10, 2),
+    icon varchar(255),
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp,
+    foreign key (wallet_id) references public.wallet(id)
 );
 
 

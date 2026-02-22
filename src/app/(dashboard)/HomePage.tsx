@@ -1,35 +1,20 @@
 "use client";
 
-import { WalletT } from "@app/utils/db-actions/wallet";
 import { TransactionT } from "@app/utils/db-actions/transaction";
-import { SubjectT } from "@app/utils/db-actions/subject";
-import { CategoryT } from "@app/utils/db-actions/category";
-import { UserT } from "@app/utils/db-actions/user";
 
 import { useEffect, useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import { useData } from "@app/context/DataContext";
 
 import { parseMoney } from "@app/utils/parser";
 import { generateTimeLimits } from "@app/utils/generator";
 import { CircularProgress } from "@components/material/Progress";
 import { Icon } from "@components/material/Icon";
 
-export default function HomePage({
-  user,
-  wallets,
-  transactions,
-  walletsReady,
-  transactionsReady,
-}: {
-  user: UserT;
-  wallets: WalletT[];
-  transactions: TransactionT[];
-  subjects: SubjectT[];
-  categories: CategoryT[];
-  walletsReady: boolean;
-  transactionsReady: boolean;
-  subjectsReady: boolean;
-  categoriesReady: boolean;
-}) {
+export default function HomePage() {
+  const router = useRouter();
+  const { user, wallets, transactions, walletsReady, transactionsReady } = useData();
+
   const [cashBalance, setCashBalance] = useState(0);
   const [bankBalance, setBankBalance] = useState(0);
   const [investmentsBalance, setInvestmentsBalance] = useState(0);
@@ -118,21 +103,22 @@ export default function HomePage({
             !t.income
         )
         .reduce((a, b) => a + b.amount, 0);
-      setLastMonthExpense(lastExpense);
     }
   }, [transactions, transactionsReady, timeLimits]);
 
+  if (!user) return null;
+
   return (
-    <div className="flex flex-col w-full h-full p-8 gap-8 overflow-y-auto">
+    <div className="grid grid-rows-[1fr_auto] p-8 gap-8 overflow-y-auto">
       {/* Header */}
-      <div className="flex justify-between items-start w-full">
+      <div className="flex justify-between items-center w-full pl-6">
         <div>
           <div className="text-3xl font-bold text-on-surface">witaj, {user.name.split(" ")[0]}!</div>
-          <p className="text-on-surface-variant text-sm mt-1">oto podsumowanie Twoich finansów na dziś.</p>
+          <p className="text-on-surface-variant text-sm mt-1">oto podsumowanie Twoich finansów na dziś</p>
         </div>
         <div className="text-right">
              <div className="text-sm text-on-surface-variant font-medium">całkowite saldo</div>
-             <div className="text-3xl font-bold text-on-surface mt-1">
+             <div className="text-4xl font-bold text-on-surface mt-1">
                 <Value amount={totalBalance} show={walletsReady} suffix="zł" />
              </div>
         </div>
@@ -147,6 +133,9 @@ export default function HomePage({
               icon="payments" 
               percent={5} 
               trend="up"
+              textColor="text-cash"
+              borderColor="hover:border-cash"
+              onClick={() => router.push('/portfele/konta')}
           />
           <BreakdownCard 
               title="Konta bankowe" 
@@ -155,6 +144,9 @@ export default function HomePage({
               icon="account_balance"
               percent={2} 
               trend="down"
+              textColor="text-bank"
+              borderColor="hover:border-bank"
+              onClick={() => router.push('/portfele/konta')}
           />
           <BreakdownCard 
               title="Inwestycje" 
@@ -163,6 +155,9 @@ export default function HomePage({
               icon="trending_up"
               percent={12} 
               trend="up"
+              textColor="text-investments"
+              borderColor="hover:border-investments"
+              onClick={() => router.push('/portfele/inwestycje')}
           />
       </div>
 
@@ -175,6 +170,9 @@ export default function HomePage({
               icon="nest_eco_leaf" 
               percent={3} 
               trend="up"
+              textColor="text-savings"
+              borderColor="hover:border-savings"
+              onClick={() => router.push('/portfele/oszczednosci')}
           />
           <BreakdownCard 
               title="Skarbonki" 
@@ -183,6 +181,9 @@ export default function HomePage({
               icon="savings"
               percent={8} 
               trend="up"
+              textColor="text-piggybanks"
+              borderColor="hover:border-piggybanks"
+              onClick={() => router.push('/portfele/skarbonki')}
           />
           <BreakdownCard 
               title="Cele" 
@@ -191,11 +192,14 @@ export default function HomePage({
               icon="target"
               percent={15} 
               trend="up"
+              textColor="text-goals"
+              borderColor="hover:border-goals"
+              onClick={() => router.push('/portfele/cele')}
           />
       </div>
 
       {/* Stats Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-[40%_1fr] gap-6 w-full mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-[40%_1fr] gap-6 w-full mb-4">
          <div className="flex flex-col gap-8">
             <SummaryCard 
                 title="Zarobiłeś" 
@@ -220,27 +224,29 @@ export default function HomePage({
   );
 }
 
-function BreakdownCard({ title, amount, show, icon, percent, trend }: { title: string, amount: number, show: boolean, icon: string, percent: number, trend: 'up' | 'down' }) {
+function BreakdownCard({ title, amount, show, icon, percent, trend, textColor, borderColor, onClick }: { title: string, amount: number, show: boolean, icon: string, percent: number, trend: 'up' | 'down', textColor: string, borderColor: string, onClick: () => void }) {
     const isUp = trend === 'up';
     return (
-        <div className="p-6 bg-surface rounded-3xl flex flex-col justify-between min-h-[140px] transition-shadow cursor-default">
+        <div className={`p-6 pr-8 bg-surface rounded-3xl flex flex-col justify-around gap-2 min-h-[140px] transition-shadow cursor-default border-2 border-transparent ${borderColor} transition-[border-color] cursor-pointer`} onClick={onClick}>
             <div className="flex justify-between items-start">
-                 <div className="w-10 h-10 rounded-xl bg-surface-variant flex items-center justify-center text-on-surface-variant">
+                 <div className={`w-10 h-10 rounded-xl bg-surface-variant flex items-center justify-center ${textColor}`}>
                     <Icon>{icon}</Icon>
                  </div>
             </div>
-            <div>
-                 <div className="text-sm text-on-surface-variant mb-1 font-medium">{title}</div>
-                 <div className="text-2xl font-bold text-on-surface mb-2">
-                    <Value amount={amount} show={show} suffix="zł" />
-                 </div>
-                 {amount > 0 && (
-                     <div className={`flex items-center text-xs font-bold gap-1 ${isUp ? 'text-green-600' : 'text-red-600'}`}>
-                        <Icon className="text-sm">{isUp ? 'trending_up' : 'trending_down'}</Icon>
-                        <span>{isUp ? '+' : '-'}{percent}%</span>
-                        <span className="text-on-surface-variant font-normal ml-1">w tym miesiącu</span>
-                     </div>
-                 )}
+            <div className="flex justify-between items-end">
+              <div>
+                  <div className="text-sm text-on-surface-variant mb-1 font-medium">{title}</div>
+                  <div className={`text-2xl font-bold mb-2 ${textColor}`}>
+                      <Value amount={amount} show={show} suffix="zł" />
+                  </div>
+              </div>
+                  {amount > 0 && (
+                      <div className={`flex items-center text-xs font-bold gap-1 ${isUp ? 'text-green-600' : 'text-red-600'}`}>
+                          <Icon className="text-sm">{isUp ? 'trending_up' : 'trending_down'}</Icon>
+                          <span>{isUp ? '+' : '-'}{percent}%</span>
+                          <span className="text-on-surface-variant font-normal ml-1">w tym miesiącu</span>
+                      </div>
+                  )}
             </div>
         </div>
     )

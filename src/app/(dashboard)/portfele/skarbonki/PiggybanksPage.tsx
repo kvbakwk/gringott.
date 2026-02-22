@@ -6,31 +6,15 @@ import { MethodT } from "@app/utils/db-actions/method";
 import WalletsGridLayout from "@components/layouts/WalletsGridLayout";
 import PiggybankCard from "@components/features/piggybanks/PiggybankCard";
 import { useState, useRef, useEffect } from "react";
+import { useData } from "@app/context/DataContext";
 import NewPiggybankForm from "@components/forms/wallets/NewPiggybankForm";
 import NewPiggybankDepositForm from "@components/forms/transfers/NewPiggybankDepositForm";
 import NewPiggybankWithdrawalForm from "@components/forms/transfers/NewPiggybankWithdrawalForm";
 import DeletePiggybankForm from "@components/forms/wallets/DeletePiggybankForm";
 import EditPiggybankForm from "@components/forms/wallets/EditPiggybankForm";
 
-export default function PiggybanksPage({
-  wallets,
-  walletsReady,
-  transactions,
-  transactionsReady,
-  methods,
-  userId,
-  reloadWallets,
-  reloadTransfers,
-}: {
-  wallets: WalletT[];
-  walletsReady: boolean;
-  transactions: TransactionT[];
-  transactionsReady: boolean;
-  methods: MethodT[];
-  userId: number;
-  reloadWallets: () => Promise<void>;
-  reloadTransfers: () => Promise<void>;
-}) {
+export default function PiggybanksPage() {
+  const { user, wallets, walletsReady, transactions, transactionsReady, methods, reloadWallets, reloadTransfers } = useData();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
@@ -131,6 +115,8 @@ export default function PiggybanksPage({
     return null;
   };
 
+  if (!user) return null;
+
   return (
     <WalletsGridLayout
       title="skarbonki"
@@ -160,7 +146,7 @@ export default function PiggybanksPage({
         className="fixed inset-0 hidden justify-center items-center bg-black/50 z-50 opacity-0 transition-opacity duration-200 backdrop-blur-sm"
       >
         <NewPiggybankForm 
-            userId={userId}
+            userId={user?.id}
             successOperation={handleAddSuccess}
             cancelOperation={() => setShowAddModal(false)}
         />
@@ -173,7 +159,7 @@ export default function PiggybanksPage({
       >
         {targetWallet && showDepositModal && (
           <NewPiggybankDepositForm 
-              userId={userId}
+              userId={user?.id}
               wallets={wallets}
               methods={methods}
               targetWallet={targetWallet}
@@ -193,7 +179,7 @@ export default function PiggybanksPage({
       >
         {targetWallet && showWithdrawalModal && (
           <NewPiggybankWithdrawalForm 
-              userId={userId}
+              userId={user?.id}
               wallets={wallets}
               methods={methods}
               sourceWallet={targetWallet}

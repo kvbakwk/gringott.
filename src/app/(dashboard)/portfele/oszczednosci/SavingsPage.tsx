@@ -8,34 +8,12 @@ import { MethodT } from "@app/utils/db-actions/method";
 import { parseDate, parseMoney } from "@app/utils/parser";
 import { Icon } from "@components/material/Icon";
 import { CircularProgress } from "@components/material/Progress";
+import { useData } from "@app/context/DataContext";
 import NewDepositForm from "@components/forms/transfers/NewDepositForm";
 import NewWithdrawalForm from "@components/forms/transfers/NewWithdrawalForm";
 
-export default function SavingsPage({
-  wallets,
-  walletsReady,
-  transactions,
-  transactionsReady,
-  transfers,
-  transfersReady,
-  methods,
-  userId,
-  reloadWallets,
-  reloadTransactions,
-  reloadTransfers,
-}: {
-  wallets: WalletT[];
-  walletsReady: boolean;
-  transactions: TransactionT[];
-  transactionsReady: boolean;
-  transfers: TransferT[];
-  transfersReady: boolean;
-  methods: MethodT[];
-  userId: number;
-  reloadWallets: () => Promise<void>;
-  reloadTransactions: () => Promise<void>;
-  reloadTransfers: () => Promise<void>;
-}) {
+export default function SavingsPage() {
+  const { user, wallets, walletsReady, transactions, transactionsReady, transfers, transfersReady, methods, reloadWallets, reloadTransactions, reloadTransfers } = useData();
   const [activeForm, setActiveForm] = useState<"deposit" | "withdrawal" | null>(null);
   const formEl = useRef<HTMLDivElement>(null);
 
@@ -106,6 +84,8 @@ export default function SavingsPage({
   };
 
   const isLoading = !walletsReady || !transactionsReady || !transfersReady;
+
+  if (!user) return null;
 
   return (
     <div className="flex flex-col w-full h-full p-8 gap-4 overflow-y-auto overflow-x-hidden bg-background">
@@ -210,7 +190,7 @@ export default function SavingsPage({
       >
         {activeForm === "deposit" && (
             <NewDepositForm 
-                userId={userId}
+                userId={user?.id}
                 wallets={wallets}
                 methods={methods}
                 successOperation={handleSuccess}
@@ -219,7 +199,7 @@ export default function SavingsPage({
         )}
         {activeForm === "withdrawal" && (
             <NewWithdrawalForm 
-                userId={userId}
+                userId={user?.id}
                 wallets={wallets}
                 methods={methods}
                 successOperation={handleSuccess}

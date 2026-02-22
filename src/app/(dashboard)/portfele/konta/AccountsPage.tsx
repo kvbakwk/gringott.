@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState, useRef, useEffect } from "react";
+import { useData } from "@app/context/DataContext";
 import { WalletT } from "@app/utils/db-actions/wallet";
 import { parseMoney } from "@app/utils/parser";
 import { CircularProgress } from "@components/material/Progress";
@@ -8,17 +9,8 @@ import { Icon } from "@components/material/Icon";
 import NewAccountForm from "@components/forms/wallets/NewAccountForm";
 import DeleteAccountForm from "@components/forms/wallets/DeleteAccountForm";
 
-export default function AccountsPage({
-  wallets,
-  walletsReady,
-  userId,
-  reloadWallets,
-}: {
-  wallets: WalletT[];
-  walletsReady: boolean;
-  userId: number;
-  reloadWallets: () => Promise<void>;
-}) {
+export default function AccountsPage() {
+  const { wallets, walletsReady, user, reloadWallets } = useData();
   const [activeModal, setActiveModal] = useState<"new" | "delete" | null>(null);
   const [selectedWallet, setSelectedWallet] = useState<WalletT | null>(null);
   const formEl = useRef<HTMLDivElement>(null);
@@ -52,6 +44,8 @@ export default function AccountsPage({
     setSelectedWallet(wallet);
     setActiveModal("delete");
   };
+
+  if (!user) return null;
 
   return (
     <div className="flex flex-col w-full h-full p-8 gap-8 overflow-y-auto bg-background relative">
@@ -130,7 +124,7 @@ export default function AccountsPage({
       >
         {activeModal === "new" && (
             <NewAccountForm 
-                userId={userId}
+                userId={user?.id}
                 successOperation={handleSuccess}
                 cancelOperation={() => setActiveModal(null)}
             />

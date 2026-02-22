@@ -9,21 +9,27 @@ import { RouteSegments } from "@app/utils/routes";
 
 import { getSubjects } from "@app/api/subject/get";
 import { Fab } from "@components/material/Fab";
-import { Icon } from "@components/material/Icon";
 import { IconButton } from "@components/material/IconButton";
 import FormPageWrapper from "@components/layouts/FormPageWrapper";
+import { useData } from "@app/context/DataContext";
+import { Icon } from "@components/material/Icon";
 
-export default function SubjectsPage({ userId }: { userId: number }) {
+export default function SubjectsPage() {
   const router = useRouter();
+  const { user } = useData();
 
   const [subjects, setSubjects] = useState<SubjectT[]>([]);
   const [subjectsReady, setSubjectsReady] = useState<boolean>(false);
 
   useEffect(() => {
-    getSubjects(userId)
-      .then((subjects) => setSubjects(subjects))
-      .finally(() => setSubjectsReady(true));
-  }, []);
+    if (user?.id) {
+      getSubjects(user.id)
+        .then((subjects) => setSubjects(subjects))
+        .finally(() => setSubjectsReady(true));
+    }
+  }, [user?.id]);
+
+  if (!user) return null;
 
   return (
     <FormPageWrapper>

@@ -4,6 +4,7 @@ import { WalletT } from "@app/utils/db-actions/wallet";
 import { TransactionT } from "@app/utils/db-actions/transaction";
 
 import { useEffect, useRef, useState } from "react";
+import { useData } from "@app/context/DataContext";
 
 import { parseDate, parseMoney, parseTime } from "@app/utils/parser";
 import { CircularProgress } from "@components/material/Progress";
@@ -18,45 +19,17 @@ import { SubjectT } from "@app/utils/db-actions/subject";
 import { SuperCategoryT } from "@app/utils/db-actions/super_category";
 import { CategoryT } from "@app/utils/db-actions/category";
 import WalletsList from "@components/WalletsList";
-export default function TransactionsPage({
-  wallets,
-  transactions,
-  methods,
-  subjects,
-  superCategories,
-  categories,
-  walletsReady,
-  transactionsReady,
-  methodsReady,
-  subjectsReady,
-  superCategoriesReady,
-  categoriesReady,
-  reloadWallets,
-  reloadTransactions,
-  userId,
-}: {
-  wallets: WalletT[];
-  transactions: TransactionT[];
-  methods: MethodT[];
-  subjects: SubjectT[];
-  superCategories: SuperCategoryT[];
-  categories: CategoryT[];
-  walletsReady: boolean;
-  transactionsReady: boolean;
-  methodsReady: boolean;
-  subjectsReady: boolean;
-  superCategoriesReady: boolean;
-  categoriesReady: boolean;
-  reloadWallets: () => void;
-  reloadTransactions: () => void;
-  userId: number;
-}) {
+export default function TransactionsPage() {
+  const { user, wallets, transactions, methods, subjects, superCategories, categories, walletsReady, transactionsReady, methodsReady, subjectsReady, superCategoriesReady, categoriesReady, reloadWallets, reloadTransactions } = useData();
+
   const formEl = useRef(null);
   const newTransactionEl = useRef(null);
 
   const [operation, setOperation] = useState<string>("");
   const [id, setId] = useState<number>(0);
   const [focusEl, setFocusEl] = useState<HTMLElement>(null);
+
+  const filteredSubjects = subjects.filter((subject) => subject.normal);
 
   const successOperation = () => {
     hideForm();
@@ -118,6 +91,8 @@ export default function TransactionsPage({
       }
     }
   };
+
+  if (!user) return null;
 
   return (
     <div className="relative grid grid-rows-[50px_1fr] w-full h-full">
@@ -200,13 +175,13 @@ export default function TransactionsPage({
         className="absolute hidden justify-center items-center w-full h-full opacity-0 transition-all">
         {operation === "new" ? (
           <NewTransactionForm
-            userId={userId}
+            userId={user?.id}
             wallets={wallets.filter(
               (wallet) =>
                 wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2
             )}
             methods={methods}
-            subjects={subjects}
+            subjects={filteredSubjects}
             superCategories={superCategories}
             categories={categories}
             successOperation={successOperation}
@@ -214,7 +189,7 @@ export default function TransactionsPage({
           />
         ) : operation === "edit" ? (
           <EditTransactionForm
-            userId={userId}
+            userId={user?.id}
             wallets={wallets.filter(
               (wallet) =>
                 wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2
@@ -223,7 +198,7 @@ export default function TransactionsPage({
               (transaction) => transaction.id === id
             )}
             methods={methods}
-            subjects={subjects}
+            subjects={filteredSubjects}
             superCategories={superCategories}
             categories={categories}
             successOperation={successOperation}
@@ -231,7 +206,7 @@ export default function TransactionsPage({
           />
         ) : operation === "delete" ? (
           <DeleteTransactionForm
-            userId={userId}
+            userId={user?.id}
             transaction={transactions.find(
               (transaction) => transaction.id === id
             )}

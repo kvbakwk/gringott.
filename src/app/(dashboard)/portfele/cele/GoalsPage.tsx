@@ -6,31 +6,15 @@ import { MethodT } from "@app/utils/db-actions/method";
 import WalletsGridLayout from "@components/layouts/WalletsGridLayout";
 import GoalCard from "@components/features/goals/GoalCard";
 import { useState, useRef, useEffect } from "react";
+import { useData } from "@app/context/DataContext";
 import NewGoalForm from "@components/forms/wallets/NewGoalForm";
 import EditGoalForm from "@components/forms/wallets/EditGoalForm";
 import DeleteGoalForm from "@components/forms/wallets/DeleteGoalForm";
 import NewGoalDepositForm from "@components/forms/transfers/NewGoalDepositForm";
 import NewGoalWithdrawalForm from "@components/forms/transfers/NewGoalWithdrawalForm";
 
-export default function GoalsPage({
-  wallets,
-  walletsReady,
-  transactions,
-  transactionsReady,
-  methods,
-  userId,
-  reloadWallets,
-  reloadTransfers,
-}: {
-  wallets: WalletT[];
-  walletsReady: boolean;
-  transactions: TransactionT[];
-  transactionsReady: boolean;
-  methods: MethodT[];
-  userId: number;
-  reloadWallets: () => Promise<void>;
-  reloadTransfers: () => Promise<void>;
-}) {
+export default function GoalsPage() {
+  const { user, wallets, walletsReady, transactions, transactionsReady, methods, reloadWallets, reloadTransfers } = useData();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
@@ -131,6 +115,8 @@ export default function GoalsPage({
     return null;
   };
 
+  if (!user) return null;
+
   return (
     <WalletsGridLayout
       title="cele"
@@ -160,7 +146,7 @@ export default function GoalsPage({
         className="fixed inset-0 hidden justify-center items-center bg-black/50 z-50 opacity-0 transition-opacity duration-200 backdrop-blur-sm"
       >
         <NewGoalForm 
-            userId={userId}
+            userId={user?.id}
             successOperation={handleAddSuccess}
             cancelOperation={() => setShowAddModal(false)}
         />
@@ -173,7 +159,7 @@ export default function GoalsPage({
       >
         {targetWallet && showDepositModal && (
           <NewGoalDepositForm 
-              userId={userId}
+              userId={user?.id}
               wallets={wallets}
               methods={methods}
               targetWallet={targetWallet}
@@ -193,7 +179,7 @@ export default function GoalsPage({
       >
         {targetWallet && showWithdrawalModal && (
           <NewGoalWithdrawalForm 
-              userId={userId}
+              userId={user?.id}
               wallets={wallets}
               methods={methods}
               sourceWallet={targetWallet}

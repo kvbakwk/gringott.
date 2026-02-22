@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo, useState, useRef, useEffect } from "react";
-import { LoanT } from "@app/utils/db-actions/loan";
 import { TransactionT } from "@app/utils/db-actions/transaction";
 import { SubjectT } from "@app/utils/db-actions/subject";
+import { useData } from "@app/context/DataContext";
 import { WalletT } from "@app/utils/db-actions/wallet";
 import { parseDate, parseMoney } from "@app/utils/parser";
 import { Icon } from "@components/material/Icon";
@@ -12,34 +12,10 @@ import LoanForm from "@components/forms/LoanForm";
 import RepaymentForm from "@components/forms/RepaymentForm";
 import WalletsList from "@components/WalletsList";
 import { FilledButton, OutlinedButton } from "@components/material/Button";
+import { LoanT } from "@app/utils/db-actions/loan";
 
-export default function LoansSummaryPage({
-    loans,
-    transactions,
-    subjects,
-    wallets,
-    loansReady,
-    transactionsReady,
-    walletsReady,
-    subjectsReady,
-    reloadLoans,
-    reloadTransactions,
-    reloadWallets,
-    userId,
-}: {
-    loans: LoanT[];
-    transactions: TransactionT[];
-    subjects: SubjectT[];
-    wallets: WalletT[];
-    loansReady: boolean;
-    transactionsReady: boolean;
-    walletsReady: boolean;
-    subjectsReady: boolean;
-    reloadLoans: () => Promise<void>;
-    reloadTransactions: () => Promise<void>;
-    reloadWallets: () => Promise<void>;
-    userId: number;
-}) {
+export default function LoansSummaryPage() {
+    const { user, loans, transactions, subjects, wallets, loansReady, transactionsReady, walletsReady, subjectsReady, reloadLoans, reloadTransactions, reloadWallets } = useData();
     const formEl = useRef<HTMLDivElement>(null);
     const newLoanEl = useRef<HTMLDivElement>(null);
     const [operation, setOperation] = useState<string>("");
@@ -109,7 +85,7 @@ export default function LoansSummaryPage({
             const res = await fetch("/api/loan/create", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...data, userId })
+                body: JSON.stringify({ ...data, userId: user?.id })
             });
             if (!res.ok) throw new Error("Failed to add loan");
             successOperation();
@@ -124,7 +100,7 @@ export default function LoansSummaryPage({
             const res = await fetch("/api/loan/pay", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...data, userId })
+                body: JSON.stringify({ ...data, userId: user?.id })
             });
             if (!res.ok) throw new Error("Failed to repay loan");
             successOperation();
@@ -184,6 +160,8 @@ export default function LoansSummaryPage({
     }
 
     const isLoading = !loansReady || !transactionsReady || !walletsReady;
+
+    if (!user) return null;
 
     return (
         <div className="flex flex-col w-full h-full p-8 gap-8 overflow-y-auto">
@@ -318,7 +296,7 @@ export default function LoansSummaryPage({
                         subjects={subjects}
                         onSubmit={handleAddLoan}
                         onCancel={closeForm}
-                        userId={userId}
+                        userId={user?.id}
                     />
                 )}
                 {operation === "edit" && selectedLoan && (
@@ -327,7 +305,7 @@ export default function LoansSummaryPage({
                         initialData={selectedLoan}
                         onSubmit={handleEditLoan}
                         onCancel={closeForm}
-                        userId={userId}
+                        userId={user?.id}
                     />
                 )}
                 {operation === "repay" && selectedLoan && (
@@ -336,7 +314,7 @@ export default function LoansSummaryPage({
                         wallets={wallets}
                         onSubmit={handleRepay}
                         onCancel={closeForm}
-                        userId={userId}
+                        userId={user?.id}
                     />
                 )}
                 {operation === "delete" && selectedLoan && (

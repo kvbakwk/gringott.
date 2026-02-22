@@ -1,22 +1,10 @@
-"use client";
+import { Metadata } from "next";
 import PiggybanksPage from "./PiggybanksPage";
-import { useData } from "@app/context/DataContext";
+
+export const metadata: Metadata = {
+  title: "Skarbonki",
+};
 
 export default function Page() {
-  const { user, wallets, walletsReady, transactions, transactionsReady, methods, reloadWallets, reloadTransfers } = useData();
-
-  if (!user) return null;
-
-  return (
-    <PiggybanksPage
-      wallets={wallets}
-      walletsReady={walletsReady}
-      transactions={transactions}
-      transactionsReady={transactionsReady}
-      methods={methods}
-      userId={user.id}
-      reloadWallets={reloadWallets}
-      reloadTransfers={reloadTransfers}
-    />
-  );
+  return <PiggybanksPage />;
 }

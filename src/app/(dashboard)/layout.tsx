@@ -27,7 +27,7 @@ export default async function Layout({
   children: React.ReactNode;
 }) {
   const user = await getUser();
-  
+
   if (!user) {
     redirect(RouteSegments.Login);
   }

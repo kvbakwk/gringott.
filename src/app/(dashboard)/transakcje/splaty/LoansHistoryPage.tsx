@@ -19,44 +19,10 @@ import { SuperCategoryT } from "@app/utils/db-actions/super_category";
 import { MethodT } from "@app/utils/db-actions/method";
 import EditTransactionForm from "@components/forms/transactions/EditTransactionForm";
 import WalletsList from "@components/WalletsList";
+import { useData } from "@app/context/DataContext";
 
-export default function LoansHistoryPage({
-    loans,
-    transactions,
-    subjects,
-    wallets,
-    methods,
-    categories,
-    superCategories,
-    loansReady,
-    transactionsReady,
-    walletsReady,
-    subjectsReady,
-    methodsReady,
-    categoriesReady,
-    superCategoriesReady,
-    reloadLoans,
-    reloadTransactions,
-    userId,
-}: {
-    loans: LoanT[];
-    transactions: TransactionT[];
-    subjects: SubjectT[];
-    wallets: WalletT[];
-    methods: MethodT[];
-    categories: CategoryT[];
-    superCategories: SuperCategoryT[];
-    loansReady: boolean;
-    transactionsReady: boolean;
-    walletsReady: boolean;
-    subjectsReady: boolean;
-    methodsReady: boolean;
-    categoriesReady: boolean;
-    superCategoriesReady: boolean;
-    reloadLoans: () => Promise<void>;
-    reloadTransactions: () => Promise<void>;
-    userId: number;
-}) {
+export default function LoansHistoryPage() {
+    const { user, loans, transactions, subjects, wallets, methods, categories, superCategories, loansReady, transactionsReady, walletsReady, subjectsReady, methodsReady, categoriesReady, superCategoriesReady, reloadLoans, reloadTransactions } = useData();
     const formEl = useRef<HTMLDivElement>(null);
     const [operation, setOperation] = useState<string>("");
     const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
@@ -142,6 +108,8 @@ export default function LoansHistoryPage({
 
     const getSelectedEvent = () => historyEvents.find(e => e.id === selectedEventId);
 
+    if (!user) return null;
+
     return (
         <div className="relative grid grid-rows-[50px_1fr] w-full h-full">
             <div className="flex justify-between items-center w-full h-full px-[20px]">
@@ -197,7 +165,7 @@ export default function LoansHistoryPage({
                     if (!event) return <></>;
                     return (
                         <EditTransactionForm
-                            userId={userId}
+                            userId={user?.id}
                             wallets={wallets}
                             transaction={event.original as TransactionT}
                             methods={methods}

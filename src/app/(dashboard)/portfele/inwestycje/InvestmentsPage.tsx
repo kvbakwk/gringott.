@@ -3,24 +3,14 @@
 import { AssetT } from "@app/utils/db-actions/asset";
 import { WalletT, WalletTypeT } from "@app/utils/db-actions/wallet";
 import { Icon } from "@components/material/Icon";
+import { useData } from "@app/context/DataContext";
 
 import PortfolioSummary from "@components/investments/PortfolioSummary";
 import PortfolioDistribution from "@components/investments/PortfolioDistribution";
 import AssetsTable from "@components/investments/AssetsTable";
 
-export default function InvestmentsPage({
-  wallets,
-  walletTypes,
-  walletsReady,
-  assets,
-  assetsReady,
-}: {
-  wallets: WalletT[];
-  walletTypes: WalletTypeT[];
-  walletsReady: boolean;
-  assets: AssetT[];
-  assetsReady: boolean;
-}) {
+export default function InvestmentsPage() {
+  const { wallets, walletTypes, walletsReady, assets, assetsReady } = useData();
   const investments = wallets.filter((w) => [7, 8, 9, 10, 11, 12, 13, 14].includes(w.wallet_type_id));
   const totalBalance = investments.reduce((a, b) => a + b.balance, 0);
 

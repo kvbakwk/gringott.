@@ -11,37 +11,14 @@ import { Fab } from "@components/material/Fab";
 import { Icon } from "@components/material/Icon";
 import { IconButton } from "@components/material/IconButton";
 import WalletsList from "@components/WalletsList";
-import { MethodT } from "@app/utils/db-actions/method";
 import { SubjectT } from "@app/utils/db-actions/subject";
+import { useData } from "@app/context/DataContext";
 import NewTradeForm from "@components/forms/trades/NewTradeForm";
 import EditTradeForm from "@components/forms/trades/EditTradeForm";
 import DeleteTradeForm from "@components/forms/trades/DeleteTradeForm";
 
-export default function TradesPage({
-  wallets,
-  trades,
-  methods,
-  subjects,
-  walletsReady,
-  tradesReady,
-  methodsReady,
-  subjectsReady,
-  reloadWallets,
-  reloadTrades,
-  userId,
-}: {
-  wallets: WalletT[];
-  trades: TradeT[];
-  methods: MethodT[];
-  subjects: SubjectT[];
-  walletsReady: boolean;
-  tradesReady: boolean;
-  methodsReady: boolean;
-  subjectsReady: boolean;
-  reloadWallets: () => void;
-  reloadTrades: () => void;
-  userId: number;
-}) {
+export default function TradesPage() {
+  const { user, wallets, trades, methods, subjects, walletsReady, tradesReady, methodsReady, subjectsReady, reloadWallets, reloadTrades } = useData();
   const formEl = useRef(null);
   const newTradeEl = useRef(null);
 
@@ -109,6 +86,8 @@ export default function TradesPage({
       }
     }
   };
+
+  if (!user) return null;
 
   return (
     <div className="relative grid grid-rows-[50px_1fr] w-full h-full">
@@ -183,7 +162,7 @@ export default function TradesPage({
         className="absolute hidden justify-center items-center w-full h-full opacity-0 transition-all">
         {operation === "new" ? (
           <NewTradeForm
-            userId={userId}
+            userId={user?.id}
             wallets={wallets.filter(
               (wallet) =>
                 wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2
@@ -195,7 +174,7 @@ export default function TradesPage({
           />
         ) : operation === "edit" ? (
           <EditTradeForm
-            userId={userId}
+            userId={user?.id}
             wallets={wallets.filter(
               (wallet) =>
                 wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2
@@ -208,7 +187,7 @@ export default function TradesPage({
           />
         ) : operation === "delete" ? (
           <DeleteTradeForm
-            userId={userId}
+            userId={user?.id}
             trade={trades.find((trade) => trade.id === id)}
             successOperation={successOperation}
             cancelOperation={cancelOperation}

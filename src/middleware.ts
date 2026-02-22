@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { decrypt } from "./app/utils/session";
+import { decrypt, issueNewAccessToken } from "./app/utils/session";
 
 const protectedRoutes = ["/"];
 const publicRoutes = ["/logowanie", "/rejestracja"];
@@ -10,16 +10,46 @@ export default async function middleware(req: NextRequest) {
   const isProtectedRoute = protectedRoutes.includes(path);
   const isPublicRoute = publicRoutes.includes(path);
 
-  const cookie = (await cookies()).get("session")?.value;
-  const session = await decrypt(cookie);
+  const sessionCookie = req.cookies.get("session")?.value;
+  const refreshCookie = req.cookies.get("refresh_token")?.value;
 
-  if (isProtectedRoute && !session?.userId)
+  let session = await decrypt(sessionCookie);
+  let justRefreshed = false;
+
+  // If access token is missing or expired, but we have a refresh token
+  if ((!session || session.type !== "access") && refreshCookie) {
+    const refreshPayload = await decrypt(refreshCookie);
+    if (refreshPayload && refreshPayload.type === "refresh") {
+      // Refresh token is valid, so user is authenticated
+      session = refreshPayload;
+      justRefreshed = true;
+    }
+  }
+
+  if (isProtectedRoute && !session?.userId) {
     return NextResponse.redirect(new URL("/logowanie", req.nextUrl));
+  }
 
-  if (isPublicRoute && session?.userId)
+  if (isPublicRoute && session?.userId) {
     return NextResponse.redirect(new URL("/", req.nextUrl));
+  }
 
-  return NextResponse.next();
+  const res = NextResponse.next();
+
+  if (justRefreshed && session?.userId) {
+    const { newAccessToken, accessExpiresAt } = await issueNewAccessToken(Number(session.userId));
+    res.cookies.set({
+      name: "session",
+      value: newAccessToken,
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      expires: accessExpiresAt,
+      sameSite: "lax",
+      path: "/",
+    });
+  }
+
+  return res;
 }
 
 export const config = {

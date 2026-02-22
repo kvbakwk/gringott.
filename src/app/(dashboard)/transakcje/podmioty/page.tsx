@@ -1,11 +1,10 @@
-"use client";
+import { Metadata } from "next";
 import SubjectsPage from "./SubjectsPage";
-import { useData } from "@app/context/DataContext";
+
+export const metadata: Metadata = {
+  title: "Podmioty",
+};
 
 export default function Page() {
-  const { user } = useData();
-
-  if (!user) return null;
-
-  return <SubjectsPage userId={user.id} />;
+  return <SubjectsPage />;
 }

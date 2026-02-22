@@ -11,37 +11,14 @@ import { Fab } from "@components/material/Fab";
 import { Icon } from "@components/material/Icon";
 import { IconButton } from "@components/material/IconButton";
 import WalletsList from "@components/WalletsList";
-import { MethodT } from "@app/utils/db-actions/method";
 import { SubjectT } from "@app/utils/db-actions/subject";
+import { useData } from "@app/context/DataContext";
 import NewTransferForm from "@components/forms/transfers/NewTransferForm";
 import EditTransferForm from "@components/forms/transfers/EditTransferForm";
 import DeleteTransferForm from "@components/forms/transfers/DeleteTransferForm";
 
-export default function TransfersPage({
-  wallets,
-  transfers,
-  methods,
-  subjects,
-  walletsReady,
-  transfersReady,
-  methodsReady,
-  subjectsReady,
-  reloadWallets,
-  reloadTransfers,
-  userId,
-}: {
-  wallets: WalletT[];
-  transfers: TransferT[];
-  methods: MethodT[];
-  subjects: SubjectT[];
-  walletsReady: boolean;
-  transfersReady: boolean;
-  methodsReady: boolean;
-  subjectsReady: boolean;
-  reloadWallets: () => void;
-  reloadTransfers: () => void;
-  userId: number;
-}) {
+export default function TransfersPage() {
+  const { user, wallets, transfers, methods, subjects, walletsReady, transfersReady, methodsReady, subjectsReady, reloadWallets, reloadTransfers } = useData();
   const formEl = useRef(null);
   const newTransferEl = useRef(null);
 
@@ -109,6 +86,8 @@ export default function TransfersPage({
       }
     }
   };
+
+  if (!user) return null;
 
   return (
     <div className="relative grid grid-rows-[50px_1fr] w-full h-full">
@@ -186,7 +165,7 @@ export default function TransfersPage({
       >
         {operation === "new" ? (
           <NewTransferForm
-            userId={userId}
+            userId={user?.id}
             wallets={wallets}
             methods={methods}
             successOperation={successOperation}
@@ -194,7 +173,7 @@ export default function TransfersPage({
           />
         ) : operation === "edit" ? (
           <EditTransferForm
-            userId={userId}
+            userId={user?.id}
             wallets={wallets}
             transfer={transfers.find((transfer) => transfer.id === id)}
             methods={methods}
@@ -203,7 +182,7 @@ export default function TransfersPage({
           />
         ) : operation === "delete" ? (
           <DeleteTransferForm
-            userId={userId}
+            userId={user?.id}
             transfer={transfers.find((transfer) => transfer.id === id)}
             successOperation={successOperation}
             cancelOperation={cancelOperation}

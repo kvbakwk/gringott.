@@ -5,27 +5,15 @@ import { TransactionT } from "@app/utils/db-actions/transaction";
 import { TradeT } from "@app/utils/db-actions/trade";
 
 import { useEffect, useState } from "react";
+import { useData } from "@app/context/DataContext";
 
 import { parseDate, parseMoney } from "@app/utils/parser";
 import { generateAllDaysFromOldestTransactionToToday } from "@app/utils/generator";
 import { CircularProgress } from "@components/material/Progress";
 import { da } from "zod/v4/locales";
 
-export default function HistoryPage({
-  wallets,
-  transactions,
-  trades,
-  walletsReady,
-  transactionsReady,
-  tradesReady,
-}: {
-  wallets: WalletT[];
-  transactions: TransactionT[];
-  trades: TradeT[];
-  walletsReady: boolean;
-  transactionsReady: boolean;
-  tradesReady: boolean;
-}) {
+export default function HistoryPage() {
+  const { wallets, transactions, trades, walletsReady, transactionsReady, tradesReady } = useData();
   const [days, setDays] = useState<Date[]>([]);
 
   useEffect(
