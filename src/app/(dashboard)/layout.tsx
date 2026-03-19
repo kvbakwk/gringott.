@@ -35,7 +35,7 @@ export default async function Layout({
   return (
     <html lang="pl" className="font-noto" suppressHydrationWarning>
       <body>
-        <div className="grid grid-cols-[300px_1fr] w-screen h-screen bg-surface-container">
+        <div className="grid grid-cols-[300px_1fr] w-screen h-screen bg-linear-to-r from-[#79590C33] to-[#0183ff33]">
           <div className="grid grid-rows-[110px_1fr]">
             <div className="justify-self-center self-center flex justify-center items-center font-bold text-primary text-[45px] tracking-tight w-[250px] h-[70px]">
               portfel.

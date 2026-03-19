@@ -18,8 +18,8 @@ module.exports = {
       },
       colors: {
         'primary': '#79590C',
-        'surface': '#FFF8F3',
-        'surface-container': '#F7ECDF',
+        'surface': '#fff6',
+        'surface-container': '#fff6',
         'on-surface': '#201b13',
         'on-surface-variant': '#4E4639',
         'error': '#ba1a1a',

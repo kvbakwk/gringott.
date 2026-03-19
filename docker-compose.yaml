@@ -13,6 +13,7 @@ services:
       - ./next.config.js:/www/next.config.js
       - ./tailwind.config.js:/www/tailwind.config.js
       - ./tsconfig.json:/www/tsconfig.json
+      - ./postcss.config.js:/www/postcss.config.js
       - ./.env:/www/.env
       - ./node_modules:/www/node_modules
     environment:
