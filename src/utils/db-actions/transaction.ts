@@ -79,7 +79,7 @@ export async function getTransactionsByUserId(userId: number, since?: Date): Pro
 }
 
 export async function createTransaction(
-  data: Omit<TransactionT, 'id' | 'updated_at' | 'deleted_at' | 'super_category_name' | 'category_name' | 'subject_name' | 'method_name'>
+  data: Omit<TransactionT, 'id' | 'updated_at' | 'deleted_at' | 'super_category_id' | 'super_category_name' | 'category_name' | 'subject_name' | 'method_name'>
 ): Promise<number | null> {
   try {
     const res = await pool.query(
@@ -97,6 +97,71 @@ export async function createTransaction(
   } catch (error) {
     console.error("Error in createTransaction:", error);
     return null;
+  }
+}
+
+export async function getTransactionsIdsBySubjectId(subjectId: number): Promise<{ id: number }[]> {
+  try {
+    const res = await pool.query(
+      "SELECT id FROM public.transactions WHERE subject_id = $1 AND deleted_at IS NULL;",
+      [subjectId]
+    );
+    return res.rows.map(row => ({ id: Number(row.id) }));
+  } catch (error) {
+    console.error(`Error in getTransactionsIdsBySubjectId for subject ${subjectId}:`, error);
+    return [];
+  }
+}
+
+export async function getTransactionById(id: number): Promise<TransactionT | null> {
+  try {
+    const res: QueryResult<TransactionRow> = await pool.query(
+      `${BASE_TRANSACTION_QUERY} WHERE t.id = $1 AND t.deleted_at IS NULL LIMIT 1;`,
+      [id]
+    );
+    return res.rows[0] ? mapRowToTransaction(res.rows[0]) : null;
+  } catch (error) {
+    console.error(`Error in getTransactionById ${id}:`, error);
+    return null;
+  }
+}
+
+export async function getTransactionAmount(id: number): Promise<number> {
+  try {
+    const res = await pool.query(
+      "SELECT amount FROM public.transactions WHERE id = $1 AND deleted_at IS NULL LIMIT 1;",
+      [id]
+    );
+    return res.rows[0] ? Number(res.rows[0].amount) : 0;
+  } catch (error) {
+    console.error(`Error in getTransactionAmount ${id}:`, error);
+    return 0;
+  }
+}
+
+export async function editTransaction(
+  date: Date,
+  amount: number,
+  description: string,
+  categoryId: number,
+  subjectId: number,
+  important: boolean,
+  methodId: number,
+  transactionTypeId: number,
+  id: number
+): Promise<boolean> {
+  try {
+    const res = await pool.query(
+      `UPDATE public.transactions SET 
+        date = $1, amount = $2, description = $3, category_id = $4, subject_id = $5, 
+        important = $6, method_id = $7, transaction_type_id = $8, updated_at = NOW() 
+      WHERE id = $9 AND deleted_at IS NULL;`,
+      [date, amount, description, categoryId, subjectId, important, methodId, transactionTypeId, id]
+    );
+    return (res.rowCount ?? 0) > 0;
+  } catch (error) {
+    console.error(`Error in editTransaction ${id}:`, error);
+    return false;
   }
 }
 

@@ -21,9 +21,7 @@ export default function LendingPage({
     transactions,
     subjects,
     wallets,
-    loansReady,
-    transactionsReady,
-    walletsReady,
+    isReady,
     reloadLoans,
     reloadTransactions,
     reloadWallets,
@@ -33,9 +31,7 @@ export default function LendingPage({
     transactions: TransactionT[];
     subjects: SubjectT[];
     wallets: WalletT[];
-    loansReady: boolean;
-    transactionsReady: boolean;
-    walletsReady: boolean;
+    isReady: boolean;
     reloadLoans: () => Promise<void>;
     reloadTransactions: () => Promise<void>;
     reloadWallets: () => Promise<void>;
@@ -136,7 +132,7 @@ export default function LendingPage({
                     <Icon slot="icon">add</Icon>
                     <div className="text-on-surface-variant">nowa pożyczka</div>
                 </div>
-                <WalletsList wallets={wallets} walletsReady={walletsReady} />
+                <WalletsList wallets={wallets} isReady={isReady} />
             </div>
 
             <div className="flex flex-col w-[calc(100%-50px)] h-full">
@@ -152,9 +148,9 @@ export default function LendingPage({
                     <div className="flex justify-center items-center w-[100px]"></div>
                 </div>
 
-                <div className={`flex w-full h-[calc(100vh-106px)] px-[20px] pb-[106px] overflow-y-auto scroll-none ${loansReady && transactionsReady && walletsReady ? "flex-col" : "justify-center items-center"
+                <div className={`flex w-full h-[calc(100vh-106px)] px-[20px] pb-[106px] overflow-y-auto scroll-none ${isReady ? "flex-col" : "justify-center items-center"
                     }`}>
-                    {loansReady && transactionsReady && walletsReady ? (
+                    {isReady ? (
                         loanEvents.map((event: any, idx) => {
                             if (event.eventType === 'LOAN') {
                                 return (

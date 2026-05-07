@@ -20,7 +20,7 @@ import { editLoanAction } from "@services/loan/edit";
 import { deleteLoanAction } from "@services/loan/delete";
 
 export default function LoansSummaryPage() {
-    const { user, loans, transactions, subjects, wallets, loansReady, transactionsReady, walletsReady, subjectsReady, reloadLoans, reloadTransactions, reloadWallets } = useData();
+    const { user, loans, transactions, subjects, wallets, isReady, reloadLoans, reloadTransactions, reloadWallets } = useData();
     const formEl = useRef<HTMLDivElement>(null);
     const newLoanEl = useRef<HTMLDivElement>(null);
     const [operation, setOperation] = useState<string>("");
@@ -144,7 +144,7 @@ export default function LoansSummaryPage() {
         setFocusEl(null);
     }
 
-    const isLoading = !loansReady || !transactionsReady || !walletsReady;
+    const isLoading = !isReady;
 
     if (!user) return null;
 

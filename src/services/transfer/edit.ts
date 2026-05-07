@@ -43,7 +43,13 @@ export default async function editTransferAPI(
 
   const { fromWalletId, amount, methodId, toWalletId } = validatedFields.data;
 
-  await editTransfer(id, date, amount, fromWalletId, methodId, toWalletId);
+  await editTransfer(id, {
+    date,
+    amount,
+    from_wallet_id: fromWalletId,
+    method_id: methodId,
+    to_wallet_id: toWalletId,
+  });
   if (transfer.from_wallet_id === fromWalletId)
     decreaseWalletBalance(fromWalletId, amount - transfer.amount);
   else {

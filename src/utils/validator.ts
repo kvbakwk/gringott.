@@ -3,7 +3,7 @@ import {
   getWalletsIdsByUserId,
   isWalletCash,
 } from "./db-actions/wallet";
-import { getSubjectsIdsByUserId } from "./db-actions/subject";
+import { getSubjectsByUserId } from "./db-actions/subject";
 import { isCategoryIncome, isCategoryOutcome } from "./db-actions/category";
 import { isMethodBank, isMethodCash } from "./db-actions/method";
 
@@ -57,7 +57,7 @@ export const validateTransactionSubjectId = async (
   return (
     !isNaN(subjectId) &&
     !isNaN(userId) &&
-    (await getSubjectsIdsByUserId(userId))
+    (await getSubjectsByUserId(userId))
       .map((subject) => subject.id)
       .includes(subjectId)
   );
@@ -154,7 +154,7 @@ export const validateTradeSubjectId = async (
   return (
     !isNaN(subjectId) &&
     !isNaN(userId) &&
-    (await getSubjectsIdsByUserId(userId))
+    (await getSubjectsByUserId(userId))
       .map((subject) => subject.id)
       .includes(subjectId)
   );

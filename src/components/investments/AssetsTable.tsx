@@ -21,11 +21,11 @@ type FilterType = "all" | "profitable" | "losing";
 export default function AssetsTable({
   assets,
   walletTypes,
-  assetsReady,
+  isReady,
 }: {
   assets: AssetT[];
   walletTypes: WalletTypeT[];
-  assetsReady: boolean;
+  isReady: boolean;
 }) {
   const [filter, setFilter] = useState<FilterType>("all");
   const [scrolled, setScrolled] = useState(false);
@@ -73,7 +73,7 @@ export default function AssetsTable({
     return processedAssets;
   }, [processedAssets, filter]);
 
-  if (!assetsReady) {
+  if (!isReady) {
      return (
         <div className="bg-surface rounded-3xl flex flex-col h-full items-center justify-center text-on-surface-variant/40">
             <Icon className="text-4xl animate-spin mb-4">refresh</Icon>

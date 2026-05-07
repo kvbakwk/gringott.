@@ -18,7 +18,7 @@ import EditTradeForm from "@components/forms/trades/EditTradeForm";
 import DeleteTradeForm from "@components/forms/trades/DeleteTradeForm";
 
 export default function TradesPage() {
-  const { user, wallets, trades, methods, subjects, walletsReady, tradesReady, methodsReady, subjectsReady, reloadWallets, reloadTrades } = useData();
+  const { user, wallets, trades, methods, subjects, isReady, reloadWallets, reloadTrades } = useData();
   const formEl = useRef(null);
   const newTradeEl = useRef(null);
 
@@ -57,7 +57,7 @@ export default function TradesPage() {
           : focusEl.classList.add("border-error");
       }
     }
-  }, [operation]);
+  }, [operation, focusEl]);
 
   const hideForm = () => {
     formEl.current.classList.remove("flex");
@@ -102,7 +102,7 @@ export default function TradesPage() {
           <Icon slot="icon">add</Icon>
           <div className="text-on-surface-variant">nowa wymiana</div>
         </div>
-        <WalletsList wallets={wallets} walletsReady={walletsReady} />
+        <WalletsList wallets={wallets} isReady={isReady} />
       </div>
       <div className="flex flex-col w-[calc(100%-50px)] h-full">
         <div className="flex justify-center items-end gap-[20px] font-bold text-primary text-md w-full h-[50px] pb-[10px]">
@@ -125,14 +125,11 @@ export default function TradesPage() {
         </div>
         <div
           className={`flex w-full h-[calc(100vh-160px)] px-[20px] pb-[30px] overflow-y-auto scroll-none ${
-            walletsReady && tradesReady && methodsReady && subjectsReady
+            isReady
               ? "flex-col"
               : "justify-center items-center"
           }`}>
-          {walletsReady &&
-            tradesReady &&
-            methodsReady &&
-            subjectsReady &&
+          {isReady &&
             trades
               .sort((a, b) => b.date.getTime() - a.date.getTime())
               .map((trade) => (
@@ -147,10 +144,7 @@ export default function TradesPage() {
               ))}
           <div
             className={`${
-              walletsReady &&
-              tradesReady &&
-              methodsReady &&
-              subjectsReady &&
+              isReady &&
               " hidden"
             }`}>
             <CircularProgress indeterminate />
@@ -247,13 +241,13 @@ export function Trade({
         }
       </div>
       <div className="flex justify-center items-center w-[200px]">
-        {trade.atm ? "-" : trade.user_method.name}
+        {trade.atm ? "-" : trade.user_method_name}
       </div>
       <div className="flex justify-center items-center truncate w-[200px]">
-        {trade.subject.name}
+        {trade.subject_name}
       </div>
       <div className="flex justify-center items-center w-[200px]">
-        {trade.atm ? "-" : trade.subject_method.name}
+        {trade.atm ? "-" : trade.subject_method_name}
       </div>
       <div
         className={`flex justify-center items-center w-[100px] h-full transition-opacity ${

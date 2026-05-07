@@ -10,7 +10,7 @@ import NewAccountForm from "@components/forms/wallets/NewAccountForm";
 import DeleteAccountForm from "@components/forms/wallets/DeleteAccountForm";
 
 export default function AccountsPage() {
-  const { wallets, walletsReady, user, reloadWallets } = useData();
+  const { wallets, isReady, user, reloadWallets } = useData();
   const [activeModal, setActiveModal] = useState<"new" | "delete" | null>(null);
   const [selectedWallet, setSelectedWallet] = useState<WalletT | null>(null);
   const formEl = useRef<HTMLDivElement>(null);
@@ -78,7 +78,7 @@ export default function AccountsPage() {
               key={wallet.id}
               wallet={wallet}
               type="cash"
-              ready={walletsReady}
+              ready={isReady}
             />
           ))}
         </div>
@@ -89,7 +89,7 @@ export default function AccountsPage() {
         <div className="flex items-center gap-2">
           <h2 className="text-xl font-bold text-on-surface">banki</h2>
           <span className="px-2 py-0.5 bg-surface-variant text-on-surface-variant text-sm rounded-full font-medium">
-            {walletsReady ? bankAccounts.length : "-"}
+            {isReady ? bankAccounts.length : "-"}
           </span>
         </div>
 
@@ -99,11 +99,11 @@ export default function AccountsPage() {
               key={wallet.id}
               wallet={wallet}
               type="bank"
-              ready={walletsReady}
+              ready={isReady}
               onDelete={() => openDeleteModal(wallet)}
             />
           ))}
-          {walletsReady && bankAccounts.length === 0 && (
+          {isReady && bankAccounts.length === 0 && (
             <div className="col-span-full flex flex-col items-center justify-center p-12 bg-white/50 opacity-50 rounded-3xl border-2 border-dashed border-outline-variant/30 gap-2">
                <div className="w-12 h-12 rounded-full bg-surface-variant/50 flex items-center justify-center text-on-surface-variant mb-1">
                   <Icon className="text-2xl text-on-surface-variant">account_balance</Icon>

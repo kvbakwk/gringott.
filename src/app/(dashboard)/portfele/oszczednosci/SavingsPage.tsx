@@ -13,7 +13,7 @@ import NewDepositForm from "@components/forms/transfers/NewDepositForm";
 import NewWithdrawalForm from "@components/forms/transfers/NewWithdrawalForm";
 
 export default function SavingsPage() {
-  const { user, wallets, walletsReady, transactions, transactionsReady, transfers, transfersReady, methods, reloadWallets, reloadTransactions, reloadTransfers } = useData();
+  const { user, wallets, isReady, transactions, transfers, methods, reloadWallets, reloadTransactions, reloadTransfers } = useData();
   const [activeForm, setActiveForm] = useState<"deposit" | "withdrawal" | null>(null);
   const formEl = useRef<HTMLDivElement>(null);
 
@@ -83,7 +83,7 @@ export default function SavingsPage() {
     reloadTransfers();
   };
 
-  const isLoading = !walletsReady || !transactionsReady || !transfersReady;
+  const isLoading = !isReady;
 
   if (!user) return null;
 
@@ -123,7 +123,7 @@ export default function SavingsPage() {
              <div className="flex flex-col">
                 <span className="text-xs font-bold text-on-surface-variant tracking-wider uppercase mb-1">suma oszczędności</span>
                 <div className={`text-4xl font-bold flex items-baseline gap-2 ${totalBalance > 0 ? 'text-green-600' : 'text-on-surface'}`}>
-                    <Value amount={totalBalance} show={walletsReady} suffix="" /> 
+                    <Value amount={totalBalance} show={isReady} suffix="" /> 
                     <span className={`text-xl font-medium ${totalBalance > 0 ? 'text-green-600/70' : 'text-on-surface/50'}`}>PLN</span>
                 </div>
                  {currentMonthGrowth !== 0 && (

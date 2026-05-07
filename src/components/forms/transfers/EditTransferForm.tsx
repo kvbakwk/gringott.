@@ -40,7 +40,7 @@ export default function EditTransferForm({
     wallets.find((w) => w.id === transfer.to_wallet_id)
   );
   const [method, setMethod] = useState<MethodT>(
-    methods.find((m) => m.id === transfer.method.id)
+    methods.find((m) => m.id === transfer.method_id)
   );
   const [fromType, setFromType] = useState<number>(
     fromWallet.wallet_type_id - 1

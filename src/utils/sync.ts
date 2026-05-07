@@ -42,7 +42,7 @@ export const syncData = async () => {
         ]);
 
         // Save the timestamp returned by the server as the new lastSync point
-        await setLastSyncTime(data.timestamp);
+        await setLastSyncTime(new Date(data.timestamp));
     } catch (e) {
         console.error("sync error:", e);
     }

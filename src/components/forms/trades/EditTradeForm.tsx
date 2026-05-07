@@ -65,10 +65,10 @@ export default function EditTradeForm({
   const [walletId, setWalletId] = useState<number>(trade.wallet_id);
   const [deposit, setDeposit] = useState<boolean>(trade.deposit);
   const [userMethodId, setUserMethodId] = useState<number>(
-    trade.user_method.id
+    trade.user_method_id
   );
   const [subjectMethodId, setSubjectMethodId] = useState<number>(
-    trade.subject_method.id
+    trade.subject_method_id
   );
 
   const [success, setSuccess] = useState<boolean>(false);
@@ -287,7 +287,7 @@ export default function EditTradeForm({
               className="w-full"
               label="druga strona"
               name="subjectId"
-              value={trade.subject.id.toString()}
+              value={trade.subject_id.toString()}
               error={subjectIdErr}
               errorText="wybierz drugą stronę">
               <Icon className="fill" slot="leading-icon">

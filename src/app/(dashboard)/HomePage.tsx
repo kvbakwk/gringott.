@@ -13,7 +13,7 @@ import { Icon } from "@components/material/Icon";
 
 export default function HomePage() {
   const router = useRouter();
-  const { user, wallets, transactions, walletsReady, transactionsReady } = useData();
+  const { user, wallets, transactions, isReady } = useData();
 
   const [cashBalance, setCashBalance] = useState(0);
   const [bankBalance, setBankBalance] = useState(0);
@@ -31,7 +31,7 @@ export default function HomePage() {
   const [timeLimits] = useState(generateTimeLimits());
 
   useEffect(() => {
-    if (walletsReady) {
+    if (isReady) {
       const cash = wallets
         .filter((wallet) => wallet.wallet_type_id === 1)
         .reduce((a, b) => a + b.balance, 0);
@@ -59,10 +59,10 @@ export default function HomePage() {
       setInvestmentsBalance(investments);
       setTotalBalance(cash + bank);
     }
-  }, [wallets, walletsReady]);
+  }, [wallets, isReady]);
 
   useEffect(() => {
-    if (transactionsReady) {
+    if (isReady) {
        // Income
         const curIncome = transactions
         .filter(
@@ -104,7 +104,7 @@ export default function HomePage() {
         )
         .reduce((a, b) => a + b.amount, 0);
     }
-  }, [transactions, transactionsReady, timeLimits]);
+  }, [transactions, isReady, timeLimits]);
 
   if (!user) return null;
 
@@ -119,7 +119,7 @@ export default function HomePage() {
         <div className="text-right">
              <div className="text-sm text-on-surface-variant font-medium">całkowite saldo</div>
              <div className="text-4xl font-bold text-on-surface mt-1">
-                <Value amount={totalBalance} show={walletsReady} suffix="zł" />
+                <Value amount={totalBalance} show={isReady} suffix="zł" />
              </div>
         </div>
       </div>
@@ -129,7 +129,7 @@ export default function HomePage() {
           <BreakdownCard 
               title="gotówka" 
               amount={cashBalance} 
-              show={walletsReady}
+              show={isReady}
               icon="payments" 
               percent={5} 
               trend="up"
@@ -140,7 +140,7 @@ export default function HomePage() {
           <BreakdownCard 
               title="konta bankowe" 
               amount={bankBalance} 
-              show={walletsReady}
+              show={isReady}
               icon="account_balance"
               percent={2} 
               trend="down"
@@ -151,7 +151,7 @@ export default function HomePage() {
           <BreakdownCard 
               title="inwestycje" 
               amount={investmentsBalance} 
-              show={walletsReady} 
+              show={isReady} 
               icon="trending_up"
               percent={12} 
               trend="up"
@@ -166,7 +166,7 @@ export default function HomePage() {
           <BreakdownCard 
               title="oszczędności" 
               amount={savingsBalance} 
-              show={walletsReady}
+              show={isReady}
               icon="nest_eco_leaf" 
               percent={3} 
               trend="up"
@@ -177,7 +177,7 @@ export default function HomePage() {
           <BreakdownCard 
               title="skarbonki" 
               amount={piggybanksBalance} 
-              show={walletsReady}
+              show={isReady}
               icon="savings"
               percent={8} 
               trend="up"
@@ -188,7 +188,7 @@ export default function HomePage() {
           <BreakdownCard 
               title="cele" 
               amount={goalsBalance} 
-              show={walletsReady} 
+              show={isReady} 
               icon="target"
               percent={15} 
               trend="up"
@@ -205,19 +205,19 @@ export default function HomePage() {
                 title="zarobiłeś" 
                 amount={currentMonthIncome} 
                 prevAmount={lastMonthIncome} 
-                show={transactionsReady} 
+                show={isReady} 
                 isIncome={true}
             />
             <SummaryCard 
                 title="wydałeś" 
                 amount={currentMonthExpense} 
                 prevAmount={lastMonthExpense} 
-                show={transactionsReady} 
+                show={isReady} 
                 isIncome={false}
             />
          </div>
          <div className="bg-surface rounded-3xl p-6">
-            <ExpenseAnalysisChart transactions={transactions} show={transactionsReady} />
+            <ExpenseAnalysisChart transactions={transactions} show={isReady} />
          </div>
       </div>
     </div>

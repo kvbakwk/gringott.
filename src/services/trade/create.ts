@@ -66,17 +66,17 @@ export async function createTradeAPI(
     .at(0).id;
 
   if (isValid) {
-    await createTrade(
+    await createTrade({
       date,
       amount,
       deposit,
       atm,
-      userId,
-      walletId,
-      atm ? 8 : userMethodId,
-      subjectId,
-      atm ? 8 : subjectMethodId
-    );
+      user_id: userId,
+      wallet_id: walletId,
+      user_method_id: atm ? 8 : userMethodId,
+      subject_id: subjectId,
+      subject_method_id: atm ? 8 : subjectMethodId,
+    });
     increaseWalletBalance(deposit ? walletId : cashWalletId, amount);
     decreaseWalletBalance(deposit ? cashWalletId : walletId, amount);
   }

@@ -12,14 +12,14 @@ import { getSuperCategories } from "@utils/db-actions/super_category";
 import { getLoansByUserId } from "@utils/db-actions/loan";
 import { getAssetsByUserId } from "@utils/db-actions/asset";
 
-export async function syncAllAction(lastSync?: string | null) {
+export async function syncAllAction(lastSync?: Date | null) {
   const session = await verifySession();
   if (!session.isAuth) {
     throw new Error("Unauthorized");
   }
 
   const userId = Number(session.userId);
-  const since = lastSync ? new Date(lastSync) : undefined;
+  const since = lastSync ? lastSync : undefined;
   const currentSyncTimestamp = new Date().toISOString();
 
   try {

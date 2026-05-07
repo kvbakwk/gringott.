@@ -33,19 +33,19 @@ export async function createWalletAPI(
     );
 
     if (balance > 0)
-      await createTransaction(
-        new Date(new Date().getTime()),
-        balance,
-        "-",
-        59,
-        5,
-        true,
-        true,
-        userId,
-        walletId,
-        8,
-        5
-      );
+      await createTransaction({
+        date: new Date(new Date().getTime()),
+        amount: balance,
+        description: "-",
+        category_id: 59,
+        subject_id: 5,
+        income: true,
+        important: true,
+        user_id: userId,
+        wallet_id: walletId,
+        method_id: 8,
+        transaction_type_id: 5,
+      });
   }
 
   return {

@@ -39,14 +39,14 @@ export default async function createTransferAPI(
   const { fromWalletId, amount, methodId, toWalletId } = validatedFields.data;
   const date = new Date();
 
-  await createTransfer(
+  await createTransfer({
     date,
     amount,
-    userId,
-    fromWalletId,
-    methodId,
-    toWalletId
-  );
+    user_id: userId,
+    from_wallet_id: fromWalletId,
+    method_id: methodId,
+    to_wallet_id: toWalletId,
+  });
   increaseWalletBalance(toWalletId, amount);
   decreaseWalletBalance(fromWalletId, amount);
 }

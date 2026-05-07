@@ -8,7 +8,7 @@ export default function WalletsGridLayout({
   subtitle,
   totalBalance,
   items,
-  walletsReady,
+  isReady,
   colorTheme = "primary",
   renderItem,
   onAdd,
@@ -18,7 +18,7 @@ export default function WalletsGridLayout({
   subtitle?: string;
   totalBalance: number;
   items: WalletT[];
-  walletsReady: boolean;
+  isReady: boolean;
   colorTheme?: "primary" | "secondary" | "tertiary" | "error";
   renderItem?: (wallet: WalletT) => React.ReactNode;
   onAdd?: () => void;
@@ -37,7 +37,7 @@ export default function WalletsGridLayout({
                 <div className="flex flex-col items-end">
                     <div className="text-[10px] font-bold text-on-surface-variant opacity-60 uppercase tracking-widest mb-1">Suma w skarbonkach</div>
                     <div className="text-3xl font-bold text-on-surface">
-                        <Value amount={totalBalance} show={walletsReady} suffix="PLN" />
+                        <Value amount={totalBalance} show={isReady} suffix="PLN" />
                     </div>
                 </div>
                 <button 
@@ -58,12 +58,12 @@ export default function WalletsGridLayout({
                 <div key={wallet.id} className="p-6 bg-white rounded-3xl border border-outline-variant/30 shadow-sm hover:shadow-md transition-all">
                     <div className="text-sm font-medium text-on-surface-variant mb-2">{wallet.name}</div>
                     <div className="text-2xl font-bold text-on-surface">
-                        <Value amount={wallet.balance} show={walletsReady} suffix="PLN" />
+                        <Value amount={wallet.balance} show={isReady} suffix="PLN" />
                     </div>
                 </div>
              )
         ))}
-         {items.length === 0 && walletsReady && (
+         {items.length === 0 && isReady && (
             <div className="col-span-full text-center text-on-surface-variant py-12 opacity-50 bg-white/50 rounded-3xl border-2 border-dashed border-outline-variant/30">
                 Brak elementów w tej kategorii.
             </div>

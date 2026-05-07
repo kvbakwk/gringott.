@@ -47,11 +47,11 @@ export default function EditTransactionForm({
   const [income, setIncome] = useState<boolean>(transaction.income);
   const [walletId, setWalletId] = useState<number>(transaction.wallet_id);
   const [superCategoryId, setSuperCategoryId] = useState<number>(
-    transaction.super_category.id
+    transaction.super_category_id
   );
-  const [categoryId, setCategoryId] = useState<number>(transaction.category.id);
-  const [methodId, setMethodId] = useState<number>(transaction.method.id);
-  const [subjectId, setSubjectId] = useState<number>(transaction.subject.id);
+  const [categoryId, setCategoryId] = useState<number>(transaction.category_id);
+  const [methodId, setMethodId] = useState<number>(transaction.method_id);
+  const [subjectId, setSubjectId] = useState<number>(transaction.subject_id);
 
   const [tempMethods, setTempMethods] = useState<MethodT[]>(
     wallets.length

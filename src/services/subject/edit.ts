@@ -23,7 +23,7 @@ export async function editSubjectAPI(
     validateSubjectNormal(normal) &&
     validateSubjectAtm(atm);
 
-  if (isValid) await editSubject(name, subjectId, address, normal, atm);
+  if (isValid) await editSubject(subjectId, name, address, normal, atm);
 
   return {
     editSubject: isValid,

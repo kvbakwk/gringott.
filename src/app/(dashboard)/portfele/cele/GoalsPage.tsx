@@ -14,7 +14,7 @@ import NewGoalDepositForm from "@components/forms/transfers/NewGoalDepositForm";
 import NewGoalWithdrawalForm from "@components/forms/transfers/NewGoalWithdrawalForm";
 
 export default function GoalsPage() {
-  const { user, wallets, walletsReady, transactions, transactionsReady, methods, reloadWallets, reloadTransfers } = useData();
+  const { user, wallets, isReady, transactions, methods, reloadWallets, reloadTransfers } = useData();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
@@ -123,7 +123,7 @@ export default function GoalsPage() {
       subtitle="śledź postępy i realizuj swoje marzenia"
       totalBalance={totalBalance}
       items={goals}
-      walletsReady={walletsReady}
+      isReady={isReady}
       colorTheme="tertiary"
       onAdd={() => setShowAddModal(true)}
       renderItem={(wallet) => (
@@ -131,7 +131,7 @@ export default function GoalsPage() {
           key={wallet.id}
           wallet={wallet}
           transactions={transactions.filter((t) => t.wallet_id === wallet.id)}
-          transactionsLoading={!transactionsReady}
+          transactionsLoading={!isReady}
           onDeposit={() => handleDeposit(wallet)}
           onWithdraw={() => handleWithdrawal(wallet)}
           onEdit={() => handleEdit(wallet)}

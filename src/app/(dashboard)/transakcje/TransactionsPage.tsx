@@ -20,7 +20,7 @@ import { SuperCategoryT } from "@utils/db-actions/super_category";
 import { CategoryT } from "@utils/db-actions/category";
 import WalletsList from "@components/WalletsList";
 export default function TransactionsPage() {
-  const { user, wallets, transactions, methods, subjects, superCategories, categories, walletsReady, transactionsReady, methodsReady, subjectsReady, superCategoriesReady, categoriesReady, reloadWallets, reloadTransactions } = useData();
+  const { user, wallets, transactions, methods, subjects, superCategories, categories, isReady, reloadWallets, reloadTransactions } = useData();
 
   const formEl = useRef(null);
   const newTransactionEl = useRef(null);
@@ -62,7 +62,7 @@ export default function TransactionsPage() {
             : focusEl.classList.add("border-error");
       }
     }
-  }, [operation]);
+  }, [operation, focusEl]);
 
   const hideForm = () => {
     formEl.current.classList.remove("flex");
@@ -107,7 +107,7 @@ export default function TransactionsPage() {
           <Icon slot="icon">add</Icon>
           <div className="text-on-surface-variant">nowa transakcja</div>
         </div>
-        <WalletsList wallets={wallets} walletsReady={walletsReady} />
+        <WalletsList wallets={wallets} isReady={isReady} />
       </div>
       <div className="flex flex-col w-[calc(100%-50px)] h-full">
         <div className="flex justify-center items-end gap-[20px] font-bold text-primary text-md w-full h-[50px] pb-[10px]">
@@ -130,21 +130,11 @@ export default function TransactionsPage() {
           <div className="flex justify-center items-center w-[100px]"></div>
         </div>
         <div
-          className={`flex w-full h-[calc(100vh-106px)] px-[20px] pb-[106px] overflow-y-auto scroll-none ${walletsReady &&
-            transactionsReady &&
-            methodsReady &&
-            subjectsReady &&
-            superCategoriesReady &&
-            categoriesReady
+          className={`flex w-full h-[calc(100vh-106px)] px-[20px] pb-[106px] overflow-y-auto scroll-none ${isReady
             ? "flex-col"
             : "justify-center items-center"
             }`}>
-          {walletsReady &&
-            transactionsReady &&
-            methodsReady &&
-            subjectsReady &&
-            superCategoriesReady &&
-            categoriesReady &&
+          {isReady &&
             transactions
               .sort((a, b) => b.date.getTime() - a.date.getTime())
               .map((transaction) => (
@@ -158,12 +148,7 @@ export default function TransactionsPage() {
                 />
               ))}
           <div
-            className={`${walletsReady &&
-              transactionsReady &&
-              methodsReady &&
-              subjectsReady &&
-              superCategoriesReady &&
-              categoriesReady &&
+            className={`${isReady &&
               " hidden"
               }`}>
             <CircularProgress indeterminate />
@@ -267,10 +252,10 @@ export function Transaction({
         {transaction.description}
       </div>
       <div className="flex justify-center items-center truncate w-[200px]">
-        {transaction.subject.name}
+        {transaction.subject_name}
       </div>
       <div className="flex justify-center items-center truncate w-[200px]">
-        {transaction.category.name}
+        {transaction.category_name}
       </div>
       <div className="flex justify-center items-center truncate w-[120px]">
         {wallets.find(
@@ -278,7 +263,7 @@ export function Transaction({
         )?.name ?? "gotówka"}
       </div>
       <div className="flex justify-center items-center w-[150px]">
-        {transaction.method.name}
+        {transaction.method_name}
       </div>
       <div
         className={`flex justify-center items-center w-[100px] h-full transition-opacity ${hover ? "opacity-100" : "opacity-0"

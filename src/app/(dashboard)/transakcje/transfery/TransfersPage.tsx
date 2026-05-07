@@ -18,7 +18,7 @@ import EditTransferForm from "@components/forms/transfers/EditTransferForm";
 import DeleteTransferForm from "@components/forms/transfers/DeleteTransferForm";
 
 export default function TransfersPage() {
-  const { user, wallets, transfers, methods, subjects, walletsReady, transfersReady, methodsReady, subjectsReady, reloadWallets, reloadTransfers } = useData();
+  const { user, wallets, transfers, methods, subjects, isReady, reloadWallets, reloadTransfers } = useData();
   const formEl = useRef(null);
   const newTransferEl = useRef(null);
 
@@ -57,7 +57,7 @@ export default function TransfersPage() {
           : focusEl.classList.add("border-error");
       }
     }
-  }, [operation]);
+  }, [operation, focusEl]);
 
   const hideForm = () => {
     formEl.current.classList.remove("flex");
@@ -103,7 +103,7 @@ export default function TransfersPage() {
           <Icon slot="icon">add</Icon>
           <div className="text-on-surface-variant">nowy transfer</div>
         </div>
-        <WalletsList wallets={wallets} walletsReady={walletsReady} />
+        <WalletsList wallets={wallets} isReady={isReady} />
       </div>
       <div className="flex flex-col w-[calc(100%-50px)] h-full">
         <div className="flex justify-around items-end gap-[20px] font-bold text-primary text-md w-full h-[50px] px-[20px] pb-[10px]">
@@ -125,15 +125,12 @@ export default function TransfersPage() {
         </div>
         <div
           className={`flex w-full h-[calc(100vh-160px)] px-[20px] pb-[30px] overflow-y-auto scroll-none ${
-            walletsReady && transfersReady && methodsReady && subjectsReady
+            isReady
               ? "flex-col"
               : "justify-center items-center"
           }`}
         >
-          {walletsReady &&
-            transfersReady &&
-            methodsReady &&
-            subjectsReady &&
+          {isReady &&
             transfers
               .sort((a, b) => b.date.getTime() - a.date.getTime())
               .map((transfer) => (
@@ -148,10 +145,7 @@ export default function TransfersPage() {
               ))}
           <div
             className={`${
-              walletsReady &&
-              transfersReady &&
-              methodsReady &&
-              subjectsReady &&
+              isReady &&
               " hidden"
             }`}
           >
@@ -239,7 +233,7 @@ export function Transfer({
         {wallets.find((w: WalletT) => w.id === transfer.to_wallet_id).name}
       </div>
       <div className="flex justify-center items-center w-[200px]">
-        {transfer.method.name}
+        {transfer.method_name}
       </div>
       <div
         className={`flex justify-center items-center w-[100px] h-full transition-opacity ${

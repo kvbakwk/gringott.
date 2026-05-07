@@ -14,7 +14,7 @@ import DeletePiggybankForm from "@components/forms/wallets/DeletePiggybankForm";
 import EditPiggybankForm from "@components/forms/wallets/EditPiggybankForm";
 
 export default function PiggybanksPage() {
-  const { user, wallets, walletsReady, transactions, transactionsReady, methods, reloadWallets, reloadTransfers } = useData();
+  const { user, wallets, isReady, transactions, methods, reloadWallets, reloadTransfers } = useData();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
@@ -123,7 +123,7 @@ export default function PiggybanksPage() {
       subtitle="oszczędzaj na swoje marzenia i śledź postępy"
       totalBalance={totalBalance}
       items={piggybanks}
-      walletsReady={walletsReady}
+      isReady={isReady}
       colorTheme="tertiary"
       onAdd={() => setShowAddModal(true)}
       renderItem={(wallet) => (
@@ -131,7 +131,7 @@ export default function PiggybanksPage() {
           key={wallet.id}
           wallet={wallet}
           transactions={transactions.filter((t) => t.wallet_id === wallet.id)}
-          transactionsLoading={!transactionsReady}
+          transactionsLoading={!isReady}
           onDeposit={() => handleDeposit(wallet)}
           onWithdraw={() => handleWithdrawal(wallet)}
           onEdit={() => handleEdit(wallet)}

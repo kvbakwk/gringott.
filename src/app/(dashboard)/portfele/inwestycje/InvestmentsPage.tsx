@@ -10,7 +10,7 @@ import PortfolioDistribution from "@components/investments/PortfolioDistribution
 import AssetsTable from "@components/investments/AssetsTable";
 
 export default function InvestmentsPage() {
-  const { wallets, walletTypes, walletsReady, assets, assetsReady } = useData();
+  const { wallets, walletTypes, isReady, assets } = useData();
   const investments = wallets.filter((w) => [7, 8, 9, 10, 11, 12, 13, 14].includes(w.wallet_type_id));
   const totalBalance = investments.reduce((a, b) => a + b.balance, 0);
 
@@ -34,7 +34,7 @@ export default function InvestmentsPage() {
           <AssetsTable 
             assets={assets} 
             walletTypes={walletTypes} 
-            assetsReady={assetsReady}
+            isReady={isReady}
           />
         </div>
 
@@ -42,8 +42,7 @@ export default function InvestmentsPage() {
           <PortfolioSummary 
             assets={assets} 
             wallets={investments} 
-            walletsReady={walletsReady} 
-            assetsReady={assetsReady}
+            isReady={isReady} 
           />
         </div>
 

@@ -88,6 +88,19 @@ export async function deleteSubject(subjectId: number): Promise<boolean> {
   }
 }
 
+export async function getSubjectById(id: number): Promise<SubjectT | null> {
+  try {
+    const res: QueryResult<SubjectRow> = await pool.query(
+      "SELECT id, user_id, name, address, normal, atm, updated_at, deleted_at FROM public.subjects WHERE id = $1 AND deleted_at IS NULL LIMIT 1;",
+      [id]
+    );
+    return res.rows[0] ? mapRowToSubject(res.rows[0]) : null;
+  } catch (error) {
+    console.error(`Error in getSubjectById ${id}:`, error);
+    return null;
+  }
+}
+
 function mapRowToSubject(row: SubjectRow): SubjectT {
   return {
     id: Number(row.id),

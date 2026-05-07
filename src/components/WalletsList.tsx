@@ -12,16 +12,16 @@ import { RouteSegments } from "@utils/routes";
 
 export default function WalletsList({
   wallets,
-  walletsReady,
+  isReady,
 }: {
   wallets: WalletT[];
-  walletsReady: boolean;
+  isReady: boolean;
 }) {
   const [balance, setBalance] = useState(0);
   const [cashBalance, setCashBalance] = useState(0);
 
   useEffect(() => {
-    if (walletsReady) {
+    if (isReady) {
       console.log(wallets);
       setBalance(
         wallets
@@ -35,12 +35,12 @@ export default function WalletsList({
         wallets.find((wallet) => wallet.wallet_type_id === 1)?.balance || 0
       );
     }
-  }, [wallets, walletsReady]);
+  }, [wallets, isReady]);
 
   return (
     <div className="flex justify-center items-center gap-[30px] w-fit h-full">
       <div className="flex items-end gap-[12px] max-w-[calc(100vw-300px)] h-full pl-[40px] pr-[70px] pb-[8px] overflow-x-auto overflow-y-hidden scroll-none">
-        {walletsReady && (
+        {isReady && (
           <>
             <WalletItem
               name="gotówka"
@@ -57,13 +57,13 @@ export default function WalletsList({
                 <WalletItem
                   name={wallet.name}
                   balance={wallet.balance}
-                  show={walletsReady}
+                  show={isReady}
                   key={wallet.id}
                 />
               ))}
           </>
         )}
-        {!walletsReady && (
+        {!isReady && (
           <div className="flex justify-center items-center h-[40px] px-[20px]">
             <CircularProgress className="mini" indeterminate />
           </div>

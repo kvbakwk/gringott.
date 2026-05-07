@@ -51,19 +51,19 @@ export async function createTransactionAPI(
     !subjectIdErr;
 
   if (isValid) {
-    await createTransaction(
+    await createTransaction({
       date,
       amount,
       description,
-      categoryId,
-      subjectId,
+      category_id: categoryId,
+      subject_id: subjectId,
       income,
       important,
-      userId,
-      walletId,
-      methodId,
-      transactionTypeId
-    );
+      user_id: userId,
+      wallet_id: walletId,
+      method_id: methodId,
+      transaction_type_id: transactionTypeId,
+    });
     if (income) increaseWalletBalance(walletId, amount);
     else decreaseWalletBalance(walletId, amount);
   }

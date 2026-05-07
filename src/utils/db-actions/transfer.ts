@@ -68,6 +68,45 @@ export async function createTransfer(
   }
 }
 
+export async function getTransferById(id: number): Promise<TransferT | null> {
+  try {
+    const res: QueryResult<TransferRow> = await pool.query(
+      `${BASE_TRANSFER_QUERY} WHERE t.id = $1 AND t.deleted_at IS NULL LIMIT 1;`,
+      [id]
+    );
+    return res.rows[0] ? mapRowToTransfer(res.rows[0]) : null;
+  } catch (error) {
+    console.error(`Error in getTransferById ${id}:`, error);
+    return null;
+  }
+}
+
+export async function editTransfer(
+  id: number,
+  data: Partial<Omit<TransferT, 'id' | 'updated_at' | 'deleted_at' | 'method_name'>>
+): Promise<boolean> {
+  try {
+    const fields = [];
+    const values = [];
+    let i = 1;
+
+    for (const [key, value] of Object.entries(data)) {
+      fields.push(`${key} = $${i++}`);
+      values.push(value);
+    }
+
+    if (fields.length === 0) return true;
+
+    values.push(id);
+    const query = `UPDATE public.transfers SET ${fields.join(", ")}, updated_at = NOW() WHERE id = $${i} AND deleted_at IS NULL;`;
+    const res = await pool.query(query, values);
+    return (res.rowCount ?? 0) > 0;
+  } catch (error) {
+    console.error(`Error in editTransfer ${id}:`, error);
+    return false;
+  }
+}
+
 export async function deleteTransfer(id: number): Promise<boolean> {
   try {
     const res = await pool.query(

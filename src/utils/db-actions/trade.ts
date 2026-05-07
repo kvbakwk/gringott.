@@ -87,6 +87,71 @@ export async function createTrade(
   }
 }
 
+export async function getTradesIdsBySubjectId(subjectId: number): Promise<{ id: number }[]> {
+  try {
+    const res = await pool.query(
+      "SELECT id FROM public.trades WHERE subject_id = $1 AND deleted_at IS NULL;",
+      [subjectId]
+    );
+    return res.rows.map(row => ({ id: Number(row.id) }));
+  } catch (error) {
+    console.error(`Error in getTradesIdsBySubjectId for subject ${subjectId}:`, error);
+    return [];
+  }
+}
+
+export async function getTradeById(id: number): Promise<TradeT | null> {
+  try {
+    const res: QueryResult<TradeRow> = await pool.query(
+      `${BASE_TRADE_QUERY} WHERE t.id = $1 AND t.deleted_at IS NULL LIMIT 1;`,
+      [id]
+    );
+    return res.rows[0] ? mapRowToTrade(res.rows[0]) : null;
+  } catch (error) {
+    console.error(`Error in getTradeById ${id}:`, error);
+    return null;
+  }
+}
+
+export async function getTradeAmount(id: number): Promise<number> {
+  try {
+    const res = await pool.query(
+      "SELECT amount FROM public.trades WHERE id = $1 AND deleted_at IS NULL LIMIT 1;",
+      [id]
+    );
+    return res.rows[0] ? Number(res.rows[0].amount) : 0;
+  } catch (error) {
+    console.error(`Error in getTradeAmount ${id}:`, error);
+    return 0;
+  }
+}
+
+export async function editTrade(
+  date: Date,
+  amount: number,
+  deposit: boolean,
+  atm: boolean,
+  walletId: number,
+  userMethodId: number,
+  subjectId: number,
+  subjectMethodId: number,
+  id: number
+): Promise<boolean> {
+  try {
+    const res = await pool.query(
+      `UPDATE public.trades SET 
+        date = $1, amount = $2, deposit = $3, atm = $4, wallet_id = $5, 
+        user_method_id = $6, subject_id = $7, subject_method_id = $8, updated_at = NOW() 
+      WHERE id = $9 AND deleted_at IS NULL;`,
+      [date, amount, deposit, atm, walletId, userMethodId, subjectId, subjectMethodId, id]
+    );
+    return (res.rowCount ?? 0) > 0;
+  } catch (error) {
+    console.error(`Error in editTrade ${id}:`, error);
+    return false;
+  }
+}
+
 export async function deleteTrade(tradeId: number): Promise<boolean> {
   try {
     const res = await pool.query(

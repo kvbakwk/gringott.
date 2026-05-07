@@ -13,7 +13,7 @@ import { CircularProgress } from "@components/material/Progress";
 import { da } from "zod/v4/locales";
 
 export default function HistoryPage() {
-  const { wallets, transactions, trades, walletsReady, transactionsReady, tradesReady } = useData();
+  const { wallets, transactions, trades, isReady } = useData();
   const [days, setDays] = useState<Date[]>([]);
 
   useEffect(
@@ -21,7 +21,7 @@ export default function HistoryPage() {
       setDays(
         generateAllDaysFromOldestTransactionToToday(transactions, trades)
       ),
-    [transactions, trades, transactionsReady, tradesReady]
+    [transactions, trades, isReady]
   );
 
   return (
@@ -60,15 +60,13 @@ export default function HistoryPage() {
             wallets={wallets}
             transactions={transactions}
             trades={trades}
-            walletsReady={walletsReady}
-            transactionsReady={transactionsReady}
-            tradesReady={tradesReady}
+            isReady={isReady}
             active={true}
           />
         )}
       </div>
       <div
-        className={`flex gap-[5px] w-full h-[calc(100vh-80px)] px-[60px] pt-[6px] pb-[50px] overflow-y-auto scroll-none ${walletsReady && transactionsReady && tradesReady
+        className={`flex gap-[5px] w-full h-[calc(100vh-80px)] px-[60px] pt-[6px] pb-[50px] overflow-y-auto scroll-none ${isReady
             ? "flex-col"
             : "justify-center items-center"
           }`}>
@@ -80,14 +78,12 @@ export default function HistoryPage() {
               wallets={wallets}
               transactions={transactions}
               trades={trades}
-              walletsReady={walletsReady}
-              transactionsReady={transactionsReady}
-              tradesReady={tradesReady}
+              isReady={isReady}
               active={false}
               key={day.getTime()}
             />
           ))}
-        <div className={`${walletsReady && transactionsReady && " hidden"}`}>
+        <div className={`${isReady && " hidden"}`}>
           <CircularProgress indeterminate />
         </div>
       </div>
@@ -100,24 +96,20 @@ function Day({
   wallets,
   transactions,
   trades,
-  walletsReady,
-  transactionsReady,
-  tradesReady,
+  isReady,
   active,
 }: {
   day: Date;
   wallets: WalletT[];
   transactions: TransactionT[];
   trades: TradeT[];
-  walletsReady: boolean;
-  transactionsReady: boolean;
-  tradesReady: boolean;
+  isReady: boolean;
   active: boolean;
 }) {
   return (
     <div
       className={`flex justify-center items-center gap-[20px] font-normal text-on-surface-variant text-md w-full rounded-md ${active ? "bg-surface" : "hover:bg-surface"
-        } ${!(walletsReady && transactionsReady && tradesReady) && " hidden"}`}
+        } ${!isReady && " hidden"}`}
       key={day.getTime()}>
       <div className="flex justify-center items-center w-[110px]">
         {parseDate(day)}

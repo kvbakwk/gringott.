@@ -22,7 +22,7 @@ import WalletsList from "@components/WalletsList";
 import { useData } from "@context/DataContext";
 
 export default function LoansHistoryPage() {
-    const { user, loans, transactions, subjects, wallets, methods, categories, superCategories, loansReady, transactionsReady, walletsReady, subjectsReady, methodsReady, categoriesReady, superCategoriesReady, reloadLoans, reloadTransactions } = useData();
+    const { user, loans, transactions, subjects, wallets, methods, categories, superCategories, isReady, reloadLoans, reloadTransactions } = useData();
     const formEl = useRef<HTMLDivElement>(null);
     const [operation, setOperation] = useState<string>("");
     const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
@@ -41,7 +41,7 @@ export default function LoansHistoryPage() {
         return repaymentEvents.sort((a, b) => b.date.getTime() - a.date.getTime());
     }, [transactions]);
 
-    const isLoading = !loansReady || !transactionsReady || !walletsReady;
+    const isLoading = !isReady;
 
     useEffect(() => {
         if (["edit", "delete"].includes(operation)) {
@@ -116,7 +116,7 @@ export default function LoansHistoryPage() {
                 <div className="flex items-center gap-[18px] text-base text-primary w-[230px] h-[30px] p-[18px]">
                     {/* Placeholder or just empty if we don't have a button */}
                 </div>
-                <WalletsList wallets={wallets} walletsReady={walletsReady} />
+                <WalletsList wallets={wallets} isReady={isReady} />
             </div>
 
             <div className="flex flex-col w-full h-full">
@@ -195,7 +195,7 @@ function HistoryRow({ event, subjects, wallets, onDelete, onEdit }: { event: any
     const typeLabel = isLoan ? (data.is_given ? "udzielenie" : "zaciągnięcie") : "spłata";
     // For loans, wallet/method are not directly applicable in the same way, or we could show "-"
     const walletName = !isLoan ? (wallets.find(w => w.id === data.wallet_id)?.name ?? "gotówka") : "-";
-    const methodName = !isLoan ? data.method?.name : "-"; // Transaction data should have method joined? Or we need to look it up if not joined.
+    const methodName = !isLoan ? data.method_name : "-"; // Transaction data should have method joined? Or we need to look it up if not joined.
     // Note: TransactionT usually has method object if fetched via basic query with joins.
     // If 'data.method' exists (it does in TransactionT), use it.
 
@@ -233,7 +233,7 @@ function HistoryRow({ event, subjects, wallets, onDelete, onEdit }: { event: any
             <div className="flex justify-center items-center w-[150px]">
                 {/* Method name might need check if data.method is fully populated or just ID depending on query. 
                     Assumed populated as per TransactionT */}
-                {!isLoan && data.method ? data.method.name : methodName}
+                {!isLoan ? data.method_name : methodName}
             </div>
 
             <div className={`flex justify-center items-center w-[100px] h-full transition-opacity ${hover ? "opacity-100" : "opacity-0"}`}>

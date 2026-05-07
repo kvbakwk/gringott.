@@ -6,13 +6,11 @@ import { Icon } from "@components/material/Icon";
 export default function PortfolioSummary({
   assets,
   wallets,
-  walletsReady,
-  assetsReady,
+  isReady,
 }: {
   assets: AssetT[];
   wallets: WalletT[];
-  walletsReady: boolean;
-  assetsReady: boolean;
+  isReady: boolean;
 }) {
   // We can calculate total from wallets (Cash + Invested) or just investigate Assets.
   // Assuming 'wallets' here are the Investment Wallets, so their balance is the "Cash available to invest" + "Value of assets"? 
@@ -40,7 +38,6 @@ export default function PortfolioSummary({
   const statusBgClass = isLoss ? "bg-red-500/10" : "bg-green-500/10";
   const statusIcon = isLoss ? "trending_down" : "trending_up";
 
-  const isReady = walletsReady && assetsReady;
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6 w-full mb-2">
