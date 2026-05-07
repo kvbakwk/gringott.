@@ -1,13 +1,13 @@
 "use client";
 
-import { TransactionT } from "@app/utils/db-actions/transaction";
+import { TransactionT } from "@utils/db-actions/transaction";
 
 import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { useData } from "@app/context/DataContext";
+import { useData } from "@context/DataContext";
 
-import { parseMoney } from "@app/utils/parser";
-import { generateTimeLimits } from "@app/utils/generator";
+import { parseMoney } from "@utils/parser";
+import { generateTimeLimits } from "@utils/generator";
 import { CircularProgress } from "@components/material/Progress";
 import { Icon } from "@components/material/Icon";
 

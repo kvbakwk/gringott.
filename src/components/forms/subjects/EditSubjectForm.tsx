@@ -8,14 +8,14 @@ import {
   validateSubjectAtm,
   validateSubjectName,
   validateSubjectNormal,
-} from "@app/utils/validator";
+} from "@utils/validator";
 import { TextFieldOutlined } from "../../material/TextField";
 import { FilledButton, OutlinedButton } from "../../material/Button";
 import { Icon } from "@components/material/Icon";
-import { getSubject } from "@app/api/subject/get";
+import { getSubject } from "@services/subject/get";
 import { Checkbox } from "@components/material/Checkbox";
 import Loading from "@components/Loading";
-import { editSubjectAPI } from "@app/api/subject/edit";
+import { editSubjectAPI } from "@services/subject/edit";
 
 export default function EditSubjectForm({
   userId,

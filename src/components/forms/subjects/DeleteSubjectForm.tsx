@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { deleteSubjectAPI } from "@app/api/subject/delete";
+import { deleteSubjectAPI } from "@services/subject/delete";
 
 import { FilledButton, OutlinedButton } from "../../material/Button";
 

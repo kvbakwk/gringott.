@@ -1,14 +1,14 @@
 "use client";
 
 import { useMemo, useState, useRef, useEffect } from "react";
-import { WalletT } from "@app/utils/db-actions/wallet";
-import { TransactionT } from "@app/utils/db-actions/transaction";
-import { TransferT } from "@app/utils/db-actions/transfer";
-import { MethodT } from "@app/utils/db-actions/method";
-import { parseDate, parseMoney } from "@app/utils/parser";
+import { WalletT } from "@utils/db-actions/wallet";
+import { TransactionT } from "@utils/db-actions/transaction";
+import { TransferT } from "@utils/db-actions/transfer";
+import { MethodT } from "@utils/db-actions/method";
+import { parseDate, parseMoney } from "@utils/parser";
 import { Icon } from "@components/material/Icon";
 import { CircularProgress } from "@components/material/Progress";
-import { useData } from "@app/context/DataContext";
+import { useData } from "@context/DataContext";
 import NewDepositForm from "@components/forms/transfers/NewDepositForm";
 import NewWithdrawalForm from "@components/forms/transfers/NewWithdrawalForm";
 

@@ -1,14 +1,14 @@
 "use client";
 
-import { TradeT } from "@app/utils/db-actions/trade";
+import { TradeT } from "@utils/db-actions/trade";
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { getTrade } from "@app/api/trade/get";
+import { getTrade } from "@services/trade/get";
 import { FilledButton, OutlinedButton } from "../../material/Button";
 import Loading from "@components/Loading";
-import { deleteTradeAPI } from "@app/api/trade/delete";
+import { deleteTradeAPI } from "@services/trade/delete";
 
 export default function DeleteTradeForm({
   userId,

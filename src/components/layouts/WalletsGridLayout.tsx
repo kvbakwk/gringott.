@@ -1,5 +1,5 @@
-import { WalletT } from "@app/utils/db-actions/wallet";
-import { parseMoney } from "@app/utils/parser";
+import { WalletT } from "@utils/db-actions/wallet";
+import { parseMoney } from "@utils/parser";
 import { CircularProgress } from "../material/Progress";
 import { Icon } from "../material/Icon";
 

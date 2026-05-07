@@ -1,18 +1,23 @@
 "use client";
 
 import { useMemo, useState, useRef, useEffect } from "react";
-import { TransactionT } from "@app/utils/db-actions/transaction";
-import { SubjectT } from "@app/utils/db-actions/subject";
-import { useData } from "@app/context/DataContext";
-import { WalletT } from "@app/utils/db-actions/wallet";
-import { parseDate, parseMoney } from "@app/utils/parser";
+import { TransactionT } from "@utils/db-actions/transaction";
+import { SubjectT } from "@utils/db-actions/subject";
+import { useData } from "@context/DataContext";
+import { WalletT } from "@utils/db-actions/wallet";
+import { parseDate, parseMoney } from "@utils/parser";
 import { Icon } from "@components/material/Icon";
 import { CircularProgress } from "@components/material/Progress";
 import LoanForm from "@components/forms/LoanForm";
 import RepaymentForm from "@components/forms/RepaymentForm";
 import WalletsList from "@components/WalletsList";
 import { FilledButton, OutlinedButton } from "@components/material/Button";
-import { LoanT } from "@app/utils/db-actions/loan";
+import { LoanT } from "@utils/db-actions/loan";
+
+import { createLoanAction } from "@services/loan/create";
+import { payLoanAction } from "@services/loan/pay";
+import { editLoanAction } from "@services/loan/edit";
+import { deleteLoanAction } from "@services/loan/delete";
 
 export default function LoansSummaryPage() {
     const { user, loans, transactions, subjects, wallets, loansReady, transactionsReady, walletsReady, subjectsReady, reloadLoans, reloadTransactions, reloadWallets } = useData();
@@ -82,12 +87,7 @@ export default function LoansSummaryPage() {
 
     const handleAddLoan = async (data: any) => {
         try {
-            const res = await fetch("/api/loan/create", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...data, userId: user?.id })
-            });
-            if (!res.ok) throw new Error("Failed to add loan");
+            await createLoanAction({ ...data, userId: user?.id });
             successOperation();
         } catch (e) {
             console.error(e);
@@ -97,12 +97,7 @@ export default function LoansSummaryPage() {
 
     const handleRepay = async (data: any) => {
         try {
-            const res = await fetch("/api/loan/pay", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...data, userId: user?.id })
-            });
-            if (!res.ok) throw new Error("Failed to repay loan");
+            await payLoanAction({ ...data, userId: user?.id });
             successOperation();
         } catch (e) {
             console.error(e);
@@ -113,12 +108,7 @@ export default function LoansSummaryPage() {
     const handleEditLoan = async (data: any) => {
         if (!selectedLoan) return;
         try {
-            const res = await fetch("/api/loan/edit", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ loanId: selectedLoan.id, ...data })
-            });
-            if (!res.ok) throw new Error("Failed to edit loan");
+            await editLoanAction(selectedLoan.id, data);
             successOperation();
         } catch (e) {
             console.error(e);
@@ -129,12 +119,7 @@ export default function LoansSummaryPage() {
     const handleDeleteLoan = async () => {
         if (!selectedLoan) return;
         try {
-            const res = await fetch("/api/loan/delete", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ loanId: selectedLoan.id })
-            });
-            if (!res.ok) throw new Error("Failed to delete loan");
+            await deleteLoanAction(selectedLoan.id);
             successOperation();
         } catch (e) {
             console.error(e);

@@ -1,12 +1,12 @@
 "use client";
 
-import { WalletT } from "@app/utils/db-actions/wallet";
-import { TransactionT } from "@app/utils/db-actions/transaction";
+import { WalletT } from "@utils/db-actions/wallet";
+import { TransactionT } from "@utils/db-actions/transaction";
 
 import { useEffect, useRef, useState } from "react";
-import { useData } from "@app/context/DataContext";
+import { useData } from "@context/DataContext";
 
-import { parseDate, parseMoney, parseTime } from "@app/utils/parser";
+import { parseDate, parseMoney, parseTime } from "@utils/parser";
 import { CircularProgress } from "@components/material/Progress";
 import { Fab } from "@components/material/Fab";
 import { Icon } from "@components/material/Icon";
@@ -14,10 +14,10 @@ import { IconButton } from "@components/material/IconButton";
 import NewTransactionForm from "@components/forms/transactions/NewTransactionForm";
 import EditTransactionForm from "@components/forms/transactions/EditTransactionForm";
 import DeleteTransactionForm from "@components/forms/transactions/DeleteTransactionForm";
-import { MethodT } from "@app/utils/db-actions/method";
-import { SubjectT } from "@app/utils/db-actions/subject";
-import { SuperCategoryT } from "@app/utils/db-actions/super_category";
-import { CategoryT } from "@app/utils/db-actions/category";
+import { MethodT } from "@utils/db-actions/method";
+import { SubjectT } from "@utils/db-actions/subject";
+import { SuperCategoryT } from "@utils/db-actions/super_category";
+import { CategoryT } from "@utils/db-actions/category";
 import WalletsList from "@components/WalletsList";
 export default function TransactionsPage() {
   const { user, wallets, transactions, methods, subjects, superCategories, categories, walletsReady, transactionsReady, methodsReady, subjectsReady, superCategoriesReady, categoriesReady, reloadWallets, reloadTransactions } = useData();

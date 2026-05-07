@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { updateWalletAPI } from "@app/api/wallet/update";
-import { validateWalletName } from "@app/utils/validator";
-import { WalletT } from "@app/utils/db-actions/wallet";
+import { updateWalletAPI } from "@services/wallet/update";
+import { validateWalletName } from "@utils/validator";
+import { WalletT } from "@utils/db-actions/wallet";
 
 import { TextFieldOutlined } from "@components/material/TextField";
 import { FilledButton, OutlinedButton } from "@components/material/Button";

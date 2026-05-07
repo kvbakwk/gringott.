@@ -1,9 +1,9 @@
 "use client";
 
-import { AssetT } from "@app/utils/db-actions/asset";
-import { WalletT, WalletTypeT } from "@app/utils/db-actions/wallet";
+import { AssetT } from "@utils/db-actions/asset";
+import { WalletT, WalletTypeT } from "@utils/db-actions/wallet";
 import { Icon } from "@components/material/Icon";
-import { useData } from "@app/context/DataContext";
+import { useData } from "@context/DataContext";
 
 import PortfolioSummary from "@components/investments/PortfolioSummary";
 import PortfolioDistribution from "@components/investments/PortfolioDistribution";

@@ -1,12 +1,12 @@
 "use client";
 
-import { TransactionT } from "@app/utils/db-actions/transaction";
+import { TransactionT } from "@utils/db-actions/transaction";
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { getTransaction } from "@app/api/transaction/get";
-import { deleteTransactionAPI } from "@app/api/transaction/delete";
+import { getTransaction } from "@services/transaction/get";
+import { deleteTransactionAPI } from "@services/transaction/delete";
 import { FilledButton, OutlinedButton } from "../../material/Button";
 
 export default function DeleteTransactionForm({

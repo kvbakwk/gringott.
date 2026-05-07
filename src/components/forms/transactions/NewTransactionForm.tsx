@@ -1,20 +1,20 @@
 "use client";
 
-import { WalletT } from "@app/utils/db-actions/wallet";
-import { MethodT } from "@app/utils/db-actions/method";
-import { SubjectT } from "@app/utils/db-actions/subject";
-import { SuperCategoryT } from "@app/utils/db-actions/super_category";
-import { CategoryT } from "@app/utils/db-actions/category";
+import { WalletT } from "@utils/db-actions/wallet";
+import { MethodT } from "@utils/db-actions/method";
+import { SubjectT } from "@utils/db-actions/subject";
+import { SuperCategoryT } from "@utils/db-actions/super_category";
+import { CategoryT } from "@utils/db-actions/category";
 
 import { useEffect, useState } from "react";
 
-import { createTransactionAPI } from "@app/api/transaction/create";
+import { createTransactionAPI } from "@services/transaction/create";
 import {
   validateTransactionAmount,
   validateTransactionDate,
   validateTransactionDescription,
   validateTransactionSubjectId,
-} from "@app/utils/validator";
+} from "@utils/validator";
 
 import { SelectOption, SelectOutlined } from "../../material/Select";
 import { TextFieldOutlined } from "../../material/TextField";

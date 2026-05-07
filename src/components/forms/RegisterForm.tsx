@@ -10,13 +10,13 @@ import {
   validateFullname,
   validatePassword,
   validatePasswords,
-} from "@app/utils/validator";
-import { register } from "@app/api/auth/register";
+} from "@utils/validator";
+import { register } from "@services/auth/register";
 
 import { TextFieldOutlined } from "../material/TextField";
 import { Checkbox } from "../material/Checkbox";
 import { FilledButton } from "../material/Button";
-import { RouteSegments } from "@app/utils/routes";
+import { RouteSegments } from "@utils/routes";
 
 export default function RegisterForm() {
   const router = useRouter();
@@ -142,7 +142,7 @@ export default function RegisterForm() {
             </Link>
           </span>
         </label>
-        <FilledButton type="submit" className="w-full sm:w-auto shrink-0 shadow-md">zarejestruj się</FilledButton>
+        <FilledButton type="submit">zarejestruj się</FilledButton>
         <button type="submit" className="hidden" aria-hidden="true" />
       </div>
     </form>

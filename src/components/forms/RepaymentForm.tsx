@@ -3,12 +3,12 @@
 import { useState } from "react";
 import { FilledButton, OutlinedButton } from "@components/material/Button";
 import { TextFieldOutlined } from "@components/material/TextField";
-import { LoanT } from "@app/utils/db-actions/loan";
+import { LoanT } from "@utils/db-actions/loan";
 import { Icon } from "@components/material/Icon";
 
-import { WalletT } from "@app/utils/db-actions/wallet";
+import { WalletT } from "@utils/db-actions/wallet";
 import { SelectOption, SelectOutlined } from "@components/material/Select";
-import { validateTransactionAmount, validateTransactionWalletId } from "@app/utils/validator";
+import { validateTransactionAmount, validateTransactionWalletId } from "@utils/validator";
 
 
 export default function RepaymentForm({

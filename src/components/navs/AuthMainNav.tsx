@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 import { Icon } from "../material/Icon";
-import { RouteSegments } from "@app/utils/routes";
+import { RouteSegments } from "@utils/routes";
 
 export default function AuthMainNav() {
   const pathname = usePathname();

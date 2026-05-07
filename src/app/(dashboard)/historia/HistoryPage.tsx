@@ -1,14 +1,14 @@
 "use client";
 
-import { WalletT } from "@app/utils/db-actions/wallet";
-import { TransactionT } from "@app/utils/db-actions/transaction";
-import { TradeT } from "@app/utils/db-actions/trade";
+import { WalletT } from "@utils/db-actions/wallet";
+import { TransactionT } from "@utils/db-actions/transaction";
+import { TradeT } from "@utils/db-actions/trade";
 
 import { useEffect, useState } from "react";
-import { useData } from "@app/context/DataContext";
+import { useData } from "@context/DataContext";
 
-import { parseDate, parseMoney } from "@app/utils/parser";
-import { generateAllDaysFromOldestTransactionToToday } from "@app/utils/generator";
+import { parseDate, parseMoney } from "@utils/parser";
+import { generateAllDaysFromOldestTransactionToToday } from "@utils/generator";
 import { CircularProgress } from "@components/material/Progress";
 import { da } from "zod/v4/locales";
 

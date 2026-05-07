@@ -1,6 +1,6 @@
 "use client";
 
-import { WalletT, WalletTypeT } from "@app/utils/db-actions/wallet";
+import { WalletT, WalletTypeT } from "@utils/db-actions/wallet";
 import { useMemo, useState } from "react";
 
 const WALLET_TYPE_COLORS: Record<number, string> = {

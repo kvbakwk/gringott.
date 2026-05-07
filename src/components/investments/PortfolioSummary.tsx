@@ -1,6 +1,6 @@
-import { AssetT } from "@app/utils/db-actions/asset";
-import { WalletT } from "@app/utils/db-actions/wallet";
-import { parseMoney } from "@app/utils/parser";
+import { AssetT } from "@utils/db-actions/asset";
+import { WalletT } from "@utils/db-actions/wallet";
+import { parseMoney } from "@utils/parser";
 import { Icon } from "@components/material/Icon";
 
 export default function PortfolioSummary({

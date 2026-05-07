@@ -3,10 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { logout } from "@app/api/auth/login";
+import { logout } from "@services/auth/login";
 import { Icon } from "./material/Icon";
 import { IconButton } from "./material/IconButton";
-import { RouteSegments } from "@app/utils/routes";
+import { RouteSegments } from "@utils/routes";
 
 export default function User({ name }: { name: string }) {
   const router = useRouter();

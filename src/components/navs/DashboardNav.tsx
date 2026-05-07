@@ -7,7 +7,7 @@ import { clsx } from "clsx";
 
 import { Icon } from "../material/Icon";
 
-import { RouteSegments } from "@app/utils/routes";
+import { RouteSegments } from "@utils/routes";
 
 const activeColorClasses: Record<string, string> = {
   investments: "bg-investments/20 text-investments font-normal shadow-sm",

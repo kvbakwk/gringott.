@@ -1,0 +1,222 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL@20..48,100..700,0..1");
+
+@import "tailwindcss";
+@config "../../tailwind.config.js";
+
+* {
+  /* box-sizing: border-box; */
+}
+
+:root {
+  --md-sys-color-surface-tint: #79590c;
+  --md-sys-color-primary-container: #ffdea4;
+  --md-sys-color-on-primary-container: #261900;
+  --md-sys-color-on-secondary: #fff;
+  --md-sys-color-secondary-container: #f6e0bb;
+  --md-sys-color-on-secondary-container: #251a04;
+  --md-sys-color-tertiary: #4c6545;
+  --md-sys-color-on-tertiary: #fff;
+  --md-sys-color-tertiary-container: #ceebc2;
+  --md-sys-color-on-tertiary-container: #0a2007;
+  --md-sys-color-error-container: #ffdad6;
+  --md-sys-color-on-error-container: #410002;
+  --md-sys-color-background: #fff8f3;
+  --md-sys-color-on-background: #201b13;
+  --md-sys-color-surface-variant: #eee1cf;
+  --md-sys-color-on-surface-variant: #4e4639;
+  --md-sys-color-outline: #7f7667;
+  --md-sys-color-outline-variant: #d1c5b4;
+  --md-sys-color-shadow: #000;
+  --md-sys-color-scrim: #000;
+  --md-sys-color-inverse-surface: #353027;
+  --md-sys-color-inverse-on-surface: #faefe2;
+  --md-sys-color-inverse-primary: #ecc06c;
+  --md-sys-color-primary-fixed: #ffdea4;
+  --md-sys-color-on-primary-fixed: #261900;
+  --md-sys-color-primary-fixed-dim: #ecc06c;
+  --md-sys-color-on-primary-fixed-variant: #5d4200;
+  --md-sys-color-secondary-fixed: #f6e0bb;
+  --md-sys-color-on-secondary-fixed: #251a04;
+  --md-sys-color-secondary-fixed-dim: #d9c4a0;
+  --md-sys-color-on-secondary-fixed-variant: #53452a;
+  --md-sys-color-tertiary-fixed: #ceebc2;
+  --md-sys-color-on-tertiary-fixed: #0a2007;
+  --md-sys-color-tertiary-fixed-dim: #b2cfa7;
+  --md-sys-color-on-tertiary-fixed-variant: #354d2f;
+  --md-sys-color-surface-dim: #e3d9cc;
+  --md-sys-color-surface-bright: #fff8f3;
+  --md-sys-color-surface-container-lowest: #fff;
+  --md-sys-color-surface-container-low: #fdf2e5;
+  --md-sys-color-surface-container: #f7ecdf;
+  --md-sys-color-surface-container-high: #f1e7d9;
+  --md-sys-color-surface-container-highest: #ebe1d4;
+  --md-sys-color-primary: #79590c;
+  --md-sys-color-surface-tint: #79590c;
+  --md-sys-color-on-primary: #fff;
+  --md-sys-color-primary-container: #ffdea4;
+  --md-sys-color-on-primary-container: #261900;
+  --md-sys-color-secondary: #6c5c3f;
+  --md-sys-color-on-secondary: #fff;
+  --md-sys-color-secondary-container: #f6e0bb;
+  --md-sys-color-on-secondary-container: #251a04;
+  --md-sys-color-tertiary: #4c6545;
+  --md-sys-color-on-tertiary: #fff;
+  --md-sys-color-tertiary-container: #ceebc2;
+  --md-sys-color-on-tertiary-container: #0a2007;
+  --md-sys-color-error: #ba1a1a;
+  --md-sys-color-on-error: #fff;
+  --md-sys-color-error-container: #ffdad6;
+  --md-sys-color-on-error-container: #410002;
+  --md-sys-color-background: #fff8f3;
+  --md-sys-color-on-background: #201b13;
+  --md-sys-color-surface: #fff8f3;
+  --md-sys-color-on-surface: #201b13;
+  --md-sys-color-surface-variant: #eee1cf;
+  --md-sys-color-on-surface-variant: #4e4639;
+  --md-sys-color-outline: #7f7667;
+  --md-sys-color-outline-variant: #d1c5b4;
+  --md-sys-color-shadow: #000;
+  --md-sys-color-scrim: #000;
+  --md-sys-color-inverse-surface: #353027;
+  --md-sys-color-inverse-on-surface: #faefe2;
+  --md-sys-color-inverse-primary: #ecc06c;
+  --md-sys-color-primary-fixed: #ffdea4;
+  --md-sys-color-on-primary-fixed: #261900;
+  --md-sys-color-primary-fixed-dim: #ecc06c;
+  --md-sys-color-on-primary-fixed-variant: #5d4200;
+  --md-sys-color-secondary-fixed: #f6e0bb;
+  --md-sys-color-on-secondary-fixed: #251a04;
+  --md-sys-color-secondary-fixed-dim: #d9c4a0;
+  --md-sys-color-on-secondary-fixed-variant: #53452a;
+  --md-sys-color-tertiary-fixed: #ceebc2;
+  --md-sys-color-on-tertiary-fixed: #0a2007;
+  --md-sys-color-tertiary-fixed-dim: #b2cfa7;
+  --md-sys-color-on-tertiary-fixed-variant: #354d2f;
+  --md-sys-color-surface-dim: #e3d9cc;
+  --md-sys-color-surface-bright: #fff8f3;
+  --md-sys-color-surface-container-lowest: #fff;
+  --md-sys-color-surface-container-low: #fdf2e5;
+  --md-sys-color-surface-container: #f7ecdf;
+  --md-sys-color-surface-container-high: #f1e7d9;
+  --md-sys-color-surface-container-highest: #ebe1d4;
+
+  --md-outlined-select-text-field-outline-color: #79590C;
+  --md-outlined-select-text-field-container-shape: 8px;
+  --md-outlined-select-text-field-input-text-color: #79590C;
+  --md-outlined-select-text-field-leading-icon-color: #79590C;
+
+  --md-outlined-text-field-container-shape: 8px;
+  --md-outlined-text-field-label-text-color: #79590C;
+  --md-outlined-text-field-input-text-color: #79590C;
+  --md-outlined-text-field-leading-icon-color: #79590C;
+  --md-icon-size: 24px;
+  --md-icon-font: "Material Symbols Rounded";
+
+  /* Typography for Material Components */
+  --md-sys-typescale-label-large-font: "Noto Sans", system-ui, sans-serif;
+  --md-sys-typescale-body-large-font: "Noto Sans", system-ui, sans-serif;
+}
+
+body {
+  font-family: "Noto Sans", system-ui, sans-serif;
+}
+
+
+md-filled-button,
+md-outlined-button {
+  padding: 0 16px;
+}
+
+md-outlined-select::part(menu) {
+  --md-menu-container-color: #FFF8F3;
+  --md-menu-container-shape: 8px;
+}
+
+/* Fix for notched outline jagged edges */
+md-outlined-text-field::part(outline) {
+  border-style: none; /* Zapobiega nakładaniu się dodatkowej ramki */
+}
+
+/* Wymuszamy, aby wewnętrzne elementy obramowania MD3 nie dziedziczyły resetów Tailwinda */
+md-outlined-text-field {
+  --md-outlined-text-field-outline-width: 1px;
+  --md-outlined-text-field-focus-outline-width: 2px;
+}
+
+
+.fill {
+  font-variation-settings:
+    'FILL' 1
+}
+
+.mini {
+  --md-icon-button-icon-size: 20px;
+  --md-icon-button-state-layer-width: 30px;
+  --md-icon-button-state-layer-height: 30px;
+  --md-icon-size: 20px;
+  --md-circular-progress-size: 24px;
+  --md-outlined-icon-button-container-width: 30px;
+  --md-outlined-icon-button-container-height: 30px;
+  --md-outlined-icon-button-icon-size: 20px;
+  --md-outlined-icon-button-outline-color: var(--md-sys-color-error);
+}
+
+.error {
+  --md-icon-button-icon-color: var(--md-sys-color-error);
+  --md-icon-button-hover-icon-color: var(--md-sys-color-error);
+  --md-icon-button-hover-state-layer-color: var(--md-sys-color-error);
+  --md-icon-button-focus-icon-color: var(--md-sys-color-error);
+  --md-icon-button-focus-state-layer-color: var(--md-sys-color-error);
+  --md-sys-color-primary: var(--md-sys-color-error);
+}
+
+.warning {
+  --md-icon-button-icon-color: #d97706;
+  /* amber-600 */
+  --md-icon-button-hover-icon-color: #d97706;
+  --md-icon-button-hover-state-layer-color: #d97706;
+  --md-icon-button-focus-icon-color: #d97706;
+  --md-icon-button-focus-state-layer-color: #d97706;
+}
+
+.info {
+  --md-icon-button-icon-color: #2563eb;
+  /* blue-600 */
+  --md-icon-button-hover-icon-color: #2563eb;
+  --md-icon-button-hover-state-layer-color: #2563eb;
+  --md-icon-button-focus-icon-color: #2563eb;
+  --md-icon-button-focus-state-layer-color: #2563eb;
+}
+
+.success {
+  --md-icon-button-icon-color: #16a34a;
+  /* green-600 */
+  --md-icon-button-hover-icon-color: #16a34a;
+  --md-icon-button-hover-state-layer-color: #16a34a;
+  --md-icon-button-focus-icon-color: #16a34a;
+  --md-icon-button-focus-state-layer-color: #16a34a;
+}
+
+.medium {
+  --md-circular-progress-size: 30px;
+}
+
+.scroll-none {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.scroll-none::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* Autofill fix */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--md-sys-color-surface) inset !important;
+  -webkit-text-fill-color: var(--md-outlined-text-field-input-text-color) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}

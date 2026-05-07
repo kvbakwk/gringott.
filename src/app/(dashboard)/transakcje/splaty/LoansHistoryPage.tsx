@@ -1,11 +1,11 @@
 "use client";
 
 import { useMemo, useState, useRef, useEffect } from "react";
-import { LoanT } from "@app/utils/db-actions/loan";
-import { TransactionT } from "@app/utils/db-actions/transaction";
-import { SubjectT } from "@app/utils/db-actions/subject";
-import { WalletT } from "@app/utils/db-actions/wallet";
-import { parseDate, parseMoney, parseTime } from "@app/utils/parser";
+import { LoanT } from "@utils/db-actions/loan";
+import { TransactionT } from "@utils/db-actions/transaction";
+import { SubjectT } from "@utils/db-actions/subject";
+import { WalletT } from "@utils/db-actions/wallet";
+import { parseDate, parseMoney, parseTime } from "@utils/parser";
 import { Icon } from "@components/material/Icon";
 import { CircularProgress } from "@components/material/Progress";
 import { IconButton } from "@components/material/IconButton";
@@ -14,12 +14,12 @@ import { IconButton } from "@components/material/IconButton";
 // Since we need Edit/Delete for both Loans and Transactions, we need to handle them.
 // For now, let's setup the list view first.
 
-import { CategoryT } from "@app/utils/db-actions/category";
-import { SuperCategoryT } from "@app/utils/db-actions/super_category";
-import { MethodT } from "@app/utils/db-actions/method";
+import { CategoryT } from "@utils/db-actions/category";
+import { SuperCategoryT } from "@utils/db-actions/super_category";
+import { MethodT } from "@utils/db-actions/method";
 import EditTransactionForm from "@components/forms/transactions/EditTransactionForm";
 import WalletsList from "@components/WalletsList";
-import { useData } from "@app/context/DataContext";
+import { useData } from "@context/DataContext";
 
 export default function LoansHistoryPage() {
     const { user, loans, transactions, subjects, wallets, methods, categories, superCategories, loansReady, transactionsReady, walletsReady, subjectsReady, methodsReady, categoriesReady, superCategoriesReady, reloadLoans, reloadTransactions } = useData();

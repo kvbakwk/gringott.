@@ -1,17 +1,17 @@
 "use client";
 
-import { TradeT } from "@app/utils/db-actions/trade";
+import { TradeT } from "@utils/db-actions/trade";
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { getTrade } from "@app/api/trade/get";
+import { getTrade } from "@services/trade/get";
 import { FilledButton, OutlinedButton } from "../../material/Button";
 import Loading from "@components/Loading";
-import { deleteTradeAPI } from "@app/api/trade/delete";
-import { TransferT } from "@app/utils/db-actions/transfer";
-import deleteTransferAPI from "@app/api/transfer/delete";
-import { FormState } from "@app/utils/definitions";
+import { deleteTradeAPI } from "@services/trade/delete";
+import { TransferT } from "@utils/db-actions/transfer";
+import deleteTransferAPI from "@services/transfer/delete";
+import { FormState } from "@utils/definitions";
 
 export default function DeleteTransferForm({
   userId,

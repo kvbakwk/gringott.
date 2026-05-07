@@ -4,11 +4,11 @@ import { useState } from "react";
 import { FilledButton, OutlinedButton } from "@components/material/Button";
 import { TextFieldOutlined } from "@components/material/TextField";
 import { SelectOutlined, SelectOption } from "@components/material/Select";
-import { SubjectT } from "@app/utils/db-actions/subject";
+import { SubjectT } from "@utils/db-actions/subject";
 import { Icon } from "@components/material/Icon";
 
-import { LoanT } from "@app/utils/db-actions/loan";
-import { validateTransactionAmount, validateTransactionDate, validateTransactionDescription, validateTransactionSubjectId } from "@app/utils/validator";
+import { LoanT } from "@utils/db-actions/loan";
+import { validateTransactionAmount, validateTransactionDate, validateTransactionDescription, validateTransactionSubjectId } from "@utils/validator";
 
 
 export default function LoanForm({

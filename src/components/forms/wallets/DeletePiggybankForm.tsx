@@ -1,11 +1,11 @@
 "use client";
 
-import { WalletT } from "@app/utils/db-actions/wallet";
+import { WalletT } from "@utils/db-actions/wallet";
 import { useEffect, useRef, useState } from "react";
-import { deleteWalletAPI } from "@app/api/wallet/delete";
+import { deleteWalletAPI } from "@services/wallet/delete";
 import { FilledButton, OutlinedButton } from "../../material/Button";
 import { Icon } from "@components/material/Icon";
-import { parseMoney } from "@app/utils/parser";
+import { parseMoney } from "@utils/parser";
 
 export default function DeletePiggybankForm({
   wallet,

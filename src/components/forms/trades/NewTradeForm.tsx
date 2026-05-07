@@ -1,8 +1,8 @@
 "use client";
 
-import { WalletT } from "@app/utils/db-actions/wallet";
-import { MethodT } from "@app/utils/db-actions/method";
-import { SubjectT } from "@app/utils/db-actions/subject";
+import { WalletT } from "@utils/db-actions/wallet";
+import { MethodT } from "@utils/db-actions/method";
+import { SubjectT } from "@utils/db-actions/subject";
 
 import { useState } from "react";
 
@@ -11,13 +11,13 @@ import {
   validateTradeAtm,
   validateTradeDate,
   validateTradeDeposit,
-} from "@app/utils/validator";
+} from "@utils/validator";
 
 import { Icon } from "@components/material/Icon";
 import { TextFieldOutlined } from "@components/material/TextField";
 import { SelectOption, SelectOutlined } from "@components/material/Select";
 import { FilledButton, OutlinedButton } from "@components/material/Button";
-import { createTradeAPI } from "@app/api/trade/create";
+import { createTradeAPI } from "@services/trade/create";
 
 export default function NewTradeForm({
   userId,

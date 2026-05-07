@@ -1,29 +1,29 @@
 "use client";
 
-import { WalletT } from "@app/utils/db-actions/wallet";
-import { TradeT } from "@app/utils/db-actions/trade";
-import { MethodT } from "@app/utils/db-actions/method";
+import { WalletT } from "@utils/db-actions/wallet";
+import { TradeT } from "@utils/db-actions/trade";
+import { MethodT } from "@utils/db-actions/method";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { getTrade } from "@app/api/trade/get";
-import { getWallets } from "@app/api/wallet/get";
-import { getMethods } from "@app/utils/db-actions/method";
+import { getTrade } from "@services/trade/get";
+import { getWallets } from "@services/wallet/get";
+import { getMethods } from "@utils/db-actions/method";
 import { SelectOption, SelectOutlined } from "../../material/Select";
 import { TextFieldOutlined } from "../../material/TextField";
 import { FilledButton, OutlinedButton } from "../../material/Button";
 import { Icon } from "@components/material/Icon";
-import { getSubjects } from "@app/api/subject/get";
-import { SubjectT } from "@app/utils/db-actions/subject";
+import { getSubjects } from "@services/subject/get";
+import { SubjectT } from "@utils/db-actions/subject";
 import Loading from "@components/Loading";
 import {
   validateTradeAmount,
   validateTradeAtm,
   validateTradeDate,
   validateTradeDeposit,
-} from "@app/utils/validator";
-import { editTradeAPI } from "@app/api/trade/edit";
+} from "@utils/validator";
+import { editTradeAPI } from "@services/trade/edit";
 
 export default function EditTradeForm({
   userId,

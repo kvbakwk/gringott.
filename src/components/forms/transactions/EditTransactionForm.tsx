@@ -1,27 +1,27 @@
 "use client";
 
-import { WalletT } from "@app/utils/db-actions/wallet";
-import { TransactionT } from "@app/utils/db-actions/transaction";
-import { SuperCategoryT } from "@app/utils/db-actions/super_category";
-import { CategoryT } from "@app/utils/db-actions/category";
-import { MethodT } from "@app/utils/db-actions/method";
+import { WalletT } from "@utils/db-actions/wallet";
+import { TransactionT } from "@utils/db-actions/transaction";
+import { SuperCategoryT } from "@utils/db-actions/super_category";
+import { CategoryT } from "@utils/db-actions/category";
+import { MethodT } from "@utils/db-actions/method";
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { editTransactionAPI } from "@app/api/transaction/edit";
+import { editTransactionAPI } from "@services/transaction/edit";
 import {
   validateTransactionAmount,
   validateTransactionDate,
   validateTransactionDescription,
   validateTransactionSubjectId,
-} from "@app/utils/validator";
+} from "@utils/validator";
 import { SelectOption, SelectOutlined } from "../../material/Select";
 import { TextFieldOutlined } from "../../material/TextField";
 import { Checkbox } from "../../material/Checkbox";
 import { FilledButton, OutlinedButton } from "../../material/Button";
 import { Icon } from "@components/material/Icon";
-import { SubjectT } from "@app/utils/db-actions/subject";
+import { SubjectT } from "@utils/db-actions/subject";
 
 export default function EditTransactionForm({
   userId,

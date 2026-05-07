@@ -1,18 +1,18 @@
 "use client";
 
-import { WalletT } from "@app/utils/db-actions/wallet";
-import { TradeT } from "@app/utils/db-actions/trade";
+import { WalletT } from "@utils/db-actions/wallet";
+import { TradeT } from "@utils/db-actions/trade";
 
 import { useEffect, useRef, useState } from "react";
 
-import { parseDate, parseMoney, parseTime } from "@app/utils/parser";
+import { parseDate, parseMoney, parseTime } from "@utils/parser";
 import { CircularProgress } from "@components/material/Progress";
 import { Fab } from "@components/material/Fab";
 import { Icon } from "@components/material/Icon";
 import { IconButton } from "@components/material/IconButton";
 import WalletsList from "@components/WalletsList";
-import { SubjectT } from "@app/utils/db-actions/subject";
-import { useData } from "@app/context/DataContext";
+import { SubjectT } from "@utils/db-actions/subject";
+import { useData } from "@context/DataContext";
 import NewTradeForm from "@components/forms/trades/NewTradeForm";
 import EditTradeForm from "@components/forms/trades/EditTradeForm";
 import DeleteTradeForm from "@components/forms/trades/DeleteTradeForm";

@@ -2,17 +2,17 @@
 
 import { FormEvent, useState } from "react";
 
-import { WalletT } from "@app/utils/db-actions/wallet";
-import { MethodT } from "@app/utils/db-actions/method";
-import { FormState } from "@app/utils/definitions";
+import { WalletT } from "@utils/db-actions/wallet";
+import { MethodT } from "@utils/db-actions/method";
+import { FormState } from "@utils/definitions";
 
-import createTransferAPI from "@app/api/transfer/create";
+import createTransferAPI from "@services/transfer/create";
 
 import { FilledButton, OutlinedButton } from "@components/material/Button";
 import { SelectOption, SelectOutlined } from "@components/material/Select";
 import { TextFieldOutlined } from "@components/material/TextField";
 import { Icon } from "@components/material/Icon";
-import { parseMoney } from "@app/utils/parser";
+import { parseMoney } from "@utils/parser";
 
 export default function NewGoalWithdrawalForm({
   userId,

@@ -1,12 +1,12 @@
 "use client";
 
-import { WalletT } from "@app/utils/db-actions/wallet";
-import { TransactionT } from "@app/utils/db-actions/transaction";
-import { MethodT } from "@app/utils/db-actions/method";
+import { WalletT } from "@utils/db-actions/wallet";
+import { TransactionT } from "@utils/db-actions/transaction";
+import { MethodT } from "@utils/db-actions/method";
 import WalletsGridLayout from "@components/layouts/WalletsGridLayout";
 import GoalCard from "@components/features/goals/GoalCard";
 import { useState, useRef, useEffect } from "react";
-import { useData } from "@app/context/DataContext";
+import { useData } from "@context/DataContext";
 import NewGoalForm from "@components/forms/wallets/NewGoalForm";
 import EditGoalForm from "@components/forms/wallets/EditGoalForm";
 import DeleteGoalForm from "@components/forms/wallets/DeleteGoalForm";

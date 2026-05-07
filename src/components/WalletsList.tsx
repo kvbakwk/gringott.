@@ -1,14 +1,14 @@
 "use client";
 
-import { WalletT } from "@app/utils/db-actions/wallet";
+import { WalletT } from "@utils/db-actions/wallet";
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-import { parseMoney } from "@app/utils/parser";
+import { parseMoney } from "@utils/parser";
 import { Icon } from "./material/Icon";
 import { CircularProgress } from "./material/Progress";
-import { RouteSegments } from "@app/utils/routes";
+import { RouteSegments } from "@utils/routes";
 
 export default function WalletsList({
   wallets,

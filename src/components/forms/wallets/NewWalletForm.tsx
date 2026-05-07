@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { createWalletAPI } from "@app/api/wallet/create";
+import { createWalletAPI } from "@services/wallet/create";
 import {
   validateWalletBalance,
   validateWalletName,
-} from "@app/utils/validator";
+} from "@utils/validator";
 
 import { TextFieldOutlined } from "../../material/TextField";
 import { FilledButton, OutlinedButton } from "../../material/Button";

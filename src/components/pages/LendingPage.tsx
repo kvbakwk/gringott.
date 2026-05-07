@@ -1,10 +1,10 @@
 "use client";
 
-import { LoanT } from "@app/utils/db-actions/loan";
-import { SubjectT } from "@app/utils/db-actions/subject";
-import { TransactionT } from "@app/utils/db-actions/transaction";
-import { WalletT } from "@app/utils/db-actions/wallet";
-import { parseDate, parseMoney, parseTime } from "@app/utils/parser";
+import { LoanT } from "@utils/db-actions/loan";
+import { SubjectT } from "@utils/db-actions/subject";
+import { TransactionT } from "@utils/db-actions/transaction";
+import { WalletT } from "@utils/db-actions/wallet";
+import { parseDate, parseMoney, parseTime } from "@utils/parser";
 import { CircularProgress } from "@components/material/Progress";
 import { Icon } from "@components/material/Icon";
 import { IconButton } from "@components/material/IconButton";
@@ -12,6 +12,9 @@ import WalletsList from "@components/WalletsList";
 import LoanForm from "@components/forms/LoanForm";
 import RepaymentForm from "@components/forms/RepaymentForm";
 import { useEffect, useRef, useState } from "react";
+
+import { createLoanAction } from "@services/loan/create";
+import { payLoanAction } from "@services/loan/pay";
 
 export default function LendingPage({
     loans,
@@ -97,12 +100,7 @@ export default function LendingPage({
 
     const handleAddLoan = async (data: any) => {
         try {
-            const res = await fetch("/api/loan/add", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-            });
-            if (!res.ok) throw new Error("Failed to add loan");
+            await createLoanAction({ ...data, userId });
             successOperation();
         } catch (e) {
             console.error(e);
@@ -112,12 +110,7 @@ export default function LendingPage({
 
     const handleRepay = async (data: any) => {
         try {
-            const res = await fetch("/api/loan/pay", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-            });
-            if (!res.ok) throw new Error("Failed to repay loan");
+            await payLoanAction(data);
             successOperation();
         } catch (e) {
             console.error(e);

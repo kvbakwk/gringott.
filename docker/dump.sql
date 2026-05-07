@@ -1,87 +1,112 @@
-create table if not exists public.user (
+-- Function to automatically update updated_at column
+create or replace function update_updated_at_column()
+returns trigger as $$
+begin
+    new.updated_at = now();
+    return new;
+end;
+$$ language plpgsql;
+
+-- Create Tables
+create table if not exists public.users (
     id serial primary key,
-    name varchar(40) not null,
-    email varchar(50) not null,
-    password varchar(100) not null
+    name varchar(255) not null,
+    email varchar(255) not null unique,
+    password varchar(255) not null,
+    created_at timestamp default CURRENT_TIMESTAMP not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp
 );
 
-create table if not exists public.wallet_type (
+create table if not exists public.wallet_types (
     id serial primary key,
-    name varchar(255) not null
+    name varchar(255) not null,
+    created_at timestamp default CURRENT_TIMESTAMP not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp
 );
 
-create table if not exists public.wallet (
+create table if not exists public.wallets (
     id serial primary key,
     user_id integer not null,
-    name varchar(10),
-    balance decimal(10, 2) not null,
+    name varchar(50),
+    balance numeric(15, 2) not null,
     wallet_type_id integer not null,
     icon varchar(255),
-    target_amount decimal(10, 2),
+    target_amount numeric(15, 2),
+    created_at timestamp default CURRENT_TIMESTAMP not null,
     updated_at timestamp default CURRENT_TIMESTAMP not null,
-    deleted_at timestamp,
-    foreign key (user_id) references public.user(id),
-    foreign key (wallet_type_id) references public.wallet_type(id)
+    deleted_at timestamp
 );
 
-create table if not exists public.super_category (
+create table if not exists public.super_categories (
     id serial primary key,
     name varchar(255) not null,
     income boolean not null,
-    outcome boolean not null
+    outcome boolean not null,
+    created_at timestamp default CURRENT_TIMESTAMP not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp
 );
 
-create table if not exists public.category (
+create table if not exists public.categories (
     id serial primary key,
     name varchar(255) not null,
     super_category_id integer not null,
-    foreign key (super_category_id) references public.super_category(id)
+    created_at timestamp default CURRENT_TIMESTAMP not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp
 );
 
-create table if not exists public.method (
+create table if not exists public.methods (
     id serial primary key,
     name varchar(255) not null,
     cash boolean not null,
-    bank boolean not null
+    bank boolean not null,
+    created_at timestamp default CURRENT_TIMESTAMP not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp
 );
 
-
-create table if not exists public.subject (
+create table if not exists public.subjects (
     id serial primary key,
     user_id integer not null,
-    name varchar(128) not null,
-    address varchar(128),
+    name varchar(255) not null,
+    address varchar(255),
     normal boolean not null,
     atm boolean not null,
-    foreign key (user_id) references public.user(id)
+    created_at timestamp default CURRENT_TIMESTAMP not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp
 );
 
-create table if not exists public.loan (
+create table if not exists public.loans (
     id serial primary key,
     user_id integer not null,
     subject_id integer not null,
     name varchar(255),
-    total_amount numeric(10, 2) not null,
-    paid_amount numeric(10, 2) default 0 not null,
+    total_amount numeric(15, 2) not null,
+    paid_amount numeric(15, 2) default 0 not null,
     is_given boolean not null,
     currency varchar(10) default 'PLN' not null,
     status varchar(50) default 'active' not null,
     created_at timestamp default CURRENT_TIMESTAMP not null,
     updated_at timestamp default CURRENT_TIMESTAMP not null,
-    deleted_at timestamp,
-    foreign key (user_id) references public.user(id),
-    foreign key (subject_id) references public.subject(id)
+    deleted_at timestamp
 );
 
-create table if not exists public.transaction_type (
+create table if not exists public.transaction_types (
     id serial primary key,
-    name varchar(255) not null
+    name varchar(255) not null,
+    created_at timestamp default CURRENT_TIMESTAMP not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp
 );
 
-create table if not exists public.transaction (
+create table if not exists public.transactions (
     id serial primary key,
     date timestamp not null,
-    amount numeric(10, 2) not null,
+    amount numeric(15, 2) not null,
     description varchar(255) not null,
     category_id integer not null,
     subject_id integer not null,
@@ -92,19 +117,15 @@ create table if not exists public.transaction (
     method_id integer not null,
     transaction_type_id integer not null,
     loan_id integer,
-    foreign key (user_id) references public.user(id),
-    foreign key (wallet_id) references public.wallet(id),
-    foreign key (category_id) references public.category(id),
-    foreign key (subject_id) references public.subject(id),
-    foreign key (method_id) references public.method(id),
-    foreign key (transaction_type_id) references public.transaction_type(id),
-    foreign key (loan_id) references public.loan(id)
+    created_at timestamp default CURRENT_TIMESTAMP not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp
 );
 
-create table if not exists public.trade (
+create table if not exists public.trades (
     id serial primary key,
     date timestamp not null,
-    amount numeric(10, 2) not null,
+    amount numeric(15, 2) not null,
     deposit boolean not null,
     atm boolean not null,
     user_id integer not null,
@@ -112,57 +133,130 @@ create table if not exists public.trade (
     user_method_id integer not null,
     subject_id integer not null,
     subject_method_id integer not null,
-    foreign key (user_id) references public.user(id),
-    foreign key (wallet_id) references public.wallet(id),
-    foreign key (user_method_id) references public.method(id),
-    foreign key (subject_id) references public.subject(id),
-    foreign key (subject_method_id) references public.method(id)
+    created_at timestamp default CURRENT_TIMESTAMP not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp
 );
 
-create table if not exists public.transfer (
+create table if not exists public.transfers (
     id serial primary key,
     date timestamp not null,
-    amount numeric(10, 2) not null,
+    amount numeric(15, 2) not null,
     user_id integer not null,
     method_id integer not null,
     from_wallet_id integer not null,
     to_wallet_id integer not null,
-    foreign key (user_id) references public.user(id),
-    foreign key (method_id) references public.method(id),
-    foreign key (from_wallet_id) references public.wallet(id),
-    foreign key (to_wallet_id) references public.wallet(id)
+    created_at timestamp default CURRENT_TIMESTAMP not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp
 );
 
-create table if not exists public.product (
+create table if not exists public.products (
     id serial primary key,
     name varchar(255) not null,
-    price integer not null
+    price numeric(15, 2) not null,
+    created_at timestamp default CURRENT_TIMESTAMP not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp
 );
 
-create table if not exists public.asset (
+create table if not exists public.assets (
     id serial primary key,
     wallet_id integer not null,
     name varchar(255) not null,
     ticker varchar(50),
     type varchar(50) not null,
-    quantity numeric(10, 4) not null,
+    quantity numeric(15, 4) not null,
     currency varchar(10) not null,
-    avg_buy_price numeric(10, 2),
-    current_price numeric(10, 2),
+    avg_buy_price numeric(15, 2),
+    current_price numeric(15, 2),
     icon varchar(255),
+    created_at timestamp default CURRENT_TIMESTAMP not null,
     updated_at timestamp default CURRENT_TIMESTAMP not null,
-    deleted_at timestamp,
-    foreign key (wallet_id) references public.wallet(id)
+    deleted_at timestamp
 );
 
+-- Triggers for updated_at
+create trigger update_users_updated_at before update on public.users for each row execute procedure update_updated_at_column();
+create trigger update_wallet_types_updated_at before update on public.wallet_types for each row execute procedure update_updated_at_column();
+create trigger update_wallets_updated_at before update on public.wallets for each row execute procedure update_updated_at_column();
+create trigger update_super_categories_updated_at before update on public.super_categories for each row execute procedure update_updated_at_column();
+create trigger update_categories_updated_at before update on public.categories for each row execute procedure update_updated_at_column();
+create trigger update_methods_updated_at before update on public.methods for each row execute procedure update_updated_at_column();
+create trigger update_subjects_updated_at before update on public.subjects for each row execute procedure update_updated_at_column();
+create trigger update_loans_updated_at before update on public.loans for each row execute procedure update_updated_at_column();
+create trigger update_transaction_types_updated_at before update on public.transaction_types for each row execute procedure update_updated_at_column();
+create trigger update_transactions_updated_at before update on public.transactions for each row execute procedure update_updated_at_column();
+create trigger update_trades_updated_at before update on public.trades for each row execute procedure update_updated_at_column();
+create trigger update_transfers_updated_at before update on public.transfers for each row execute procedure update_updated_at_column();
+create trigger update_products_updated_at before update on public.products for each row execute procedure update_updated_at_column();
+create trigger update_assets_updated_at before update on public.assets for each row execute procedure update_updated_at_column();
 
-insert into public.user (name, email, password) values 
-('Jakub Kawka', 'jakubkawka2005@gmail.com', 'zaq1@WSX'),
-('Ola Kawka', 'ola@gmail.com', 'zaq1@WSX'),
-('Iza Kawka', 'iza@gmail.com', 'zaq1@WSX'),
-('Olaf Konieczny', 'olaf@gmail.com', 'zaq1@WSX');
+-- Foreign Key Constraints
+alter table public.wallets add foreign key (user_id) references public.users(id);
+alter table public.wallets add foreign key (wallet_type_id) references public.wallet_types(id);
 
-insert into public.super_category (name, income, outcome) values 
+alter table public.categories add foreign key (super_category_id) references public.super_categories(id);
+
+alter table public.subjects add foreign key (user_id) references public.users(id);
+
+alter table public.loans add foreign key (user_id) references public.users(id);
+alter table public.loans add foreign key (subject_id) references public.subjects(id);
+
+alter table public.transactions add foreign key (user_id) references public.users(id);
+alter table public.transactions add foreign key (wallet_id) references public.wallets(id);
+alter table public.transactions add foreign key (category_id) references public.categories(id);
+alter table public.transactions add foreign key (subject_id) references public.subjects(id);
+alter table public.transactions add foreign key (method_id) references public.methods(id);
+alter table public.transactions add foreign key (transaction_type_id) references public.transaction_types(id);
+alter table public.transactions add foreign key (loan_id) references public.loans(id);
+
+alter table public.trades add foreign key (user_id) references public.users(id);
+alter table public.trades add foreign key (wallet_id) references public.wallets(id);
+alter table public.trades add foreign key (user_method_id) references public.methods(id);
+alter table public.trades add foreign key (subject_id) references public.subjects(id);
+alter table public.trades add foreign key (subject_method_id) references public.methods(id);
+
+alter table public.transfers add foreign key (user_id) references public.users(id);
+alter table public.transfers add foreign key (method_id) references public.methods(id);
+alter table public.transfers add foreign key (from_wallet_id) references public.wallets(id);
+alter table public.transfers add foreign key (to_wallet_id) references public.wallets(id);
+
+alter table public.assets add foreign key (wallet_id) references public.wallets(id);
+
+-- Indexes for Foreign Keys
+create index idx_wallets_user_id on public.wallets(user_id);
+create index idx_wallets_wallet_type_id on public.wallets(wallet_type_id);
+create index idx_categories_super_category_id on public.categories(super_category_id);
+create index idx_subjects_user_id on public.subjects(user_id);
+create index idx_loans_user_id on public.loans(user_id);
+create index idx_loans_subject_id on public.loans(subject_id);
+create index idx_transactions_user_id on public.transactions(user_id);
+create index idx_transactions_wallet_id on public.transactions(wallet_id);
+create index idx_transactions_category_id on public.transactions(category_id);
+create index idx_transactions_subject_id on public.transactions(subject_id);
+create index idx_transactions_method_id on public.transactions(method_id);
+create index idx_transactions_transaction_type_id on public.transactions(transaction_type_id);
+create index idx_transactions_loan_id on public.transactions(loan_id);
+create index idx_trades_user_id on public.trades(user_id);
+create index idx_trades_wallet_id on public.trades(wallet_id);
+create index idx_trades_user_method_id on public.trades(user_method_id);
+create index idx_trades_subject_id on public.trades(subject_id);
+create index idx_trades_subject_method_id on public.trades(subject_method_id);
+create index idx_transfers_user_id on public.transfers(user_id);
+create index idx_transfers_method_id on public.transfers(method_id);
+create index idx_transfers_from_wallet_id on public.transfers(from_wallet_id);
+create index idx_transfers_to_wallet_id on public.transfers(to_wallet_id);
+create index idx_assets_wallet_id on public.assets(wallet_id);
+
+-- Initial Data
+insert into public.users (name, email, password) values 
+('Jakub Kawka', 'jakubkawka2005@gmail.com', '$2b$10$KV/dnPMobmqZBvje.QYGf.9qqEks5wp1bceSIDhbyKolrByUWX0VG'),
+('Ola Kawka', 'ola@gmail.com', '$2b$10$KV/dnPMobmqZBvje.QYGf.9qqEks5wp1bceSIDhbyKolrByUWX0VG'),
+('Iza Kawka', 'iza@gmail.com', '$2b$10$KV/dnPMobmqZBvje.QYGf.9qqEks5wp1bceSIDhbyKolrByUWX0VG'),
+('Olaf Konieczny', 'olaf@gmail.com', '$2b$10$KV/dnPMobmqZBvje.QYGf.9qqEks5wp1bceSIDhbyKolrByUWX0VG');
+
+insert into public.super_categories (name, income, outcome) values 
 ('codzienne', false, true),
 ('transport', false, true),
 ('osobiste', false, true),
@@ -174,7 +268,7 @@ insert into public.super_category (name, income, outcome) values
 ('inwestycje', true, true),
 ('wpływy', true, false);
 
-insert into public.category (name, super_category_id) values 
+insert into public.categories (name, super_category_id) values 
 ('jedzenie poza domem', 1), ('zwierzęta', 1), ('żywność', 1), ('chemia domowa', 1),
 ('paliwo', 2), ('parking', 2), ('przejazd', 2), ('serwis', 2), ('sprzątanie', 2), ('ubezpieczenie', 2),
 ('rozwój', 3), ('elektronika', 3), ('multimedia', 3), ('odzież i obuwie', 3), ('prezenty i wsparcie', 3), ('zdrowie i uroda', 3),
@@ -186,7 +280,7 @@ insert into public.category (name, super_category_id) values
 ('akcje', 9), ('etf', 9), ('fundusz', 9), ('lokata', 9), ('zakład', 9), ('waluta', 9), ('kryptowaluta', 9), ('surowce', 9),
 ('wynagrodzenie', 10), ('premia', 10), ('pożyczenie', 10), ('kredyt', 10), ('kieszonkowe', 10), ('wstępne', 10);
 
-insert into public.wallet_type (name) values 
+insert into public.wallet_types (name) values 
 ('gotówka'), 
 ('konto'), 
 ('należności'), 
@@ -202,12 +296,12 @@ insert into public.wallet_type (name) values
 ('kryptowaluta'), 
 ('surowiec');
 
-insert into public.wallet (user_id, balance, wallet_type_id) values (1, 40, 1), (1, 100, 3);
-insert into public.wallet (user_id, name, balance, wallet_type_id) values (1, 'mBank', 70, 2), (1, 'iPKO', 0, 2);
-insert into public.wallet (user_id, balance, wallet_type_id) values (4, 3.14, 1), (4, 0, 3);
-insert into public.wallet (user_id, name, balance, wallet_type_id) values (4, 'mBank', 4, 2);
+insert into public.wallets (user_id, balance, wallet_type_id) values (1, 40, 1), (1, 100, 3);
+insert into public.wallets (user_id, name, balance, wallet_type_id) values (1, 'mBank', 70, 2), (1, 'iPKO', 0, 2);
+insert into public.wallets (user_id, balance, wallet_type_id) values (4, 3.14, 1), (4, 0, 3);
+insert into public.wallets (user_id, name, balance, wallet_type_id) values (4, 'mBank', 4, 2);
 
-insert into public.method (name, cash, bank) values 
+insert into public.methods (name, cash, bank) values 
 ('do ręki', true, false),
 ('pocztą', true, false),
 ('przelew tradycyjny', false, true),
@@ -217,21 +311,21 @@ insert into public.method (name, cash, bank) values
 ('blikiem', false, true),
 ('-', false, false);
 
-insert into public.transaction_type (name) values 
+insert into public.transaction_types (name) values 
 ('normalna'),
 ('przyszła'),
 ('wstępna');
 
-insert into public.subject (user_id, name, normal, atm) values (1, 'Tata', true, false), (1, 'Mama', true, false), (1, 'Ola Kawka', true, false), (1, 'Bankomat', false, true), (1, 'Ty', true, false);
+insert into public.subjects (user_id, name, normal, atm) values (1, 'Tata', true, false), (1, 'Mama', true, false), (1, 'Ola Kawka', true, false), (1, 'Bankomat', false, true), (1, 'Ty', true, false);
 
-insert into public.transaction (date, amount, description, category_id, subject_id, income, important, user_id, wallet_id, method_id, transaction_type_id) values 
+insert into public.transactions (date, amount, description, category_id, subject_id, income, important, user_id, wallet_id, method_id, transaction_type_id) values 
 ('2025-04-01 12:00:00', 10, 'kieszonkowe', 58, 1, true, true, 1, 1, 1, 1),
 ('2025-04-01 12:00:00', 100, 'kieszonkowe', 58, 1, true, true, 1, 3, 4, 1),
 ('2025-04-01 12:00:00', 100, 'wypłata', 58, 1, true, true, 1, 1, 1, 1);
 
-insert into public.trade (date, amount, deposit, atm, user_id, wallet_id, user_method_id, subject_id, subject_method_id) values 
+insert into public.trades (date, amount, deposit, atm, user_id, wallet_id, user_method_id, subject_id, subject_method_id) values 
 ('2025-04-02 12:00:00', 40, false, true, 1, 3, 1, 4, 3),
 ('2025-04-02 13:00:00', 10, true, false, 1, 3, 1, 3, 4);
 
-insert into public.transfer (date, amount, user_id, method_id, from_wallet_id, to_wallet_id) values 
+insert into public.transfers (date, amount, user_id, method_id, from_wallet_id, to_wallet_id) values 
 ('2025-04-03 12:00:00', 100, 1, 1, 1, 2);

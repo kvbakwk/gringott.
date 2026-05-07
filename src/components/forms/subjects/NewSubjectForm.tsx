@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { createSubjectAPI } from "@app/api/subject/create";
-import { validateSubjectAddress, validateSubjectAtm, validateSubjectName, validateSubjectNormal } from "@app/utils/validator";
+import { createSubjectAPI } from "@services/subject/create";
+import { validateSubjectAddress, validateSubjectAtm, validateSubjectName, validateSubjectNormal } from "@utils/validator";
 
 import { TextFieldOutlined } from "../../material/TextField";
 import { FilledButton, OutlinedButton } from "../../material/Button";

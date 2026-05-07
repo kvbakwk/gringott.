@@ -1,12 +1,12 @@
 "use client";
 
-import { WalletT } from "@app/utils/db-actions/wallet";
-import { TransactionT } from "@app/utils/db-actions/transaction";
-import { MethodT } from "@app/utils/db-actions/method";
+import { WalletT } from "@utils/db-actions/wallet";
+import { TransactionT } from "@utils/db-actions/transaction";
+import { MethodT } from "@utils/db-actions/method";
 import WalletsGridLayout from "@components/layouts/WalletsGridLayout";
 import PiggybankCard from "@components/features/piggybanks/PiggybankCard";
 import { useState, useRef, useEffect } from "react";
-import { useData } from "@app/context/DataContext";
+import { useData } from "@context/DataContext";
 import NewPiggybankForm from "@components/forms/wallets/NewPiggybankForm";
 import NewPiggybankDepositForm from "@components/forms/transfers/NewPiggybankDepositForm";
 import NewPiggybankWithdrawalForm from "@components/forms/transfers/NewPiggybankWithdrawalForm";

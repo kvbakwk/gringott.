@@ -1,13 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
-  <!-- Lewe oko -->
-  <circle cx="28" cy="40" r="10" fill="#007BFF" />
-  
-  <!-- Prawe oko -->
-  <circle cx="66" cy="27" r="23" fill="#1BBA4A" />
-
-  <!-- Uśmiech -->
-  <path d="M 22 72 C 25 100, 55 100, 80 58" fill="none" stroke="#F03C3C" stroke-width="17" stroke-linecap="round" />
-
-  <!-- Grot strzałki -->
-  <path d="M 64 56 L 80 58 L 88 78" fill="none" stroke="#F03C3C" stroke-width="17" stroke-linecap="round" stroke-linejoin="round" />
+<svg width="640" height="641" viewBox="0 0 640 641" fill="none" xmlns="http://www.w3.org/2000/svg">
+<circle cx="204.105" cy="277.5" r="41.5" fill="#0183FF"/>
+<circle cx="392.105" cy="236.5" r="65.5" transform="rotate(-90 392.105 236.5)" fill="#2CA74C"/>
+<path d="M187.605 425.5C308.605 483.5 404.105 427 456.605 361" stroke="#E23841" stroke-width="20" stroke-linecap="round"/>
+<path d="M413.605 352C452.605 345.5 472.105 366.5 472.105 400.5" stroke="#E23841" stroke-width="20" stroke-linecap="round"/>
 </svg>

@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo, useState, useRef, useEffect } from "react";
-import { useData } from "@app/context/DataContext";
-import { WalletT } from "@app/utils/db-actions/wallet";
-import { parseMoney } from "@app/utils/parser";
+import { useData } from "@context/DataContext";
+import { WalletT } from "@utils/db-actions/wallet";
+import { parseMoney } from "@utils/parser";
 import { CircularProgress } from "@components/material/Progress";
 import { Icon } from "@components/material/Icon";
 import NewAccountForm from "@components/forms/wallets/NewAccountForm";

@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { createWalletAPI } from "@app/api/wallet/create";
+import { createWalletAPI } from "@services/wallet/create";
 import {
   validateWalletBalance,
   validateWalletName,
-} from "@app/utils/validator";
+} from "@utils/validator";
 
 import { TextFieldOutlined } from "@components/material/TextField";
 import { FilledButton, OutlinedButton } from "@components/material/Button";

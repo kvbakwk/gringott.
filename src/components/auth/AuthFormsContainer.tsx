@@ -1,9 +1,9 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import LoginForm from "@components/forms/LoginForm";
+import LoginForm from "@/app/(auth)/logowanie/LoginForm";
 import RegisterForm from "@components/forms/RegisterForm";
-import { RouteSegments } from "@app/utils/routes";
+import { RouteSegments } from "@utils/routes";
 import clsx from "clsx";
 
 export default function AuthFormsContainer() {

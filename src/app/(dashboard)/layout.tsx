@@ -1,25 +1,11 @@
-import "@app/utils/globals.css";
-
-import { Metadata } from "next";
-
 import { redirect } from "next/navigation";
 
-import { getUser } from "@app/api/user/get";
+import { getUser } from "@services/user/get";
 import DashboardNav from "@components/navs/DashboardNav";
 import User from "@components/User";
-import { RouteSegments } from "@app/utils/routes";
-import { verifySession } from "@app/utils/session";
+import { RouteSegments } from "@utils/routes";
 
-export const metadata: Metadata = {
-  title: "portfel.",
-  icons: {
-    icon: "/favicon.png",
-    shortcut: "/favicon.png",
-    apple: "/favicon.png",
-  },
-};
-
-import { DataProvider } from "@app/context/DataContext";
+import { DataProvider } from "@context/DataContext";
 
 export default async function Layout({
   children,
@@ -33,23 +19,19 @@ export default async function Layout({
   }
 
   return (
-    <html lang="pl" className="font-noto" suppressHydrationWarning>
-      <body>
-        <div className="grid grid-cols-[300px_1fr] w-screen h-screen bg-linear-to-r from-[#79590C33] to-[#0183ff33]">
-          <div className="grid grid-rows-[110px_1fr]">
-            <div className="justify-self-center self-center flex justify-center items-center font-bold text-primary text-[45px] tracking-tight w-[250px] h-[70px]">
-              portfel.
-            </div>
-            <div className="flex flex-col justify-between items-center">
-              <DashboardNav />
-              <User name={user?.name} />
-            </div>
-          </div>
-          <DataProvider user={user}>
-            {children}
-          </DataProvider>
+    <div className="grid grid-cols-[300px_1fr] w-screen h-screen bg-linear-to-r from-[#79590C33] to-[#0183ff33]">
+      <div className="grid grid-rows-[110px_1fr]">
+        <div className="justify-self-center self-center flex justify-center items-center font-bold text-primary text-[45px] tracking-tight w-[250px] h-[70px]">
+          portfel.
         </div>
-      </body>
-    </html>
+        <div className="flex flex-col justify-between items-center">
+          <DashboardNav />
+          <User name={user?.name} />
+        </div>
+      </div>
+      <DataProvider user={user}>
+        {children}
+      </DataProvider>
+    </div>
   );
 }

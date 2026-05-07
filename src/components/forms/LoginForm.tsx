@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 
-import { login } from "@app/api/auth/login";
+import { login } from "@services/auth/login";
 
 import { TextFieldOutlined } from "@components/material/TextField";
 import { FilledButton } from "@components/material/Button";
@@ -26,10 +26,12 @@ export default function LoginForm() {
           className="w-full"
           label="twój e-mail"
           name="email"
+          defaultValue={state?.values?.email}
           onKeyDown={handleKeyDown}
           error={state?.errors?.email ? true : false}
           errorText={state?.errors?.email ? state.errors.email[0] : ""}
         />
+
         <TextFieldOutlined
           className="w-full"
           label="twoje hasło"
@@ -47,7 +49,7 @@ export default function LoginForm() {
         />
       </div>
       <div className="flex justify-end items-center w-full mt-8">
-        <FilledButton type="submit" disabled={pending} className="w-full sm:w-auto shadow-md">
+        <FilledButton type="submit" disabled={pending}>
           zaloguj się
         </FilledButton>
       </div>

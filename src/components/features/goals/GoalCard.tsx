@@ -1,8 +1,8 @@
 "use client";
 
-import { WalletT } from "@app/utils/db-actions/wallet";
-import { TransactionT } from "@app/utils/db-actions/transaction";
-import { parseMoney } from "@app/utils/parser";
+import { WalletT } from "@utils/db-actions/wallet";
+import { TransactionT } from "@utils/db-actions/transaction";
+import { parseMoney } from "@utils/parser";
 import { Icon } from "@components/material/Icon";
 import { IconButton } from "@components/material/IconButton";
 import { useMemo, useState, useRef, useEffect } from "react";

@@ -1,18 +1,18 @@
 "use client";
 
-import { WalletT } from "@app/utils/db-actions/wallet";
-import { MethodT } from "@app/utils/db-actions/method";
-import { TransferT } from "@app/utils/db-actions/transfer";
+import { WalletT } from "@utils/db-actions/wallet";
+import { MethodT } from "@utils/db-actions/method";
+import { TransferT } from "@utils/db-actions/transfer";
 
 import { FormEvent, useState } from "react";
 
-import editTransferAPI from "@app/api/transfer/edit";
+import editTransferAPI from "@services/transfer/edit";
 
 import { FilledButton, OutlinedButton } from "@components/material/Button";
 import { SelectOption, SelectOutlined } from "@components/material/Select";
 import { TextFieldOutlined } from "@components/material/TextField";
 import { Icon } from "@components/material/Icon";
-import { FormState } from "@app/utils/definitions";
+import { FormState } from "@utils/definitions";
 
 export default function EditTransferForm({
   userId,

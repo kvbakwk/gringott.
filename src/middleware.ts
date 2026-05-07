@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
-import { decrypt, issueNewAccessToken } from "./app/utils/session";
+import { decrypt, issueNewAccessToken } from "@utils/session";
 
 const protectedRoutes = ["/"];
 const publicRoutes = ["/logowanie", "/rejestracja"];
@@ -25,16 +25,16 @@ export default async function middleware(req: NextRequest) {
       justRefreshed = true;
     }
   }
-
+  
   if (isProtectedRoute && !session?.userId) {
     return NextResponse.redirect(new URL("/logowanie", req.nextUrl));
   }
 
-  if (isPublicRoute && session?.userId) {
-    return NextResponse.redirect(new URL("/", req.nextUrl));
-  }
+  let res = NextResponse.next();
 
-  const res = NextResponse.next();
+  if (isPublicRoute && session?.userId) {
+    res = NextResponse.redirect(new URL("/", req.nextUrl));
+  }
 
   if (justRefreshed && session?.userId) {
     const { newAccessToken, accessExpiresAt } = await issueNewAccessToken(Number(session.userId));
@@ -53,5 +53,5 @@ export default async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|webp|gif)$).*)"]
 };

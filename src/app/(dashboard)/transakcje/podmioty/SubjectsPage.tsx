@@ -1,17 +1,17 @@
 "use client";
 
-import { SubjectT } from "@app/utils/db-actions/subject";
+import { SubjectT } from "@utils/db-actions/subject";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { RouteSegments } from "@app/utils/routes";
+import { RouteSegments } from "@utils/routes";
 
-import { getSubjects } from "@app/api/subject/get";
+import { getSubjects } from "@services/subject/get";
 import { Fab } from "@components/material/Fab";
 import { IconButton } from "@components/material/IconButton";
 import FormPageWrapper from "@components/layouts/FormPageWrapper";
-import { useData } from "@app/context/DataContext";
+import { useData } from "@context/DataContext";
 import { Icon } from "@components/material/Icon";
 
 export default function SubjectsPage() {

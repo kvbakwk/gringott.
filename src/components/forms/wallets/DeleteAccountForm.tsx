@@ -1,8 +1,8 @@
 "use client";
 
-import { WalletT } from "@app/utils/db-actions/wallet";
+import { WalletT } from "@utils/db-actions/wallet";
 import { useState } from "react";
-import { deleteWalletAPI } from "@app/api/wallet/delete";
+import { deleteWalletAPI } from "@services/wallet/delete";
 import { FilledButton, OutlinedButton } from "../../material/Button";
 
 export default function DeleteAccountForm({
