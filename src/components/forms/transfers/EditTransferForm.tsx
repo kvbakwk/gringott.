@@ -34,16 +34,16 @@ export default function EditTransferForm({
 
   const [amount, setAmount] = useState<number>(transfer.amount);
   const [fromWallet, setFromWallet] = useState<WalletT>(
-    wallets.find((w) => w.id === transfer.from_wallet_id)
+    wallets.find((w) => w.id === transfer.from_wallet_id),
   );
   const [toWallet, setToWallet] = useState<WalletT>(
-    wallets.find((w) => w.id === transfer.to_wallet_id)
+    wallets.find((w) => w.id === transfer.to_wallet_id),
   );
   const [method, setMethod] = useState<MethodT>(
-    methods.find((m) => m.id === transfer.method_id)
+    methods.find((m) => m.id === transfer.method_id),
   );
   const [fromType, setFromType] = useState<number>(
-    fromWallet.wallet_type_id - 1
+    fromWallet.wallet_type_id - 1,
   );
   const [toType, setToType] = useState<number>(toWallet.wallet_type_id - 1);
 
@@ -70,11 +70,11 @@ export default function EditTransferForm({
             className="w-full"
             label="portfel"
             name="fromWalletId"
-            onChange={(e) =>
+            onChange={(e: any) =>
               setFromWallet(
                 wallets.find(
-                  (wallet) => wallet.id === parseInt(e.currentTarget.value)
-                )
+                  (wallet) => wallet.id === parseInt(e.target.value),
+                ),
               )
             }
             error={state?.errors?.fromWalletId ? true : false}
@@ -141,7 +141,7 @@ export default function EditTransferForm({
           <SelectOutlined
             className="w-full"
             label="typ"
-            onChange={(e) => setFromType(parseInt(e.currentTarget.value))}
+            onChange={(e: any) => setFromType(parseInt(e.target.value))}
             value={fromType.toString()}
           >
             <Icon className="fill" slot="leading-icon">
@@ -159,7 +159,7 @@ export default function EditTransferForm({
                 (type) =>
                   (toType === 0 && type.id !== 1) ||
                   (toType === 1 && type.id !== 0) ||
-                  ![0, 1].includes(toType)
+                  ![0, 1].includes(toType),
               )
               .map((type) => (
                 <SelectOption key={type.id} value={type.id.toString()}>
@@ -177,7 +177,7 @@ export default function EditTransferForm({
             step="0.01"
             min="0"
             suffixText="zł"
-            onChange={(e) => setAmount(parseFloat(e.currentTarget.value))}
+            onChange={(e: any) => setAmount(parseFloat(e.target.value))}
             error={state?.errors?.amount ? true : false}
             errorText={state?.errors?.amount[0] ?? ""}
             value={amount.toString()}
@@ -188,11 +188,11 @@ export default function EditTransferForm({
             className="w-full"
             label="metoda"
             name="methodId"
-            onChange={(e) =>
+            onChange={(e: any) =>
               setMethod(
                 methods.find(
-                  (method) => method.id === parseInt(e.currentTarget.value)
-                )
+                  (method) => method.id === parseInt(e.target.value),
+                ),
               )
             }
             error={state?.errors?.methodId ? true : false}
@@ -208,8 +208,8 @@ export default function EditTransferForm({
                 fromType === 0 || toType === 0
                   ? method.cash
                   : fromType === 1 || toType === 1
-                  ? method.bank
-                  : method.cash || method.bank
+                    ? method.bank
+                    : method.cash || method.bank,
               )
               .map((method) => (
                 <SelectOption key={method.id} value={method.id.toString()}>
@@ -226,11 +226,11 @@ export default function EditTransferForm({
             className="w-full"
             label="portfel"
             name="toWalletId"
-            onChange={(e) =>
+            onChange={(e: any) =>
               setToWallet(
                 wallets.find(
-                  (wallet) => wallet.id === parseInt(e.currentTarget.value)
-                )
+                  (wallet) => wallet.id === parseInt(e.target.value),
+                ),
               )
             }
             error={state?.errors?.toWalletId ? true : false}
@@ -297,7 +297,7 @@ export default function EditTransferForm({
           <SelectOutlined
             className="w-full"
             label="typ"
-            onChange={(e) => setToType(parseInt(e.currentTarget.value))}
+            onChange={(e: any) => setToType(parseInt(e.target.value))}
             value={toType.toString()}
           >
             <Icon className="fill" slot="leading-icon">
@@ -315,7 +315,7 @@ export default function EditTransferForm({
                 (type) =>
                   (fromType === 0 && type.id !== 1) ||
                   (fromType === 1 && type.id !== 0) ||
-                  ![0, 1].includes(fromType)
+                  ![0, 1].includes(fromType),
               )
               .map((type) => (
                 <SelectOption key={type.id} value={type.id.toString()}>
