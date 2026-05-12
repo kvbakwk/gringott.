@@ -85,7 +85,7 @@ export default function RegisterForm() {
 
   return (
     <form
-      className="flex flex-col justify-center items-center w-full max-w-[540px] h-fit px-24 py-12 bg-surface rounded-[32px] shadow-lg border border-black/5 select-none transition-shadow hover:shadow-xl"
+      className="flex flex-col justify-center items-center w-full max-w-[540px] h-fit px-12 sm:px-24 py-12 bg-surface rounded-[32px] shadow-lg border border-black/5 select-none transition-shadow hover:shadow-xl"
       onSubmit={handleSubmit}
     >
       <div className="text-5xl text-primary font-bold pb-12">portfel.</div>
@@ -127,7 +127,7 @@ export default function RegisterForm() {
       </div>
       <div className="flex flex-col sm:flex-row justify-between items-center gap-6 w-full mt-8">
         <label
-          className="flex items-center gap-3 text-[14px] text-outline tracking-wider cursor-pointer group"
+          className="self-start sm:self-center flex items-center gap-3 text-[14px] text-outline tracking-wider cursor-pointer group"
           htmlFor="rules"
         >
           <Checkbox
@@ -148,7 +148,9 @@ export default function RegisterForm() {
             </Link>
           </span>
         </label>
-        <FilledButton type="submit">zarejestruj się</FilledButton>
+        <FilledButton className="self-end sm:self-center" type="submit">
+          zarejestruj się
+        </FilledButton>
         <button type="submit" className="hidden" aria-hidden="true" />
       </div>
     </form>
