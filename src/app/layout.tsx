@@ -17,10 +17,8 @@ export default async function Layout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="pl" className="font-noto">
-      <body>
-        {children}
-      </body>
+    <html lang="pl" className="font-google">
+      <body>{children}</body>
     </html>
   );
 }

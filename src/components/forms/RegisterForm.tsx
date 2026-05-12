@@ -29,20 +29,20 @@ export default function RegisterForm() {
   const [accountErr, setAccountErr] = useState<boolean>(false);
 
   const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
+    e: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
     if (
       validateFullname(formData.get("fullname").toString()) &&
-        validateEmail(formData.get("email").toString()) &&
-        validatePassword(formData.get("password").toString()) &&
-        validatePasswords(
-          formData.get("password").toString(),
-          formData.get("passwordValid").toString()
-        ) &&
-        formData.get("rules")
+      validateEmail(formData.get("email").toString()) &&
+      validatePassword(formData.get("password").toString()) &&
+      validatePasswords(
+        formData.get("password").toString(),
+        formData.get("passwordValid").toString(),
+      ) &&
+      formData.get("rules")
         ? true
         : false
     ) {
@@ -51,7 +51,7 @@ export default function RegisterForm() {
         formData.get("email").toString(),
         formData.get("password").toString(),
         formData.get("passwordValid").toString(),
-        formData.get("rules") ? true : false
+        formData.get("rules") ? true : false,
       );
       if (!response.register) {
         setFullnameErr(response.fullnameErr);
@@ -70,8 +70,8 @@ export default function RegisterForm() {
       setPasswordsErr(
         !validatePasswords(
           formData.get("password").toString(),
-          formData.get("passwordValid").toString()
-        )
+          formData.get("passwordValid").toString(),
+        ),
       );
       setRulesErr(!formData.get("rules"));
     }
@@ -85,9 +85,10 @@ export default function RegisterForm() {
 
   return (
     <form
-      className="flex flex-col w-full max-w-[540px] h-fit px-24 py-20 bg-surface rounded-[32px] shadow-lg border border-black/5 select-none transition-shadow hover:shadow-xl"
+      className="flex flex-col justify-center items-center w-full max-w-[540px] h-fit px-24 py-12 bg-surface rounded-[32px] shadow-lg border border-black/5 select-none transition-shadow hover:shadow-xl"
       onSubmit={handleSubmit}
     >
+      <div className="text-5xl text-primary font-bold pb-12">portfel.</div>
       <div className="flex flex-col gap-6 w-full">
         <TextFieldOutlined
           className="w-full"
@@ -129,7 +130,12 @@ export default function RegisterForm() {
           className="flex items-center gap-3 text-[14px] text-outline tracking-wider cursor-pointer group"
           htmlFor="rules"
         >
-          <Checkbox className="flex-shrink-0 transition-transform group-hover:scale-105" name="rules" id="rules" required />
+          <Checkbox
+            className="flex-shrink-0 transition-transform group-hover:scale-105"
+            name="rules"
+            id="rules"
+            required
+          />
           <span className="leading-snug">
             akceptuję{" "}
             <Link

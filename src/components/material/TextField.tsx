@@ -30,4 +30,8 @@ export const TextFieldOutlined = createComponent({
   tagName: CUSTOM_TAG_NAME,
   elementClass: CustomTextField,
   react: React,
+  events: {
+    onInput: "input",
+    onChange: "change",
+  },
 });

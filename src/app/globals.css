@@ -1,8 +1,55 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Google+Sans+Code:ital,wght,MONO@0,300..800,1;1,300..800,1&family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Google+Sans:ital,opsz,wght@0,17..18,400..700;1,17..18,400..700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL@20..48,100..700,0..1");
-
 @import "tailwindcss";
-@config "../../tailwind.config.js";
+
+@theme {
+  /* Fonts */
+  --font-noto: "Noto Sans", sans-serif;
+  --font-google: "Google Sans", sans-serif;
+  --font-google-flex: "Google Sans Flex", sans-serif;
+  --font-google-code: "Google Sans Code", sans-serif;
+
+  /* Breakpoints */
+  --breakpoint-sm: 600px;
+  --breakpoint-md: 905px;
+  --breakpoint-lg: 1240px;
+  --breakpoint-xl: 1440px;
+
+  /* Colors */
+  --color-primary: #79590c;
+  --color-surface: #fff6;
+  --color-surface-container: #fff6;
+  --color-on-surface: #201b13;
+  --color-on-surface-variant: #4e4639;
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #410002;
+  --color-outline: #7f7667;
+
+  --color-cash: #ccad00;
+  --color-bank: #0000cc;
+  --color-savings: #008b00ff;
+  --color-piggybanks: hsla(45, 87%, 40%, 1);
+  --color-goals: #674ea7;
+  --color-investments: #cc0000;
+  --color-loans: #a64d79;
+
+  /* Shadows */
+  --shadow-none: 0px 0px 0px 0px rgba(0, 0, 0, 0.1);
+  --shadow-xs: 0px 4px 10px 0px rgba(0, 0, 0, 0.1);
+  --shadow-sm: 0px 4px 20px 0px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0px 4px 30px 0px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0px 4px 40px 0px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0px 4px 50px 0px rgba(0, 0, 0, 0.1);
+
+  /* Borders */
+  --border-width-0: 0px;
+  --border-width-1: 1px;
+  --border-width-2: 2px;
+
+  /* Transitions */
+  --transition-property-radius: border-radius;
+}
 
 * {
   /* box-sizing: border-box; */
@@ -101,27 +148,27 @@
   --md-sys-color-surface-container-high: #f1e7d9;
   --md-sys-color-surface-container-highest: #ebe1d4;
 
-  --md-outlined-select-text-field-outline-color: #79590C;
+  --md-outlined-select-text-field-outline-color: #79590c;
   --md-outlined-select-text-field-container-shape: 8px;
-  --md-outlined-select-text-field-input-text-color: #79590C;
-  --md-outlined-select-text-field-leading-icon-color: #79590C;
+  --md-outlined-select-text-field-input-text-color: #79590c;
+  --md-outlined-select-text-field-leading-icon-color: #79590c;
 
   --md-outlined-text-field-container-shape: 8px;
-  --md-outlined-text-field-label-text-color: #79590C;
-  --md-outlined-text-field-input-text-color: #79590C;
-  --md-outlined-text-field-leading-icon-color: #79590C;
+  --md-outlined-text-field-label-text-color: #79590c;
+  --md-outlined-text-field-input-text-color: #79590c;
+  --md-outlined-text-field-leading-icon-color: #79590c;
   --md-icon-size: 24px;
   --md-icon-font: "Material Symbols Rounded";
 
   /* Typography for Material Components */
-  --md-sys-typescale-label-large-font: "Noto Sans", system-ui, sans-serif;
-  --md-sys-typescale-body-large-font: "Noto Sans", system-ui, sans-serif;
+  --md-sys-typescale-label-large-font: "Google Sans", system-ui, sans-serif;
+  --md-sys-typescale-body-large-font: "Google Sans", system-ui, sans-serif;
+  --md-outlined-field-supporting-text-font:
+    "Google Sans", system-ui, sans-serif !important;
+  --supporting-text-font: "Google Sans", system-ui, sans-serif !important;
+  --md-outlined-text-field-supporting-text-font:
+    "Google Sans", system-ui, sans-serif !important;
 }
-
-body {
-  font-family: "Noto Sans", system-ui, sans-serif;
-}
-
 
 md-filled-button,
 md-outlined-button {
@@ -129,7 +176,7 @@ md-outlined-button {
 }
 
 md-outlined-select::part(menu) {
-  --md-menu-container-color: #FFF8F3;
+  --md-menu-container-color: #fff8f3;
   --md-menu-container-shape: 8px;
 }
 
@@ -144,10 +191,8 @@ md-outlined-text-field {
   --md-outlined-text-field-focus-outline-width: 2px;
 }
 
-
 .fill {
-  font-variation-settings:
-    'FILL' 1
+  font-variation-settings: "FILL" 1;
 }
 
 .mini {
@@ -216,7 +261,10 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-  -webkit-box-shadow: 0 0 0 30px var(--md-sys-color-surface) inset !important;
-  -webkit-text-fill-color: var(--md-outlined-text-field-input-text-color) !important;
+  -webkit-box-shadow: 0 0 0 30px transparent inset !important;
+  -webkit-text-fill-color: var(
+    --md-outlined-text-field-input-text-color
+  ) !important;
   transition: background-color 5000s ease-in-out 0s;
+  background-color: transparent !important;
 }

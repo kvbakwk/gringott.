@@ -8,16 +8,25 @@ export const FilledButton = createComponent({
   tagName: "md-filled-button",
   elementClass: MdFilledButton,
   react: React,
+  events: {
+    onClick: "click",
+  },
 });
 
 export const OutlinedButton = createComponent({
   tagName: "md-outlined-button",
   elementClass: MdOutlinedButton,
   react: React,
+  events: {
+    onClick: "click",
+  },
 });
 
 export const TextButton = createComponent({
   tagName: "md-text-button",
   elementClass: MdTextButton,
   react: React,
+  events: {
+    onClick: "click",
+  },
 });
