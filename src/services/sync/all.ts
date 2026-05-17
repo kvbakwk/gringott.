@@ -2,15 +2,14 @@
 
 import { verifySession } from "@utils/session";
 import { getWalletsByUserId, getWalletTypes } from "@utils/db-actions/wallet";
-import { getTransactionsByUserId } from "@utils/db-actions/transaction";
+import { getTransactionsByUserId, getTransactionTypes } from "@utils/db-actions/transaction";
 import { getTradesByUserId } from "@utils/db-actions/trade";
 import { getTransfersByUserId } from "@utils/db-actions/transfer";
-import { getSubjectsByUserId } from "@utils/db-actions/subject";
+import { getSubjectsByUserId, getSubjectTypes } from "@utils/db-actions/subject";
 import { getMethods } from "@utils/db-actions/method";
-import { getCategories } from "@utils/db-actions/category";
-import { getSuperCategories } from "@utils/db-actions/super_category";
+import { getCategories, getCategoryTypes } from "@utils/db-actions/category";
 import { getLoansByUserId } from "@utils/db-actions/loan";
-import { getAssetsByUserId } from "@utils/db-actions/asset";
+import { getAssetsByUserId, getAssetTypes } from "@utils/db-actions/asset";
 
 export async function syncAllAction(lastSync?: Date | null) {
   const session = await verifySession();
@@ -27,26 +26,32 @@ export async function syncAllAction(lastSync?: Date | null) {
       wallets,
       walletTypes,
       transactions,
+      transactionTypes,
       trades,
       transfers,
       subjects,
+      subjectTypes,
       methods,
       categories,
-      superCategories,
+      categoryTypes,
       loans,
-      assets
+      assets,
+      assetTypes
     ] = await Promise.all([
       getWalletsByUserId(userId, since),
       getWalletTypes(since),
       getTransactionsByUserId(userId, since),
+      getTransactionTypes(since),
       getTradesByUserId(userId, since),
       getTransfersByUserId(userId, since),
       getSubjectsByUserId(userId, since),
+      getSubjectTypes(since),
       getMethods(since),
       getCategories(since),
-      getSuperCategories(since),
+      getCategoryTypes(since),
       getLoansByUserId(userId, since),
-      getAssetsByUserId(userId, since)
+      getAssetsByUserId(userId, since),
+      getAssetTypes(since)
     ]);
 
     return {
@@ -55,14 +60,17 @@ export async function syncAllAction(lastSync?: Date | null) {
         wallets,
         walletTypes,
         transactions,
+        transactionTypes,
         trades,
         transfers,
         subjects,
+        subjectTypes,
         methods,
         categories,
-        superCategories,
+        categoryTypes,
         loans,
         assets,
+        assetTypes,
         timestamp: currentSyncTimestamp
       }
     };

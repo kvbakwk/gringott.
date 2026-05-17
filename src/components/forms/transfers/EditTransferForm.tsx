@@ -1,10 +1,10 @@
 "use client";
 
-import { WalletT } from "@utils/db-actions/wallet";
-import { MethodT } from "@utils/db-actions/method";
-import { TransferT } from "@utils/db-actions/transfer";
-
 import { FormEvent, useState } from "react";
+
+import { WalletT } from "@/types/wallet";
+import { TransferT } from "@/types/transfer";
+import { MethodT } from "@/types/method";
 
 import editTransferAPI from "@services/transfer/edit";
 

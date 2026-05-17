@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { createComponent } from "@lit/react";
 import { MdOutlinedSelect } from "@material/web/select/outlined-select";

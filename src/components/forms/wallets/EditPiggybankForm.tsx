@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { updateWalletAPI } from "@services/wallet/update";
 import { validateWalletName } from "@utils/validator";
-import { WalletT } from "@utils/db-actions/wallet";
+import { WalletT } from "@/types/wallet";
 
 import { TextFieldOutlined } from "@components/material/TextField";
 import { FilledButton, OutlinedButton } from "@components/material/Button";
@@ -28,11 +28,11 @@ const AVAILABLE_ICONS = [
   { icon: "celebration", label: "Impreza" },
 ];
 
-export default function EditPiggybankForm({ 
+export default function EditPiggybankForm({
   wallet,
-  successOperation, 
-  cancelOperation 
-}: { 
+  successOperation,
+  cancelOperation,
+}: {
   wallet: WalletT;
   successOperation: () => void;
   cancelOperation: () => void;
@@ -41,7 +41,9 @@ export default function EditPiggybankForm({
   const [pending, setPending] = useState<boolean>(false);
   const [nameErr, setNameErr] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-  const [selectedIcon, setSelectedIcon] = useState<string>(wallet.icon || "savings");
+  const [selectedIcon, setSelectedIcon] = useState<string>(
+    wallet.icon || "savings",
+  );
   const [name, setName] = useState<string>(wallet.name);
 
   // Reset form when wallet changes
@@ -53,7 +55,7 @@ export default function EditPiggybankForm({
   }, [wallet]);
 
   const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
+    e: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     e.preventDefault();
 
@@ -82,9 +84,9 @@ export default function EditPiggybankForm({
     >
       <div className="flex flex-col gap-[25px] w-[320px]">
         <div className="flex justify-center items-center text-on-surface-variant font-bold uppercase text-xs tracking-widest mb-2">
-            Edytuj skarbonkę
+          Edytuj skarbonkę
         </div>
-        
+
         <TextFieldOutlined
           className="w-full"
           label="nazwa skarbonki"
@@ -94,7 +96,7 @@ export default function EditPiggybankForm({
           error={nameErr}
           errorText="od 1 do 20 znaków"
         >
-            <Icon slot="leading-icon">savings</Icon>
+          <Icon slot="leading-icon">savings</Icon>
         </TextFieldOutlined>
 
         {/* Icon Picker */}
@@ -127,12 +129,14 @@ export default function EditPiggybankForm({
           anuluj
         </OutlinedButton>
         <FilledButton disabled={pending}>
-            {pending ? "zapisywanie..." : "zapisz zmiany"}
+          {pending ? "zapisywanie..." : "zapisz zmiany"}
         </FilledButton>
       </div>
-      
+
       {error && (
-          <p className="text-error text-xs mt-2">Wystąpił nieoczekiwany błąd. Spróbuj ponownie.</p>
+        <p className="text-error text-xs mt-2">
+          Wystąpił nieoczekiwany błąd. Spróbuj ponownie.
+        </p>
       )}
     </form>
   );

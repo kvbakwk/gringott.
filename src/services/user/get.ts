@@ -1,7 +1,8 @@
 "use server";
 
-import { getUserById, UserT } from "@utils/db-actions/user";
+import { UserT } from "@/types/user";
 
+import { getUserById } from "@utils/db-actions/user";
 import { verifySession } from "@utils/session";
 
 export async function getUser(): Promise<UserT> {

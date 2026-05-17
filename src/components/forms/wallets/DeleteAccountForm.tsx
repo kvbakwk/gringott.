@@ -1,6 +1,6 @@
 "use client";
 
-import { WalletT } from "@utils/db-actions/wallet";
+import { WalletT } from "@/types/wallet";
 import { useState } from "react";
 import { deleteWalletAPI } from "@services/wallet/delete";
 import { FilledButton, OutlinedButton } from "../../material/Button";
@@ -18,7 +18,7 @@ export default function DeleteAccountForm({
   const [pending, setPending] = useState<boolean>(false);
 
   const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
+    e: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     e.preventDefault();
     setPending(true);
@@ -47,7 +47,7 @@ export default function DeleteAccountForm({
             &quot;{wallet.name}&quot;
           </div>
         </div>
-        
+
         {error && (
           <div className="text-error text-sm font-medium">
             Coś poszło nie tak.. spróbuj ponownie później

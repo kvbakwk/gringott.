@@ -1,6 +1,6 @@
 "use client";
 
-import { SubjectT } from "@utils/db-actions/subject";
+import { SubjectT } from "@/types/subject";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -39,7 +39,14 @@ export default function SubjectsPage() {
             .sort((a, b) => a.name.localeCompare(b.name))
             .map((subject) => <Subject key={subject.id} subject={subject} />)}
         <div className="absolute bottom-10 right-10">
-          <Fab lowered onClick={() => router.push(`/${RouteSegments.Transactions}/${RouteSegments.Subjects}/${RouteSegments.New}`)}>
+          <Fab
+            lowered
+            onClick={() =>
+              router.push(
+                `/${RouteSegments.Transactions}/${RouteSegments.Subjects}/${RouteSegments.New}`,
+              )
+            }
+          >
             <Icon slot="icon">add</Icon>
           </Fab>
         </div>
@@ -79,7 +86,9 @@ export function Subject({ subject }: { subject: SubjectT }) {
         <IconButton
           className="mini"
           onClick={() =>
-            router.push(`/${RouteSegments.Transactions}/${RouteSegments.Subjects}/${RouteSegments.Edit}/${subject.id}`)
+            router.push(
+              `/${RouteSegments.Transactions}/${RouteSegments.Subjects}/${RouteSegments.Edit}/${subject.id}`,
+            )
           }
         >
           <Icon>edit</Icon>
@@ -87,7 +96,9 @@ export function Subject({ subject }: { subject: SubjectT }) {
         <IconButton
           className="mini error"
           onClick={() =>
-            router.push(`/${RouteSegments.Transactions}/${RouteSegments.Subjects}/${RouteSegments.Delete}/${subject.id}`)
+            router.push(
+              `/${RouteSegments.Transactions}/${RouteSegments.Subjects}/${RouteSegments.Delete}/${subject.id}`,
+            )
           }
         >
           <Icon>delete</Icon>

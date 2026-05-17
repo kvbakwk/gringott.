@@ -1,11 +1,11 @@
 "use client";
 
-import { WalletT } from "@utils/db-actions/wallet";
-import { TransactionT } from "@utils/db-actions/transaction";
-import { MethodT } from "@utils/db-actions/method";
+import { useState, useRef, useEffect } from "react";
+
+import { WalletT } from "@/types/wallet";
+
 import WalletsGridLayout from "@components/layouts/WalletsGridLayout";
 import GoalCard from "@components/features/goals/GoalCard";
-import { useState, useRef, useEffect } from "react";
 import { useData } from "@context/DataContext";
 import NewGoalForm from "@components/forms/wallets/NewGoalForm";
 import EditGoalForm from "@components/forms/wallets/EditGoalForm";
@@ -14,14 +14,22 @@ import NewGoalDepositForm from "@components/forms/transfers/NewGoalDepositForm";
 import NewGoalWithdrawalForm from "@components/forms/transfers/NewGoalWithdrawalForm";
 
 export default function GoalsPage() {
-  const { user, wallets, isReady, transactions, methods, reloadWallets, reloadTransfers } = useData();
+  const {
+    user,
+    wallets,
+    isReady,
+    transactions,
+    methods,
+    reloadWallets,
+    reloadTransfers,
+  } = useData();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [targetWallet, setTargetWallet] = useState<WalletT | null>(null);
-  
+
   const addModalEl = useRef<HTMLDivElement>(null);
   const depositModalEl = useRef<HTMLDivElement>(null);
   const withdrawalModalEl = useRef<HTMLDivElement>(null);
@@ -32,7 +40,10 @@ export default function GoalsPage() {
   const totalBalance = goals.reduce((a, b) => a + b.balance, 0);
 
   // Generic modal animation helper
-  const animateModal = (show: boolean, ref: React.RefObject<HTMLDivElement>) => {
+  const animateModal = (
+    show: boolean,
+    ref: React.RefObject<HTMLDivElement>,
+  ) => {
     if (show) {
       ref.current?.classList.remove("hidden");
       ref.current?.classList.add("flex");
@@ -49,10 +60,19 @@ export default function GoalsPage() {
   };
 
   useEffect(() => animateModal(showAddModal, addModalEl), [showAddModal]);
-  useEffect(() => animateModal(showDepositModal, depositModalEl), [showDepositModal]);
-  useEffect(() => animateModal(showWithdrawalModal, withdrawalModalEl), [showWithdrawalModal]);
+  useEffect(
+    () => animateModal(showDepositModal, depositModalEl),
+    [showDepositModal],
+  );
+  useEffect(
+    () => animateModal(showWithdrawalModal, withdrawalModalEl),
+    [showWithdrawalModal],
+  );
   useEffect(() => animateModal(showEditModal, editModalEl), [showEditModal]);
-  useEffect(() => animateModal(showDeleteModal, deleteModalEl), [showDeleteModal]);
+  useEffect(
+    () => animateModal(showDeleteModal, deleteModalEl),
+    [showDeleteModal],
+  );
 
   const handleAddSuccess = () => {
     setShowAddModal(false);
@@ -106,7 +126,9 @@ export default function GoalsPage() {
   };
 
   // Determine active state for card highlighting
-  const getActiveState = (walletId: number): "deposit" | "withdraw" | "edit" | "delete" | null => {
+  const getActiveState = (
+    walletId: number,
+  ): "deposit" | "withdraw" | "edit" | "delete" | null => {
     if (targetWallet?.id !== walletId) return null;
     if (showDepositModal) return "deposit";
     if (showWithdrawalModal) return "withdraw";
@@ -145,10 +167,10 @@ export default function GoalsPage() {
         ref={addModalEl}
         className="fixed inset-0 hidden justify-center items-center bg-black/50 z-50 opacity-0 transition-opacity duration-200 backdrop-blur-sm"
       >
-        <NewGoalForm 
-            userId={user?.id}
-            successOperation={handleAddSuccess}
-            cancelOperation={() => setShowAddModal(false)}
+        <NewGoalForm
+          userId={user?.id}
+          successOperation={handleAddSuccess}
+          cancelOperation={() => setShowAddModal(false)}
         />
       </div>
 
@@ -158,16 +180,16 @@ export default function GoalsPage() {
         className="fixed inset-0 hidden justify-center items-center bg-black/50 z-50 opacity-0 transition-opacity duration-200 backdrop-blur-sm"
       >
         {targetWallet && showDepositModal && (
-          <NewGoalDepositForm 
-              userId={user?.id}
-              wallets={wallets}
-              methods={methods}
-              targetWallet={targetWallet}
-              successOperation={handleDepositSuccess}
-              cancelOperation={() => {
-                setShowDepositModal(false);
-                setTargetWallet(null);
-              }}
+          <NewGoalDepositForm
+            userId={user?.id}
+            wallets={wallets}
+            methods={methods}
+            targetWallet={targetWallet}
+            successOperation={handleDepositSuccess}
+            cancelOperation={() => {
+              setShowDepositModal(false);
+              setTargetWallet(null);
+            }}
           />
         )}
       </div>
@@ -178,16 +200,16 @@ export default function GoalsPage() {
         className="fixed inset-0 hidden justify-center items-center bg-black/50 z-50 opacity-0 transition-opacity duration-200 backdrop-blur-sm"
       >
         {targetWallet && showWithdrawalModal && (
-          <NewGoalWithdrawalForm 
-              userId={user?.id}
-              wallets={wallets}
-              methods={methods}
-              sourceWallet={targetWallet}
-              successOperation={handleWithdrawalSuccess}
-              cancelOperation={() => {
-                setShowWithdrawalModal(false);
-                setTargetWallet(null);
-              }}
+          <NewGoalWithdrawalForm
+            userId={user?.id}
+            wallets={wallets}
+            methods={methods}
+            sourceWallet={targetWallet}
+            successOperation={handleWithdrawalSuccess}
+            cancelOperation={() => {
+              setShowWithdrawalModal(false);
+              setTargetWallet(null);
+            }}
           />
         )}
       </div>
@@ -198,13 +220,13 @@ export default function GoalsPage() {
         className="fixed inset-0 hidden justify-center items-center bg-black/50 z-50 opacity-0 transition-opacity duration-200 backdrop-blur-sm"
       >
         {targetWallet && showEditModal && (
-          <EditGoalForm 
-              wallet={targetWallet}
-              successOperation={handleEditSuccess}
-              cancelOperation={() => {
-                setShowEditModal(false);
-                setTargetWallet(null);
-              }}
+          <EditGoalForm
+            wallet={targetWallet}
+            successOperation={handleEditSuccess}
+            cancelOperation={() => {
+              setShowEditModal(false);
+              setTargetWallet(null);
+            }}
           />
         )}
       </div>
@@ -215,13 +237,13 @@ export default function GoalsPage() {
         className="fixed inset-0 hidden justify-center items-center bg-black/50 z-50 opacity-0 transition-opacity duration-200 backdrop-blur-sm"
       >
         {targetWallet && showDeleteModal && (
-          <DeleteGoalForm 
-              wallet={targetWallet}
-              successOperation={handleDeleteSuccess}
-              cancelOperation={() => {
-                setShowDeleteModal(false);
-                setTargetWallet(null);
-              }}
+          <DeleteGoalForm
+            wallet={targetWallet}
+            successOperation={handleDeleteSuccess}
+            cancelOperation={() => {
+              setShowDeleteModal(false);
+              setTargetWallet(null);
+            }}
           />
         )}
       </div>

@@ -70,7 +70,6 @@ export async function createTradeAPI(
       date,
       amount,
       deposit,
-      atm,
       user_id: userId,
       wallet_id: walletId,
       user_method_id: atm ? 8 : userMethodId,

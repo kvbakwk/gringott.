@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { updateWalletAPI } from "@services/wallet/update";
 import { validateWalletName } from "@utils/validator";
-import { WalletT } from "@utils/db-actions/wallet";
+import { WalletT } from "@/types/wallet";
 
 import { TextFieldOutlined } from "@components/material/TextField";
 import { FilledButton, OutlinedButton } from "@components/material/Button";
@@ -28,11 +28,11 @@ const AVAILABLE_ICONS = [
   { icon: "celebration", label: "Impreza" },
 ];
 
-export default function EditGoalForm({ 
+export default function EditGoalForm({
   wallet,
-  successOperation, 
-  cancelOperation 
-}: { 
+  successOperation,
+  cancelOperation,
+}: {
   wallet: WalletT;
   successOperation: () => void;
   cancelOperation: () => void;
@@ -42,9 +42,13 @@ export default function EditGoalForm({
   const [nameErr, setNameErr] = useState<boolean>(false);
   const [targetErr, setTargetErr] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
-  const [selectedIcon, setSelectedIcon] = useState<string>(wallet.icon || "target");
+  const [selectedIcon, setSelectedIcon] = useState<string>(
+    wallet.icon || "target",
+  );
   const [name, setName] = useState<string>(wallet.name);
-  const [targetAmount, setTargetAmount] = useState<string>(wallet.target_amount?.toString() || "");
+  const [targetAmount, setTargetAmount] = useState<string>(
+    wallet.target_amount?.toString() || "",
+  );
 
   // Reset form when wallet changes
   useEffect(() => {
@@ -57,14 +61,17 @@ export default function EditGoalForm({
   }, [wallet]);
 
   const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
+    e: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     e.preventDefault();
 
-    const parsedTarget = parseFloat(targetAmount.replace(/\s/g, "").replace(",", "."));
+    const parsedTarget = parseFloat(
+      targetAmount.replace(/\s/g, "").replace(",", "."),
+    );
     const isNameValid = validateWalletName(name);
     // Target amount is optional, but if provided must be > 0
-    const isTargetValid = targetAmount.trim() === "" || (!isNaN(parsedTarget) && parsedTarget > 0);
+    const isTargetValid =
+      targetAmount.trim() === "" || (!isNaN(parsedTarget) && parsedTarget > 0);
     const finalTarget = targetAmount.trim() === "" ? undefined : parsedTarget;
 
     if (isNameValid && isTargetValid) {
@@ -93,9 +100,9 @@ export default function EditGoalForm({
     >
       <div className="flex flex-col gap-[25px] w-[320px]">
         <div className="flex justify-center items-center text-on-surface-variant font-bold uppercase text-xs tracking-widest mb-2">
-            Edytuj cel
+          Edytuj cel
         </div>
-        
+
         <TextFieldOutlined
           className="w-full"
           label="nazwa celu"
@@ -105,7 +112,7 @@ export default function EditGoalForm({
           error={nameErr}
           errorText="od 1 do 20 znaków"
         >
-            <Icon slot="leading-icon">target</Icon>
+          <Icon slot="leading-icon">target</Icon>
         </TextFieldOutlined>
 
         <TextFieldOutlined
@@ -117,7 +124,7 @@ export default function EditGoalForm({
           error={targetErr}
           errorText="kwota musi być większa od 0"
         >
-            <Icon slot="leading-icon">flag</Icon>
+          <Icon slot="leading-icon">flag</Icon>
         </TextFieldOutlined>
 
         {/* Icon Picker */}
@@ -150,12 +157,14 @@ export default function EditGoalForm({
           anuluj
         </OutlinedButton>
         <FilledButton disabled={pending}>
-            {pending ? "zapisywanie..." : "zapisz zmiany"}
+          {pending ? "zapisywanie..." : "zapisz zmiany"}
         </FilledButton>
       </div>
-      
+
       {error && (
-          <p className="text-error text-xs mt-2">Wystąpił nieoczekiwany błąd. Spróbuj ponownie.</p>
+        <p className="text-error text-xs mt-2">
+          Wystąpił nieoczekiwany błąd. Spróbuj ponownie.
+        </p>
       )}
     </form>
   );

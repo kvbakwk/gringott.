@@ -1,39 +1,31 @@
 "use server";
 
 import { QueryResult } from "pg";
-import pool from "../db";
 
-export interface AssetT {
-  id: number;
-  wallet_id: number;
-  name: string;
-  ticker: string | null;
-  type: string;
-  quantity: number;
-  currency: string;
-  avg_buy_price: number | null;
-  current_price: number | null;
-  icon: string | null;
-  updated_at: Date;
-  deleted_at: Date | null;
-}
+import pool from "@/utils/db";
+import { AssetT, AssetTypeT } from "@/types/asset";
+
+// ASSETS
 
 interface AssetRow {
   id: string | number;
-  wallet_id: string | number;
   name: string;
   ticker: string | null;
-  type: string;
   quantity: string | number;
   currency: string;
   avg_buy_price: string | number | null;
   current_price: string | number | null;
   icon: string | null;
+  wallet_id: string | number;
+  asset_type_id: string | number;
   updated_at: string | Date;
   deleted_at: string | Date | null;
 }
 
-export async function getAssetsByUserId(userId: number, since?: Date): Promise<AssetT[]> {
+export async function getAssetsByUserId(
+  userId: number,
+  since?: Date,
+): Promise<AssetT[]> {
   try {
     const query = since
       ? `SELECT a.* 
@@ -57,17 +49,24 @@ export async function getAssetsByUserId(userId: number, since?: Date): Promise<A
 }
 
 export async function createAsset(
-  data: Omit<AssetT, 'id' | 'updated_at' | 'deleted_at'>
+  data: Omit<AssetT, "id" | "updated_at" | "deleted_at">,
 ): Promise<number | null> {
   try {
     const res = await pool.query(
       `INSERT INTO public.assets 
-        (wallet_id, name, type, quantity, currency, avg_buy_price, current_price, ticker, icon) 
+        (wallet_id, name, asset_type_id, quantity, currency, avg_buy_price, current_price, ticker, icon) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id;`,
       [
-        data.wallet_id, data.name, data.type, data.quantity, data.currency, 
-        data.avg_buy_price || null, data.current_price || null, data.ticker || null, data.icon || null
-      ]
+        data.wallet_id,
+        data.name,
+        data.asset_type_id,
+        data.quantity,
+        data.currency,
+        data.avg_buy_price || null,
+        data.current_price || null,
+        data.ticker || null,
+        data.icon || null,
+      ],
     );
     return res.rows[0] ? Number(res.rows[0].id) : null;
   } catch (error) {
@@ -80,7 +79,7 @@ export async function deleteAsset(assetId: number): Promise<boolean> {
   try {
     const res = await pool.query(
       "UPDATE public.assets SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL",
-      [assetId]
+      [assetId],
     );
     return (res.rowCount ?? 0) > 0;
   } catch (error) {
@@ -95,12 +94,45 @@ function mapRowToAsset(row: AssetRow): AssetT {
     wallet_id: Number(row.wallet_id),
     name: row.name,
     ticker: row.ticker || null,
-    type: row.type,
+    asset_type_id: Number(row.asset_type_id),
     quantity: Number(row.quantity),
     currency: row.currency,
     avg_buy_price: row.avg_buy_price ? Number(row.avg_buy_price) : null,
     current_price: row.current_price ? Number(row.current_price) : null,
     icon: row.icon || null,
+    updated_at: new Date(row.updated_at),
+    deleted_at: row.deleted_at ? new Date(row.deleted_at) : null,
+  };
+}
+
+// ASSET TYPES
+
+interface AssetTypeRow {
+  id: string | number;
+  name: string;
+  updated_at: string | Date;
+  deleted_at: string | Date | null;
+}
+
+export async function getAssetTypes(since?: Date): Promise<AssetTypeT[]> {
+  try {
+    const query = since
+      ? "SELECT id, name, updated_at, deleted_at FROM public.asset_types WHERE updated_at > $1 ORDER BY id ASC"
+      : "SELECT id, name, updated_at, deleted_at FROM public.asset_types WHERE deleted_at IS NULL ORDER BY id ASC;";
+
+    const params = since ? [since] : [];
+    const res: QueryResult<AssetTypeRow> = await pool.query(query, params);
+    return res.rows.map(mapRowToAssetType);
+  } catch (error) {
+    console.error("Error in getAssetTypes:", error);
+    return [];
+  }
+}
+
+function mapRowToAssetType(row: AssetTypeRow): AssetTypeT {
+  return {
+    id: Number(row.id),
+    name: row.name,
     updated_at: new Date(row.updated_at),
     deleted_at: row.deleted_at ? new Date(row.deleted_at) : null,
   };

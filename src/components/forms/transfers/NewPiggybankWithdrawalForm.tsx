@@ -2,8 +2,8 @@
 
 import { FormEvent, useState } from "react";
 
-import { WalletT } from "@utils/db-actions/wallet";
-import { MethodT } from "@utils/db-actions/method";
+import { WalletT } from "@/types/wallet";
+import { MethodT } from "@/types/method";
 import { FormState } from "@utils/definitions";
 
 import createTransferAPI from "@services/transfer/create";
@@ -49,19 +49,25 @@ export default function NewPiggybankWithdrawalForm({
       <div className="flex justify-center items-center text-on-surface-variant font-bold uppercase text-xs tracking-widest">
         Wypłata ze skarbonki: {sourceWallet.name}
       </div>
-      
+
       <div className="flex justify-center items-center gap-[30px] w-fit h-fit">
         <div className="flex flex-col justify-center items-center gap-[25px] w-[230px]">
           <div className="flex justify-center items-center text-on-surface-variant font-bold uppercase text-xs tracking-widest">
             ze skarbonki..
           </div>
-          <input type="hidden" name="fromWalletId" value={sourceWallet.id.toString()} />
+          <input
+            type="hidden"
+            name="fromWalletId"
+            value={sourceWallet.id.toString()}
+          />
           <div className="flex items-center gap-3 p-4 bg-tertiary/10 rounded-xl border border-tertiary/30">
             <div className="w-10 h-10 rounded-full flex items-center justify-center bg-tertiary/20 text-tertiary">
               <Icon className="text-xl">{sourceWallet.icon || "savings"}</Icon>
             </div>
             <div>
-              <div className="font-bold text-on-surface">{sourceWallet.name}</div>
+              <div className="font-bold text-on-surface">
+                {sourceWallet.name}
+              </div>
               <div className="text-xs text-on-surface-variant">Skarbonka</div>
             </div>
           </div>
@@ -96,8 +102,8 @@ export default function NewPiggybankWithdrawalForm({
                 toType === 0
                   ? method.cash
                   : toType === 1
-                  ? method.bank
-                  : method.cash || method.bank
+                    ? method.bank
+                    : method.cash || method.bank,
               )
               .map((method) => (
                 <SelectOption key={method.id} value={method.id.toString()}>
@@ -133,7 +139,9 @@ export default function NewPiggybankWithdrawalForm({
             label="portfel"
             name="toWalletId"
             error={state?.errors?.toWalletId ? true : false}
-            errorText={state?.errors?.toWalletId ? state.errors.toWalletId[0] : ""}
+            errorText={
+              state?.errors?.toWalletId ? state.errors.toWalletId[0] : ""
+            }
             disabled={toType === null}
           >
             <Icon className="fill" slot="leading-icon">

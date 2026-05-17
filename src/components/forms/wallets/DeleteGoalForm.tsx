@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { deleteWalletAPI } from "@services/wallet/delete";
-import { WalletT } from "@utils/db-actions/wallet";
+import { WalletT } from "@/types/wallet";
 import { parseMoney } from "@utils/parser";
 
 import { FilledButton, OutlinedButton } from "@components/material/Button";
@@ -45,7 +45,7 @@ export default function DeleteGoalForm({
         <div className="w-16 h-16 rounded-full bg-error/10 flex items-center justify-center">
           <Icon className="text-error text-3xl">delete</Icon>
         </div>
-        
+
         <div className="flex flex-col items-center text-center gap-2">
           <h3 className="text-lg font-bold text-on-surface">Usuń cel</h3>
           <p className="text-sm text-on-surface-variant">
@@ -69,7 +69,7 @@ export default function DeleteGoalForm({
         <OutlinedButton type="button" onClick={cancelOperation}>
           anuluj
         </OutlinedButton>
-        <FilledButton 
+        <FilledButton
           className="bg-error hover:bg-error/90"
           onClick={handleDelete}
           disabled={pending}

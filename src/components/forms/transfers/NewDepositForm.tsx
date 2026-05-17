@@ -2,11 +2,12 @@
 
 import { FormEvent, useState, useMemo } from "react";
 
-import { WalletT } from "@utils/db-actions/wallet";
-import { MethodT } from "@utils/db-actions/method";
-import { FormState } from "@utils/definitions";
+import { WalletT } from "@/types/wallet";
+import { MethodT } from "@/types/method";
 
 import createTransferAPI from "@services/transfer/create";
+
+import { FormState } from "@utils/definitions";
 
 import { FilledButton, OutlinedButton } from "@components/material/Button";
 import { SelectOption, SelectOutlined } from "@components/material/Select";
@@ -32,9 +33,14 @@ export default function NewDepositForm({
   const [fromType, setFromType] = useState<number>(null);
   // Default to 3 (Savings)
   const [toType, setToType] = useState<number>(3);
-  
-  const savingsWallet = useMemo(() => wallets.find(w => w.wallet_type_id === 3), [wallets]);
-  const [toWalletId, setToWalletId] = useState<string>(savingsWallet?.id.toString() || "");
+
+  const savingsWallet = useMemo(
+    () => wallets.find((w) => w.wallet_type_id === 3),
+    [wallets],
+  );
+  const [toWalletId, setToWalletId] = useState<string>(
+    savingsWallet?.id.toString() || "",
+  );
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -60,7 +66,9 @@ export default function NewDepositForm({
             label="portfel"
             name="fromWalletId"
             error={state?.errors?.fromWalletId ? true : false}
-            errorText={state?.errors?.fromWalletId ? state.errors.fromWalletId[0] : ""}
+            errorText={
+              state?.errors?.fromWalletId ? state.errors.fromWalletId[0] : ""
+            }
             disabled={fromType === null}
           >
             <Icon className="fill" slot="leading-icon">
@@ -139,7 +147,7 @@ export default function NewDepositForm({
                 (type) =>
                   (toType === 0 && type.id !== 1) ||
                   (toType === 1 && type.id !== 0) ||
-                  ![0, 1].includes(toType)
+                  ![0, 1].includes(toType),
               )
               .map((type) => (
                 <SelectOption key={type.id} value={type.id.toString()}>
@@ -178,8 +186,8 @@ export default function NewDepositForm({
                 fromType === 0 || toType === 0
                   ? method.cash
                   : fromType === 1 || toType === 1
-                  ? method.bank
-                  : method.cash || method.bank
+                    ? method.bank
+                    : method.cash || method.bank,
               )
               .map((method) => (
                 <SelectOption key={method.id} value={method.id.toString()}>
@@ -198,7 +206,9 @@ export default function NewDepositForm({
             label="portfel"
             value={toWalletId}
             error={state?.errors?.toWalletId ? true : false}
-            errorText={state?.errors?.toWalletId ? state.errors.toWalletId[0] : ""}
+            errorText={
+              state?.errors?.toWalletId ? state.errors.toWalletId[0] : ""
+            }
             disabled={true}
           >
             <Icon className="fill" slot="leading-icon">
@@ -268,12 +278,11 @@ export default function NewDepositForm({
               { name: "oszczędności", id: 3 },
               { name: "skarbonka", id: 4 },
               { name: "cel", id: 5 },
-            ]
-              .map((type) => (
-                <SelectOption key={type.id} value={type.id.toString()}>
-                  <div slot="headline">{type.name}</div>
-                </SelectOption>
-              ))}
+            ].map((type) => (
+              <SelectOption key={type.id} value={type.id.toString()}>
+                <div slot="headline">{type.name}</div>
+              </SelectOption>
+            ))}
           </SelectOutlined>
         </div>
       </div>

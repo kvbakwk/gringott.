@@ -1,10 +1,10 @@
 "use client";
 
-import { WalletT } from "@utils/db-actions/wallet";
-import { MethodT } from "@utils/db-actions/method";
-import { SubjectT } from "@utils/db-actions/subject";
-
 import { useState } from "react";
+
+import { WalletT } from "@/types/wallet";
+import { MethodT } from "@/types/method";
+import { SubjectT } from "@/types/subject";
 
 import {
   validateTradeAmount,
@@ -38,13 +38,13 @@ export default function NewTradeForm({
   const [deposit, setDeposit] = useState<boolean>(false);
 
   const [tempWallets, setTempWallets] = useState<WalletT[]>(
-    wallets.filter((wallet) => wallet.wallet_type_id === 2)
+    wallets.filter((wallet) => wallet.wallet_type_id === 2),
   );
   const [cashMethods, setCashMethods] = useState<MethodT[]>(
-    methods.filter((method) => method.cash === true)
+    methods.filter((method) => method.cash === true),
   );
   const [bankMethods, setBankMethods] = useState<MethodT[]>(
-    methods.filter((method) => method.bank === true)
+    methods.filter((method) => method.bank === true),
   );
 
   const [success, setSuccess] = useState<boolean>(false);
@@ -59,7 +59,7 @@ export default function NewTradeForm({
   const [error, setError] = useState<boolean>(false);
 
   const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
+    e: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -67,16 +67,16 @@ export default function NewTradeForm({
     const atm: boolean = Boolean(parseInt(formData.get("atm")?.toString()));
     const walletId: number = parseInt(formData.get("walletId")?.toString());
     const deposit: boolean = Boolean(
-      parseInt(formData.get("deposit")?.toString())
+      parseInt(formData.get("deposit")?.toString()),
     );
     const userMethodId: number = parseInt(
-      formData.get("userMethodId")?.toString()
+      formData.get("userMethodId")?.toString(),
     );
     const date: Date = new Date(formData.get("date").toString());
     const amount: number = parseFloat(formData.get("amount").toString());
     const subjectId: number = parseInt(formData.get("subjectId")?.toString());
     const subjectMethodId: number = parseInt(
-      formData.get("subjectMethodId")?.toString()
+      formData.get("subjectMethodId")?.toString(),
     );
 
     if (
@@ -94,7 +94,7 @@ export default function NewTradeForm({
         amount,
         subjectId,
         subjectMethodId,
-        userId
+        userId,
       )
         .then((res) => {
           setSuccess(res.createTrade);
@@ -257,7 +257,11 @@ export default function NewTradeForm({
               person
             </Icon>
             {subjects
-              .filter((subject) => (atm ? subject.atm : subject.normal))
+              .filter((subject) =>
+                atm
+                  ? subject.subject_type_id === 2
+                  : subject.subject_type_id !== 2,
+              )
               .map((subject) => (
                 <SelectOption key={subject.id} value={subject.id.toString()}>
                   <div slot="headline">{subject.name}</div>

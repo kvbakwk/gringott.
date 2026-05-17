@@ -1,11 +1,8 @@
 "use server";
 
-import { SubjectT } from "@utils/db-actions/subject";
+import { SubjectT } from "@/types/subject";
 
-import {
-  getSubjectById,
-  getSubjectsByUserId,
-} from "@utils/db-actions/subject";
+import { getSubjectById, getSubjectsByUserId } from "@utils/db-actions/subject";
 import { verifySession } from "@utils/session";
 
 export async function getSubject(subjectId: number): Promise<SubjectT> {

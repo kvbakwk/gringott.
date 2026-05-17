@@ -2,8 +2,8 @@
 
 import { FormEvent, useState, useMemo } from "react";
 
-import { WalletT } from "@utils/db-actions/wallet";
-import { MethodT } from "@utils/db-actions/method";
+import { WalletT } from "@/types/wallet";
+import { MethodT } from "@/types/method";
 import { FormState } from "@utils/definitions";
 
 import createTransferAPI from "@services/transfer/create";
@@ -49,7 +49,7 @@ export default function NewPiggybankDepositForm({
       <div className="flex justify-center items-center text-on-surface-variant font-bold uppercase text-xs tracking-widest">
         Wpłata do skarbonki: {targetWallet.name}
       </div>
-      
+
       <div className="flex justify-center items-center gap-[30px] w-fit h-fit">
         <div className="flex flex-col justify-center items-center gap-[25px] w-[230px]">
           <div className="flex justify-center items-center text-on-surface-variant font-bold uppercase text-xs tracking-widest">
@@ -78,7 +78,9 @@ export default function NewPiggybankDepositForm({
             label="portfel"
             name="fromWalletId"
             error={state?.errors?.fromWalletId ? true : false}
-            errorText={state?.errors?.fromWalletId ? state.errors.fromWalletId[0] : ""}
+            errorText={
+              state?.errors?.fromWalletId ? state.errors.fromWalletId[0] : ""
+            }
             disabled={fromType === null}
           >
             <Icon className="fill" slot="leading-icon">
@@ -144,8 +146,8 @@ export default function NewPiggybankDepositForm({
                 fromType === 0
                   ? method.cash
                   : fromType === 1
-                  ? method.bank
-                  : method.cash || method.bank
+                    ? method.bank
+                    : method.cash || method.bank,
               )
               .map((method) => (
                 <SelectOption key={method.id} value={method.id.toString()}>
@@ -158,13 +160,19 @@ export default function NewPiggybankDepositForm({
           <div className="flex justify-center items-center text-on-surface-variant font-bold uppercase text-xs tracking-widest">
             do skarbonki..
           </div>
-          <input type="hidden" name="toWalletId" value={targetWallet.id.toString()} />
+          <input
+            type="hidden"
+            name="toWalletId"
+            value={targetWallet.id.toString()}
+          />
           <div className="flex items-center gap-3 p-4 bg-tertiary/10 rounded-xl border border-tertiary/30">
             <div className="w-10 h-10 rounded-full flex items-center justify-center bg-tertiary/20 text-tertiary">
               <Icon className="text-xl">{targetWallet.icon || "savings"}</Icon>
             </div>
             <div>
-              <div className="font-bold text-on-surface">{targetWallet.name}</div>
+              <div className="font-bold text-on-surface">
+                {targetWallet.name}
+              </div>
               <div className="text-xs text-on-surface-variant">Skarbonka</div>
             </div>
           </div>

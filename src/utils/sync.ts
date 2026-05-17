@@ -31,14 +31,17 @@ export const syncData = async () => {
             processStoreSync(STORES.WALLETS, data.wallets),
             processStoreSync(STORES.WALLET_TYPES, data.walletTypes),
             processStoreSync(STORES.TRANSACTIONS, data.transactions),
+            processStoreSync(STORES.TRANSACTION_TYPES, data.transactionTypes),
             processStoreSync(STORES.TRADES, data.trades),
             processStoreSync(STORES.TRANSFERS, data.transfers),
             processStoreSync(STORES.SUBJECTS, data.subjects),
+            processStoreSync(STORES.SUBJECT_TYPES, data.subjectTypes),
             processStoreSync(STORES.METHODS, data.methods),
             processStoreSync(STORES.CATEGORIES, data.categories),
-            processStoreSync(STORES.SUPER_CATEGORIES, data.superCategories),
+            processStoreSync(STORES.CATEGORY_TYPES, data.categoryTypes),
             processStoreSync(STORES.LOANS, data.loans),
-            processStoreSync(STORES.ASSETS, data.assets)
+            processStoreSync(STORES.ASSETS, data.assets),
+            processStoreSync(STORES.ASSET_TYPES, data.assetTypes)
         ]);
 
         // Save the timestamp returned by the server as the new lastSync point

@@ -3,17 +3,8 @@
 import bcrypt from "bcryptjs";
 import { QueryResult } from "pg";
 
-import pool from "../db";
-
-export interface UserT {
-  id: number;
-  name: string;
-  email: string;
-}
-
-export interface UserIdT {
-  id: number;
-}
+import pool from "@/utils/db";
+import { UserT, UserIdT } from "@/types/user";
 
 interface UserRow {
   id: string | number;
@@ -26,7 +17,7 @@ export async function getUserById(id: string | number): Promise<UserT | null> {
   try {
     const res: QueryResult<UserRow> = await pool.query(
       "SELECT id, name, email FROM public.users WHERE public.users.id = $1 AND deleted_at IS NULL",
-      [id]
+      [id],
     );
     return res.rows[0] ? mapRowToUser(res.rows[0]) : null;
   } catch (error) {
@@ -39,7 +30,7 @@ export async function getUsersIdsByEmail(email: string): Promise<UserIdT[]> {
   try {
     const res: QueryResult<{ id: string | number }> = await pool.query(
       "SELECT id FROM public.users WHERE email = $1 AND deleted_at IS NULL;",
-      [email]
+      [email],
     );
     return res.rows.map((row) => ({ id: Number(row.id) }));
   } catch (error) {
@@ -51,13 +42,13 @@ export async function getUsersIdsByEmail(email: string): Promise<UserIdT[]> {
 export async function createUser(
   name: string,
   email: string,
-  password: string
+  password: string,
 ): Promise<UserIdT | null> {
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
     const res: QueryResult<{ id: string | number }> = await pool.query(
       "INSERT INTO public.users (name, email, password) VALUES ($1, $2, $3) RETURNING id;",
-      [name, email, hashedPassword]
+      [name, email, hashedPassword],
     );
     return res.rows[0] ? { id: Number(res.rows[0].id) } : null;
   } catch (error) {
@@ -68,12 +59,12 @@ export async function createUser(
 
 export async function validateUser(
   email: string,
-  password: string
+  password: string,
 ): Promise<number> {
   try {
     const res: QueryResult<UserRow> = await pool.query(
       "SELECT id, password FROM public.users WHERE email = $1 AND deleted_at IS NULL;",
-      [email]
+      [email],
     );
     if (res.rowCount === 1) {
       const user = res.rows[0];
@@ -93,7 +84,7 @@ export async function deleteUser(id: number): Promise<number> {
   try {
     const res = await pool.query(
       "UPDATE public.users SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL;",
-      [id]
+      [id],
     );
     return res.rowCount ?? 0;
   } catch (error) {

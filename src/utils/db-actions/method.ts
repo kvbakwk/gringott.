@@ -1,16 +1,9 @@
 "use server";
 
 import { QueryResult } from "pg";
-import pool from "../db";
 
-export interface MethodT {
-  id: number;
-  name: string;
-  cash: boolean;
-  bank: boolean;
-  updated_at: Date;
-  deleted_at: Date | null;
-}
+import pool from "@/utils/db";
+import { MethodT } from "@/types/method";
 
 interface MethodRow {
   id: string | number;
@@ -40,7 +33,7 @@ export async function isMethodCash(id: number): Promise<boolean> {
   try {
     const res = await pool.query(
       "SELECT cash FROM public.methods WHERE id = $1 AND deleted_at IS NULL LIMIT 1;",
-      [id]
+      [id],
     );
     return res.rows[0]?.cash ? Boolean(res.rows[0].cash) : false;
   } catch (error) {
@@ -53,7 +46,7 @@ export async function isMethodBank(id: number): Promise<boolean> {
   try {
     const res = await pool.query(
       "SELECT bank FROM public.methods WHERE id = $1 AND deleted_at IS NULL LIMIT 1;",
-      [id]
+      [id],
     );
     return res.rows[0]?.bank ? Boolean(res.rows[0].bank) : false;
   } catch (error) {

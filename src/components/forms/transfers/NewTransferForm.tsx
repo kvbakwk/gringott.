@@ -2,8 +2,8 @@
 
 import { FormEvent, useState } from "react";
 
-import { WalletT } from "@utils/db-actions/wallet";
-import { MethodT } from "@utils/db-actions/method";
+import { WalletT } from "@/types/wallet";
+import { MethodT } from "@/types/method";
 import { FormState } from "@utils/definitions";
 
 import createTransferAPI from "@services/transfer/create";
@@ -135,7 +135,7 @@ export default function NewTransferForm({
                 (type) =>
                   (toType === 0 && type.id !== 1) ||
                   (toType === 1 && type.id !== 0) ||
-                  ![0, 1].includes(toType)
+                  ![0, 1].includes(toType),
               )
               .map((type) => (
                 <SelectOption key={type.id} value={type.id.toString()}>
@@ -174,8 +174,8 @@ export default function NewTransferForm({
                 fromType === 0 || toType === 0
                   ? method.cash
                   : fromType === 1 || toType === 1
-                  ? method.bank
-                  : method.cash || method.bank
+                    ? method.bank
+                    : method.cash || method.bank,
               )
               .map((method) => (
                 <SelectOption key={method.id} value={method.id.toString()}>
@@ -272,7 +272,7 @@ export default function NewTransferForm({
                 (type) =>
                   (fromType === 0 && type.id !== 1) ||
                   (fromType === 1 && type.id !== 0) ||
-                  ![0, 1].includes(fromType)
+                  ![0, 1].includes(fromType),
               )
               .map((type) => (
                 <SelectOption key={type.id} value={type.id.toString()}>

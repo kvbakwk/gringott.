@@ -1,20 +1,9 @@
 "use server";
 
 import { QueryResult } from "pg";
-import pool from "../db";
 
-export interface TransferT {
-  id: number;
-  date: Date;
-  amount: number;
-  user_id: number;
-  method_id: number;
-  method_name: string;
-  from_wallet_id: number;
-  to_wallet_id: number;
-  updated_at: Date;
-  deleted_at: Date | null;
-}
+import pool from "@/utils/db";
+import { TransferT } from "@/types/transfer";
 
 interface TransferRow {
   id: string | number;
@@ -37,7 +26,10 @@ const BASE_TRANSFER_QUERY = `
     JOIN public.methods m ON t.method_id = m.id
 `;
 
-export async function getTransfersByUserId(userId: number, since?: Date): Promise<TransferT[]> {
+export async function getTransfersByUserId(
+  userId: number,
+  since?: Date,
+): Promise<TransferT[]> {
   try {
     const query = since
       ? `${BASE_TRANSFER_QUERY} WHERE t.user_id = $1 AND t.updated_at > $2`
@@ -53,13 +45,20 @@ export async function getTransfersByUserId(userId: number, since?: Date): Promis
 }
 
 export async function createTransfer(
-  data: Omit<TransferT, 'id' | 'updated_at' | 'deleted_at' | 'method_name'>
+  data: Omit<TransferT, "id" | "updated_at" | "deleted_at" | "method_name">,
 ): Promise<number | null> {
   try {
     const res = await pool.query(
       `INSERT INTO public.transfers (date, amount, user_id, method_id, from_wallet_id, to_wallet_id) 
        VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;`,
-      [data.date, data.amount, data.user_id, data.method_id, data.from_wallet_id, data.to_wallet_id]
+      [
+        data.date,
+        data.amount,
+        data.user_id,
+        data.method_id,
+        data.from_wallet_id,
+        data.to_wallet_id,
+      ],
     );
     return res.rows[0] ? Number(res.rows[0].id) : null;
   } catch (error) {
@@ -72,7 +71,7 @@ export async function getTransferById(id: number): Promise<TransferT | null> {
   try {
     const res: QueryResult<TransferRow> = await pool.query(
       `${BASE_TRANSFER_QUERY} WHERE t.id = $1 AND t.deleted_at IS NULL LIMIT 1;`,
-      [id]
+      [id],
     );
     return res.rows[0] ? mapRowToTransfer(res.rows[0]) : null;
   } catch (error) {
@@ -83,7 +82,9 @@ export async function getTransferById(id: number): Promise<TransferT | null> {
 
 export async function editTransfer(
   id: number,
-  data: Partial<Omit<TransferT, 'id' | 'updated_at' | 'deleted_at' | 'method_name'>>
+  data: Partial<
+    Omit<TransferT, "id" | "updated_at" | "deleted_at" | "method_name">
+  >,
 ): Promise<boolean> {
   try {
     const fields = [];
@@ -111,7 +112,7 @@ export async function deleteTransfer(id: number): Promise<boolean> {
   try {
     const res = await pool.query(
       `UPDATE public.transfers SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL;`,
-      [id]
+      [id],
     );
     return (res.rowCount ?? 0) > 0;
   } catch (error) {

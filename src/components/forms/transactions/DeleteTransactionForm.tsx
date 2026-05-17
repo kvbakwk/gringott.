@@ -1,6 +1,6 @@
 "use client";
 
-import { TransactionT } from "@utils/db-actions/transaction";
+import { TransactionT } from "@/types/transaction";
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -35,7 +35,7 @@ export default function DeleteTransactionForm({
   }, [error]);
 
   const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
+    e: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     e.preventDefault();
 
@@ -44,10 +44,10 @@ export default function DeleteTransactionForm({
       transaction.wallet_id,
       transaction.amount,
       transaction.income,
-      userId
+      userId,
     )
       .then((res) =>
-        res.createTransaction ? successOperation() : setError(true)
+        res.createTransaction ? successOperation() : setError(true),
       )
       .catch(() => setError(true));
   };
@@ -55,7 +55,8 @@ export default function DeleteTransactionForm({
   return (
     <form
       className="flex justify-center items-center gap-[30px] w-[500px] h-fit py-[40px] bg-surface border-1 border-error rounded-2xl shadow-lg transition-all"
-      onSubmit={handleSubmit}>
+      onSubmit={handleSubmit}
+    >
       <div className="flex flex-col justify-center items-center gap-[50px] w-[400px] px-[10px] py-[10px]">
         <div className="font-medium text-[18px]">
           Czy na pewno chcesz usunąć tę transakcję?
@@ -70,7 +71,8 @@ export default function DeleteTransactionForm({
         </div>
         <div
           ref={errorEl}
-          className="hidden font-medium text-[14px] text-error">
+          className="hidden font-medium text-[14px] text-error"
+        >
           coś poszło nie tak.. spróbuj ponownie później
         </div>
       </div>

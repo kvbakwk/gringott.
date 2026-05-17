@@ -2,7 +2,7 @@
 
 import { verifySession } from "@utils/session";
 
-import { MethodT } from "@utils/db-actions/method";
+import { MethodT } from "@/types/method";
 
 import { getMethods } from "@utils/db-actions/method";
 

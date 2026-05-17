@@ -1,19 +1,24 @@
 export const DB_NAME = "GringottDB";
-export const DB_VERSION = 5;
+export const DB_VERSION = 7;
 
 export const STORES = {
     TRANSACTIONS: "transactions",
+    TRANSACTION_TYPES: "transaction_types",
     WALLETS: "wallets",
     WALLET_TYPES: "wallet_types",
+    WALLET_BANK_DETAILS: "wallet_bank_details",
+    WALLET_GOAL_DETAILS: "wallet_goal_details",
     TRADES: "trades",
     TRANSFERS: "transfers",
     SUBJECTS: "subjects",
+    SUBJECT_TYPES: "subject_types",
     METHODS: "methods",
     CATEGORIES: "categories",
-    SUPER_CATEGORIES: "super_categories",
+    CATEGORY_TYPES: "category_types",
     LOANS: "loans",
     META: "meta",
     ASSETS: "assets",
+    ASSET_TYPES: "asset_types",
 };
 
 export function openDB(): Promise<IDBDatabase> {
@@ -34,11 +39,20 @@ export function openDB(): Promise<IDBDatabase> {
             if (!db.objectStoreNames.contains(STORES.TRANSACTIONS)) {
                 db.createObjectStore(STORES.TRANSACTIONS, { keyPath: "id" });
             }
+            if (!db.objectStoreNames.contains(STORES.TRANSACTION_TYPES)) {
+                db.createObjectStore(STORES.TRANSACTION_TYPES, { keyPath: "id" });
+            }
             if (!db.objectStoreNames.contains(STORES.WALLETS)) {
                 db.createObjectStore(STORES.WALLETS, { keyPath: "id" });
             }
             if (!db.objectStoreNames.contains(STORES.WALLET_TYPES)) {
                 db.createObjectStore(STORES.WALLET_TYPES, { keyPath: "id" });
+            }
+            if (!db.objectStoreNames.contains(STORES.WALLET_BANK_DETAILS)) {
+                db.createObjectStore(STORES.WALLET_BANK_DETAILS, { keyPath: "wallet_id" });
+            }
+            if (!db.objectStoreNames.contains(STORES.WALLET_GOAL_DETAILS)) {
+                db.createObjectStore(STORES.WALLET_GOAL_DETAILS, { keyPath: "wallet_id" });
             }
             if (!db.objectStoreNames.contains(STORES.TRADES)) {
                 db.createObjectStore(STORES.TRADES, { keyPath: "id" });
@@ -49,14 +63,17 @@ export function openDB(): Promise<IDBDatabase> {
             if (!db.objectStoreNames.contains(STORES.SUBJECTS)) {
                 db.createObjectStore(STORES.SUBJECTS, { keyPath: "id" });
             }
+            if (!db.objectStoreNames.contains(STORES.SUBJECT_TYPES)) {
+                db.createObjectStore(STORES.SUBJECT_TYPES, { keyPath: "id" });
+            }
             if (!db.objectStoreNames.contains(STORES.METHODS)) {
                 db.createObjectStore(STORES.METHODS, { keyPath: "id" });
             }
             if (!db.objectStoreNames.contains(STORES.CATEGORIES)) {
                 db.createObjectStore(STORES.CATEGORIES, { keyPath: "id" });
             }
-            if (!db.objectStoreNames.contains(STORES.SUPER_CATEGORIES)) {
-                db.createObjectStore(STORES.SUPER_CATEGORIES, { keyPath: "id" });
+            if (!db.objectStoreNames.contains(STORES.CATEGORY_TYPES)) {
+                db.createObjectStore(STORES.CATEGORY_TYPES, { keyPath: "id" });
             }
             if (!db.objectStoreNames.contains(STORES.LOANS)) {
                 db.createObjectStore(STORES.LOANS, { keyPath: "id" });
@@ -66,6 +83,9 @@ export function openDB(): Promise<IDBDatabase> {
             }
             if (!db.objectStoreNames.contains(STORES.ASSETS)) {
                 db.createObjectStore(STORES.ASSETS, { keyPath: "id" });
+            }
+            if (!db.objectStoreNames.contains(STORES.ASSET_TYPES)) {
+                db.createObjectStore(STORES.ASSET_TYPES, { keyPath: "id" });
             }
         };
     });

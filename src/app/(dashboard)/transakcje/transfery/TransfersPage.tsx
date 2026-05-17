@@ -1,24 +1,32 @@
 "use client";
 
-import { WalletT } from "@utils/db-actions/wallet";
-import { TransferT } from "@utils/db-actions/transfer";
-
 import { useEffect, useRef, useState } from "react";
 
+import { WalletT } from "@/types/wallet";
+import { TransferT } from "@/types/transfer";
+
+import { useData } from "@context/DataContext";
 import { parseDate, parseMoney, parseTime } from "@utils/parser";
+
 import { CircularProgress } from "@components/material/Progress";
-import { Fab } from "@components/material/Fab";
 import { Icon } from "@components/material/Icon";
 import { IconButton } from "@components/material/IconButton";
 import WalletsList from "@components/WalletsList";
-import { SubjectT } from "@utils/db-actions/subject";
-import { useData } from "@context/DataContext";
 import NewTransferForm from "@components/forms/transfers/NewTransferForm";
 import EditTransferForm from "@components/forms/transfers/EditTransferForm";
 import DeleteTransferForm from "@components/forms/transfers/DeleteTransferForm";
 
 export default function TransfersPage() {
-  const { user, wallets, transfers, methods, subjects, isReady, reloadWallets, reloadTransfers } = useData();
+  const {
+    user,
+    wallets,
+    transfers,
+    methods,
+    subjects,
+    isReady,
+    reloadWallets,
+    reloadTransfers,
+  } = useData();
   const formEl = useRef(null);
   const newTransferEl = useRef(null);
 
@@ -53,8 +61,8 @@ export default function TransfersPage() {
         operation === "new"
           ? focusEl.classList.add("border-green-700")
           : operation === "edit"
-          ? focusEl.classList.add("border-yellow-500")
-          : focusEl.classList.add("border-error");
+            ? focusEl.classList.add("border-yellow-500")
+            : focusEl.classList.add("border-error");
       }
     }
   }, [operation, focusEl]);
@@ -105,51 +113,46 @@ export default function TransfersPage() {
         </div>
         <WalletsList wallets={wallets} isReady={isReady} />
       </div>
-      <div className="flex flex-col w-[calc(100%-50px)] h-full">
-        <div className="flex justify-around items-end gap-[20px] font-bold text-primary text-md w-full h-[50px] px-[20px] pb-[10px]">
-          <div className="flex w-[100px]"></div>
-          <div className="flex justify-center items-center w-[200px]">data</div>
-          <div className="flex justify-center items-center w-[160px]">
-            kwota
+      <div className="flex flex-col w-full h-full overflow-x-auto">
+        <div className="flex flex-col min-w-[1280px] h-full">
+          <div className="flex justify-around items-end gap-[20px] font-bold text-primary text-md w-full h-[50px] px-[20px] pb-[10px]">
+            <div className="flex w-[100px]"></div>
+            <div className="flex justify-center items-center w-[200px]">data</div>
+            <div className="flex justify-center items-center w-[160px]">
+              kwota
+            </div>
+            <div className="flex justify-center items-center w-[200px]">
+              z portfela..
+            </div>
+            <div className="flex justify-center items-center w-[200px]">
+              do portfela..
+            </div>
+            <div className="flex justify-center items-center w-[200px]">
+              metoda
+            </div>
+            <div className="flex w-[100px]"></div>
           </div>
-          <div className="flex justify-center items-center w-[200px]">
-            z portfela..
-          </div>
-          <div className="flex justify-center items-center w-[200px]">
-            do portfela..
-          </div>
-          <div className="flex justify-center items-center w-[200px]">
-            metoda
-          </div>
-          <div className="flex w-[100px]"></div>
-        </div>
-        <div
-          className={`flex w-full h-[calc(100vh-160px)] px-[20px] pb-[30px] overflow-y-auto scroll-none ${
-            isReady
-              ? "flex-col"
-              : "justify-center items-center"
-          }`}
-        >
-          {isReady &&
-            transfers
-              .sort((a, b) => b.date.getTime() - a.date.getTime())
-              .map((transfer) => (
-                <Transfer
-                  transfer={transfer}
-                  wallets={wallets}
-                  key={transfer.id}
-                  setOperation={setOperation}
-                  setId={setId}
-                  setFocusEl={setFocusEl}
-                />
-              ))}
           <div
-            className={`${
-              isReady &&
-              " hidden"
+            className={`flex w-full flex-1 min-h-0 px-[20px] pb-[20px] overflow-y-auto scroll-none ${
+              isReady ? "flex-col" : "justify-center items-center"
             }`}
           >
-            <CircularProgress indeterminate />
+            {isReady &&
+              transfers
+                .sort((a, b) => b.date.getTime() - a.date.getTime())
+                .map((transfer) => (
+                  <Transfer
+                    transfer={transfer}
+                    wallets={wallets}
+                    key={transfer.id}
+                    setOperation={setOperation}
+                    setId={setId}
+                    setFocusEl={setFocusEl}
+                  />
+                ))}
+            <div className={`${isReady && " hidden"}`}>
+              <CircularProgress indeterminate />
+            </div>
           </div>
         </div>
       </div>

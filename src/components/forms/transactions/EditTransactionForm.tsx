@@ -1,27 +1,27 @@
 "use client";
 
-import { WalletT } from "@utils/db-actions/wallet";
-import { TransactionT } from "@utils/db-actions/transaction";
-import { SuperCategoryT } from "@utils/db-actions/super_category";
-import { CategoryT } from "@utils/db-actions/category";
-import { MethodT } from "@utils/db-actions/method";
+import { useEffect, useState } from "react";
 
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { WalletT } from "@/types/wallet";
+import { TransactionT } from "@/types/transaction";
+import { MethodT } from "@/types/method";
+import { SubjectT } from "@/types/subject";
+import { CategoryT, CategoryTypeT } from "@/types/category";
 
 import { editTransactionAPI } from "@services/transaction/edit";
+
 import {
   validateTransactionAmount,
   validateTransactionDate,
   validateTransactionDescription,
   validateTransactionSubjectId,
 } from "@utils/validator";
-import { SelectOption, SelectOutlined } from "../../material/Select";
-import { TextFieldOutlined } from "../../material/TextField";
-import { Checkbox } from "../../material/Checkbox";
-import { FilledButton, OutlinedButton } from "../../material/Button";
+
+import { SelectOption, SelectOutlined } from "@components/material/Select";
+import { TextFieldOutlined } from "@components/material/TextField";
+import { Checkbox } from "@components/material/Checkbox";
+import { FilledButton, OutlinedButton } from "@components/material/Button";
 import { Icon } from "@components/material/Icon";
-import { SubjectT } from "@utils/db-actions/subject";
 
 export default function EditTransactionForm({
   userId,
@@ -29,7 +29,7 @@ export default function EditTransactionForm({
   transaction,
   methods,
   subjects,
-  superCategories,
+  categoryTypes,
   categories,
   successOperation,
   cancelOperation,
@@ -39,15 +39,15 @@ export default function EditTransactionForm({
   transaction: TransactionT;
   methods: MethodT[];
   subjects: SubjectT[];
-  superCategories: SuperCategoryT[];
+  categoryTypes: CategoryTypeT[];
   categories: CategoryT[];
   successOperation: () => void;
   cancelOperation: () => void;
 }) {
   const [income, setIncome] = useState<boolean>(transaction.income);
   const [walletId, setWalletId] = useState<number>(transaction.wallet_id);
-  const [superCategoryId, setSuperCategoryId] = useState<number>(
-    transaction.super_category_id
+  const [categoryTypeId, setCategoryTypeId] = useState<number>(
+    transaction.category_type_id,
   );
   const [categoryId, setCategoryId] = useState<number>(transaction.category_id);
   const [methodId, setMethodId] = useState<number>(transaction.method_id);
@@ -64,26 +64,28 @@ export default function EditTransactionForm({
             (walletId !== 0 &&
               method.bank === true &&
               wallets.filter((wallet) => wallet.id === walletId)[0]
-                .wallet_type_id === 2)
+                .wallet_type_id === 2),
         )
-      : []
+      : [],
   );
   const [tempSubjects, setTempSubjects] = useState<SubjectT[]>(
-    subjects.sort((a, b) => a.name.localeCompare(b.name))
+    subjects.sort((a, b) => a.name.localeCompare(b.name)),
   );
-  const [tempSuperCategories, setTempSuperCategories] = useState<
-    SuperCategoryT[]
-  >(
-    superCategories.filter(
-      (superCategory) =>
-        superCategory.income === Boolean(income) ||
-        superCategory.outcome === !income
-    )
+  const [tempCategoryTypes, setTempCategoryTypes] = useState<CategoryTypeT[]>(
+    categoryTypes.filter((type) =>
+      categories.some(
+        (cat) =>
+          cat.category_type_id === type.id &&
+          (income ? cat.income : cat.outcome),
+      ),
+    ),
   );
   const [tempCategories, setTempCategories] = useState<CategoryT[]>(
     categories.filter(
-      (category) => category.super_category_id === superCategoryId
-    )
+      (category) =>
+        category.category_type_id === categoryTypeId &&
+        (income ? category.income : category.outcome),
+    ),
   );
 
   const [success, setSuccess] = useState<boolean>(false);
@@ -108,29 +110,33 @@ export default function EditTransactionForm({
             (walletId !== 0 &&
               method.bank === true &&
               wallets.filter((wallet) => wallet.id === walletId)[0]
-                .wallet_type_id === 2)
-        )
+                .wallet_type_id === 2),
+        ),
       );
   }, [walletId]);
   useEffect(() => {
-    setTempSuperCategories(
-      superCategories.filter(
-        (superCategory) =>
-          superCategory.income === Boolean(income) ||
-          superCategory.outcome === !income
-      )
+    setTempCategoryTypes(
+      categoryTypes.filter((type) =>
+        categories.some(
+          (cat) =>
+            cat.category_type_id === type.id &&
+            (income ? cat.income : cat.outcome),
+        ),
+      ),
     );
   }, [income]);
   useEffect(() => {
     setTempCategories(
       categories.filter(
-        (category) => category.super_category_id === superCategoryId
-      )
+        (category) =>
+          category.category_type_id === categoryTypeId &&
+          (income ? category.income : category.outcome),
+      ),
     );
-  }, [superCategoryId]);
+  }, [categoryTypeId, income]);
 
   const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
+    e: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -163,7 +169,7 @@ export default function EditTransactionForm({
         subjectId,
         important,
         userId,
-        1
+        1,
       )
         .then((res) => {
           setSuccess(res.createTransaction);
@@ -194,7 +200,8 @@ export default function EditTransactionForm({
   return (
     <form
       className="flex justify-center items-center gap-[30px] w-fit h-fit px-[90px] py-[90px] bg-surface border-1 border-yellow-500 rounded-2xl shadow-lg"
-      onSubmit={handleSubmit}>
+      onSubmit={handleSubmit}
+    >
       <div className="flex flex-col justify-center items-center gap-[25px] w-[230px] px-[10px] py-[10px]">
         <SelectOutlined
           className="w-full"
@@ -203,7 +210,8 @@ export default function EditTransactionForm({
           error={walletIdErr}
           errorText="wybierz poprawny portfel"
           value={walletId.toString()}
-          disabled>
+          disabled
+        >
           <Icon slot="leading-icon">wallet</Icon>
           {wallets
             .sort((a, b) => a.wallet_type_id - b.wallet_type_id)
@@ -218,7 +226,8 @@ export default function EditTransactionForm({
           label="rodzaj"
           name="income"
           value={income ? "1" : "0"}
-          disabled>
+          disabled
+        >
           <Icon slot="leading-icon">swap_vert</Icon>
           <SelectOption value="1">
             <div slot="headline">przychód</div>
@@ -234,7 +243,8 @@ export default function EditTransactionForm({
           onChange={(e) => setMethodId(parseInt(e.currentTarget.value))}
           error={methodIdErr}
           errorText="wybierz poprawną metodę"
-          value={methodId.toString()}>
+          value={methodId.toString()}
+        >
           <Icon slot="leading-icon">tactic</Icon>
           {tempMethods.map((method) => (
             <SelectOption key={method.id} value={method.id.toString()}>
@@ -257,7 +267,8 @@ export default function EditTransactionForm({
                   .toISOString()
                   .slice(0, 16)
               : ""
-          }>
+          }
+        >
           <Icon slot="leading-icon">event</Icon>
         </TextFieldOutlined>
         <TextFieldOutlined
@@ -270,7 +281,8 @@ export default function EditTransactionForm({
           error={amountErr}
           errorText="wpisz poprawną kwotę"
           suffixText="zł"
-          value={transaction ? transaction.amount.toString() : ""}>
+          value={transaction ? transaction.amount.toString() : ""}
+        >
           <Icon slot="leading-icon">toll</Icon>
         </TextFieldOutlined>
         <TextFieldOutlined
@@ -279,7 +291,8 @@ export default function EditTransactionForm({
           name="description"
           error={descriptionErr}
           errorText="wpisz opis"
-          value={transaction ? transaction.description : ""}>
+          value={transaction ? transaction.description : ""}
+        >
           <Icon slot="leading-icon">reorder</Icon>
         </TextFieldOutlined>
         <SelectOutlined
@@ -288,7 +301,8 @@ export default function EditTransactionForm({
           name="subjectId"
           error={subjectIdErr}
           errorText="wybierz drugą stronę"
-          value={subjectId.toString()}>
+          value={subjectId.toString()}
+        >
           <Icon slot="leading-icon">group</Icon>
           {tempSubjects.map((subject) => (
             <SelectOption key={subject.id} value={subject.id.toString()}>
@@ -301,16 +315,18 @@ export default function EditTransactionForm({
         <SelectOutlined
           className="w-full"
           label="kategoria"
-          onChange={(e) => setSuperCategoryId(parseInt(e.currentTarget.value))}
-          value={superCategoryId.toString()}>
+          onChange={(e) => setCategoryTypeId(parseInt(e.currentTarget.value))}
+          value={categoryTypeId.toString()}
+        >
           <Icon className="fill" slot="leading-icon">
             category
           </Icon>
-          {tempSuperCategories.map((superCategory) => (
+          {tempCategoryTypes.map((categoryType) => (
             <SelectOption
-              key={superCategory.id}
-              value={superCategory.id.toString()}>
-              <div slot="headline">{superCategory.name}</div>
+              key={categoryType.id}
+              value={categoryType.id.toString()}
+            >
+              <div slot="headline">{categoryType.name}</div>
             </SelectOption>
           ))}
         </SelectOutlined>
@@ -321,7 +337,8 @@ export default function EditTransactionForm({
           onChange={(e) => setCategoryId(parseInt(e.currentTarget.value))}
           error={categoryIdErr}
           errorText="wybierz poprawną podkategorię"
-          value={categoryId.toString()}>
+          value={categoryId.toString()}
+        >
           <Icon slot="leading-icon">category</Icon>
           {tempCategories.map((category) => (
             <SelectOption key={category.id} value={category.id.toString()}>
@@ -331,7 +348,8 @@ export default function EditTransactionForm({
         </SelectOutlined>
         <label
           className="flex justify-center items-center text-[14px] text-outline tracking-wider"
-          htmlFor="important">
+          htmlFor="important"
+        >
           <Checkbox
             className="m-[15px]"
             name="important"

@@ -1,26 +1,34 @@
 "use client";
 
-import { WalletT } from "@utils/db-actions/wallet";
-import { TransactionT } from "@utils/db-actions/transaction";
-
 import { useEffect, useRef, useState } from "react";
+
+import { WalletT } from "@/types/wallet";
+import { TransactionT } from "@/types/transaction";
+
 import { useData } from "@context/DataContext";
 
 import { parseDate, parseMoney, parseTime } from "@utils/parser";
 import { CircularProgress } from "@components/material/Progress";
-import { Fab } from "@components/material/Fab";
 import { Icon } from "@components/material/Icon";
 import { IconButton } from "@components/material/IconButton";
 import NewTransactionForm from "@components/forms/transactions/NewTransactionForm";
 import EditTransactionForm from "@components/forms/transactions/EditTransactionForm";
 import DeleteTransactionForm from "@components/forms/transactions/DeleteTransactionForm";
-import { MethodT } from "@utils/db-actions/method";
-import { SubjectT } from "@utils/db-actions/subject";
-import { SuperCategoryT } from "@utils/db-actions/super_category";
-import { CategoryT } from "@utils/db-actions/category";
 import WalletsList from "@components/WalletsList";
+
 export default function TransactionsPage() {
-  const { user, wallets, transactions, methods, subjects, superCategories, categories, isReady, reloadWallets, reloadTransactions } = useData();
+  const {
+    user,
+    wallets,
+    transactions,
+    methods,
+    subjects,
+    categoryTypes,
+    categories,
+    isReady,
+    reloadWallets,
+    reloadTransactions,
+  } = useData();
 
   const formEl = useRef(null);
   const newTransactionEl = useRef(null);
@@ -29,7 +37,9 @@ export default function TransactionsPage() {
   const [id, setId] = useState<number>(0);
   const [focusEl, setFocusEl] = useState<HTMLElement>(null);
 
-  const filteredSubjects = subjects.filter((subject) => subject.normal);
+  const filteredSubjects = subjects.filter(
+    (subject) => subject.subject_type_id === 1,
+  );
 
   const successOperation = () => {
     hideForm();
@@ -103,71 +113,72 @@ export default function TransactionsPage() {
           onClick={() => {
             setOperation("new");
             setFocusEl(newTransactionEl.current);
-          }}>
+          }}
+        >
           <Icon slot="icon">add</Icon>
           <div className="text-on-surface-variant">nowa transakcja</div>
         </div>
         <WalletsList wallets={wallets} isReady={isReady} />
       </div>
-      <div className="flex flex-col w-[calc(100%-50px)] h-full">
-        <div className="flex justify-center items-end gap-[20px] font-bold text-primary text-md w-full h-[50px] pb-[10px]">
-          <div className="flex justify-center items-center w-[20px]"></div>
-          <div className="flex justify-center items-center w-[200px]">data</div>
-          <div className="flex justify-center items-center w-[160px]">
-            kwota
+      <div className="flex flex-col w-full h-full overflow-x-auto">
+        <div className="flex flex-col min-w-[1510px] h-full">
+          <div className="flex justify-center items-end gap-[20px] font-bold text-primary text-md w-full h-[50px] pb-[10px]">
+            <div className="flex justify-center items-center w-[20px]"></div>
+            <div className="flex justify-center items-center w-[200px]">data</div>
+            <div className="flex justify-center items-center w-[160px]">
+              kwota
+            </div>
+            <div className="flex justify-center items-center w-[200px]">opis</div>
+            <div className="flex justify-center items-center w-[200px]">z..</div>
+            <div className="flex justify-center items-center w-[200px]">
+              kategoria
+            </div>
+            <div className="flex justify-center items-center w-[120px]">
+              portfel
+            </div>
+            <div className="flex justify-center items-center w-[150px]">
+              metoda
+            </div>
+            <div className="flex justify-center items-center w-[100px]"></div>
           </div>
-          <div className="flex justify-center items-center w-[200px]">opis</div>
-          <div className="flex justify-center items-center w-[200px]">z..</div>
-          <div className="flex justify-center items-center w-[200px]">
-            kategoria
-          </div>
-          <div className="flex justify-center items-center w-[120px]">
-            portfel
-          </div>
-          <div className="flex justify-center items-center w-[150px]">
-            metoda
-          </div>
-          <div className="flex justify-center items-center w-[100px]"></div>
-        </div>
-        <div
-          className={`flex w-full h-[calc(100vh-106px)] px-[20px] pb-[106px] overflow-y-auto scroll-none ${isReady
-            ? "flex-col"
-            : "justify-center items-center"
-            }`}>
-          {isReady &&
-            transactions
-              .sort((a, b) => b.date.getTime() - a.date.getTime())
-              .map((transaction) => (
-                <Transaction
-                  transaction={transaction}
-                  wallets={wallets}
-                  key={transaction.id}
-                  setOperation={setOperation}
-                  setId={setId}
-                  setFocusEl={setFocusEl}
-                />
-              ))}
           <div
-            className={`${isReady &&
-              " hidden"
-              }`}>
-            <CircularProgress indeterminate />
+            className={`flex w-full flex-1 min-h-0 px-[20px] pb-[20px] overflow-y-auto scroll-none ${
+              isReady ? "flex-col" : "justify-center items-center"
+            }`}
+          >
+            {isReady &&
+              transactions
+                .sort((a, b) => b.date.getTime() - a.date.getTime())
+                .map((transaction) => (
+                  <Transaction
+                    transaction={transaction}
+                    wallets={wallets}
+                    key={transaction.id}
+                    setOperation={setOperation}
+                    setId={setId}
+                    setFocusEl={setFocusEl}
+                  />
+                ))}
+            <div className={`${isReady && " hidden"}`}>
+              <CircularProgress indeterminate />
+            </div>
           </div>
         </div>
       </div>
       <div
         ref={formEl}
-        className="absolute hidden justify-center items-center w-full h-full opacity-0 transition-all">
+        className="absolute hidden justify-center items-center w-full h-full opacity-0 transition-all"
+      >
         {operation === "new" ? (
           <NewTransactionForm
             userId={user?.id}
             wallets={wallets.filter(
               (wallet) =>
-                wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2
+                wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2,
             )}
             methods={methods}
             subjects={filteredSubjects}
-            superCategories={superCategories}
+            categoryTypes={categoryTypes}
             categories={categories}
             successOperation={successOperation}
             cancelOperation={cancelOperation}
@@ -177,14 +188,14 @@ export default function TransactionsPage() {
             userId={user?.id}
             wallets={wallets.filter(
               (wallet) =>
-                wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2
+                wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2,
             )}
             transaction={transactions.find(
-              (transaction) => transaction.id === id
+              (transaction) => transaction.id === id,
             )}
             methods={methods}
             subjects={filteredSubjects}
-            superCategories={superCategories}
+            categoryTypes={categoryTypes}
             categories={categories}
             successOperation={successOperation}
             cancelOperation={cancelOperation}
@@ -193,7 +204,7 @@ export default function TransactionsPage() {
           <DeleteTransactionForm
             userId={user?.id}
             transaction={transactions.find(
-              (transaction) => transaction.id === id
+              (transaction) => transaction.id === id,
             )}
             successOperation={successOperation}
             cancelOperation={cancelOperation}
@@ -237,15 +248,19 @@ export function Transaction({
       className="flex justify-center items-center gap-[20px] font-normal text-on-surface-variant text-base w-full h-[30px] rounded-lg hover:bg-surface"
       key={transaction.id}
       onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}>
+      onMouseLeave={() => setHover(false)}
+    >
       <div className="w-[20px] h-full"></div>
       <div className="flex justify-center items-center gap-[6px] w-[200px]">
         {parseDate(new Date(transaction.date))}
-        <div className="text-[15px]">{parseTime(new Date(transaction.date))}</div>
+        <div className="text-[15px]">
+          {parseTime(new Date(transaction.date))}
+        </div>
       </div>
       <div
         ref={amountEl}
-        className="flex justify-center items-center font-semibold text-xl w-[160px]">
+        className="flex justify-center items-center font-semibold text-xl w-[160px]"
+      >
         {parseMoney(transaction.amount)} zł
       </div>
       <div className="flex justify-center items-center truncate w-[200px]">
@@ -258,23 +273,25 @@ export function Transaction({
         {transaction.category_name}
       </div>
       <div className="flex justify-center items-center truncate w-[120px]">
-        {wallets.find(
-          (wallet: WalletT) => wallet.id === transaction.wallet_id
-        )?.name ?? "gotówka"}
+        {wallets.find((wallet: WalletT) => wallet.id === transaction.wallet_id)
+          ?.name ?? "gotówka"}
       </div>
       <div className="flex justify-center items-center w-[150px]">
         {transaction.method_name}
       </div>
       <div
-        className={`flex justify-center items-center w-[100px] h-full transition-opacity ${hover ? "opacity-100" : "opacity-0"
-          }`}>
+        className={`flex justify-center items-center w-[100px] h-full transition-opacity ${
+          hover ? "opacity-100" : "opacity-0"
+        }`}
+      >
         <IconButton
           className="mini"
           onClick={() => {
             setOperation("edit");
             setId(transaction.id);
             setFocusEl(transactionEl.current);
-          }}>
+          }}
+        >
           <Icon>edit</Icon>
         </IconButton>
         <IconButton
@@ -283,7 +300,8 @@ export function Transaction({
             setOperation("delete");
             setId(transaction.id);
             setFocusEl(transactionEl.current);
-          }}>
+          }}
+        >
           <Icon>delete</Icon>
         </IconButton>
       </div>

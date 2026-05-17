@@ -80,7 +80,6 @@ export async function editTradeAPI(
       date,
       amount,
       deposit,
-      atm,
       walletId,
       atm ? 8 : userMethodId,
       subjectId,

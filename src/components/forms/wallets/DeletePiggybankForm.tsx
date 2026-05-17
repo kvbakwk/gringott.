@@ -1,6 +1,6 @@
 "use client";
 
-import { WalletT } from "@utils/db-actions/wallet";
+import { WalletT } from "@/types/wallet";
 import { useEffect, useRef, useState } from "react";
 import { deleteWalletAPI } from "@services/wallet/delete";
 import { FilledButton, OutlinedButton } from "../../material/Button";
@@ -31,15 +31,13 @@ export default function DeletePiggybankForm({
   }, [error]);
 
   const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
+    e: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     e.preventDefault();
     setPending(true);
 
     deleteWalletAPI(wallet.id)
-      .then((res) =>
-        res.success ? successOperation() : setError(true)
-      )
+      .then((res) => (res.success ? successOperation() : setError(true)))
       .catch(() => setError(true))
       .finally(() => setPending(false));
   };
@@ -50,7 +48,6 @@ export default function DeletePiggybankForm({
       onSubmit={handleSubmit}
     >
       <div className="flex flex-col justify-center items-center gap-[30px] w-[400px] px-[10px] py-[10px]">
-        
         {/* Icon and title */}
         <div className="flex flex-col items-center gap-4">
           <div className="w-16 h-16 rounded-full flex items-center justify-center bg-error/10 text-error">
@@ -65,7 +62,9 @@ export default function DeletePiggybankForm({
         <div className="flex items-center gap-4 p-4 bg-surface-variant/30 rounded-xl w-full">
           <div className="flex-1">
             <div className="font-bold text-on-surface">{wallet.name}</div>
-            <div className="text-sm text-on-surface-variant">Saldo: {parseMoney(wallet.balance)} PLN</div>
+            <div className="text-sm text-on-surface-variant">
+              Saldo: {parseMoney(wallet.balance)} PLN
+            </div>
           </div>
         </div>
 
@@ -73,7 +72,10 @@ export default function DeletePiggybankForm({
         {wallet.balance > 0 && (
           <div className="flex items-center gap-2 text-sm text-warning bg-warning/10 p-3 rounded-lg w-full">
             <Icon className="text-lg text-amber-600">warning</Icon>
-            <span className="text-amber-700">Ta skarbonka zawiera środki. Upewnij się, że je wypłaciłeś przed usunięciem.</span>
+            <span className="text-amber-700">
+              Ta skarbonka zawiera środki. Upewnij się, że je wypłaciłeś przed
+              usunięciem.
+            </span>
           </div>
         )}
 

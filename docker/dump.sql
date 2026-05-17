@@ -18,6 +18,18 @@ create table if not exists public.users (
     deleted_at timestamp
 );
 
+create table if not exists public.wallets (
+    id serial primary key,
+    user_id integer not null,
+    name varchar(50),
+    balance numeric(15, 2) not null,
+    icon varchar(255),
+    wallet_type_id integer not null,
+    created_at timestamp default CURRENT_TIMESTAMP not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp
+);
+
 create table if not exists public.wallet_types (
     id serial primary key,
     name varchar(255) not null,
@@ -26,78 +38,21 @@ create table if not exists public.wallet_types (
     deleted_at timestamp
 );
 
-create table if not exists public.wallets (
-    id serial primary key,
-    user_id integer not null,
-    name varchar(50),
-    balance numeric(15, 2) not null,
-    wallet_type_id integer not null,
-    icon varchar(255),
-    target_amount numeric(15, 2),
+create table if not exists public.wallet_bank_details (
+    wallet_id integer primary key,
+    bank_name varchar(255),
+    account_number varchar(255),
+    bic_swift varchar(50),
     created_at timestamp default CURRENT_TIMESTAMP not null,
     updated_at timestamp default CURRENT_TIMESTAMP not null,
     deleted_at timestamp
 );
 
-create table if not exists public.super_categories (
-    id serial primary key,
-    name varchar(255) not null,
-    income boolean not null,
-    outcome boolean not null,
-    created_at timestamp default CURRENT_TIMESTAMP not null,
-    updated_at timestamp default CURRENT_TIMESTAMP not null,
-    deleted_at timestamp
-);
-
-create table if not exists public.categories (
-    id serial primary key,
-    name varchar(255) not null,
-    super_category_id integer not null,
-    created_at timestamp default CURRENT_TIMESTAMP not null,
-    updated_at timestamp default CURRENT_TIMESTAMP not null,
-    deleted_at timestamp
-);
-
-create table if not exists public.methods (
-    id serial primary key,
-    name varchar(255) not null,
-    cash boolean not null,
-    bank boolean not null,
-    created_at timestamp default CURRENT_TIMESTAMP not null,
-    updated_at timestamp default CURRENT_TIMESTAMP not null,
-    deleted_at timestamp
-);
-
-create table if not exists public.subjects (
-    id serial primary key,
-    user_id integer not null,
-    name varchar(255) not null,
-    address varchar(255),
-    normal boolean not null,
-    atm boolean not null,
-    created_at timestamp default CURRENT_TIMESTAMP not null,
-    updated_at timestamp default CURRENT_TIMESTAMP not null,
-    deleted_at timestamp
-);
-
-create table if not exists public.loans (
-    id serial primary key,
-    user_id integer not null,
-    subject_id integer not null,
-    name varchar(255),
-    total_amount numeric(15, 2) not null,
-    paid_amount numeric(15, 2) default 0 not null,
-    is_given boolean not null,
-    currency varchar(10) default 'PLN' not null,
+create table if not exists public.wallet_goal_details (
+    wallet_id integer primary key,
+    target_amount numeric(15, 2) not null,
     status varchar(50) default 'active' not null,
-    created_at timestamp default CURRENT_TIMESTAMP not null,
-    updated_at timestamp default CURRENT_TIMESTAMP not null,
-    deleted_at timestamp
-);
-
-create table if not exists public.transaction_types (
-    id serial primary key,
-    name varchar(255) not null,
+    deadline timestamp,
     created_at timestamp default CURRENT_TIMESTAMP not null,
     updated_at timestamp default CURRENT_TIMESTAMP not null,
     deleted_at timestamp
@@ -115,8 +70,16 @@ create table if not exists public.transactions (
     user_id integer not null,
     wallet_id integer not null,
     method_id integer not null,
-    transaction_type_id integer not null,
     loan_id integer,
+    transaction_type_id integer not null,
+    created_at timestamp default CURRENT_TIMESTAMP not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp
+);
+
+create table if not exists public.transaction_types (
+    id serial primary key,
+    name varchar(255) not null,
     created_at timestamp default CURRENT_TIMESTAMP not null,
     updated_at timestamp default CURRENT_TIMESTAMP not null,
     deleted_at timestamp
@@ -127,7 +90,6 @@ create table if not exists public.trades (
     date timestamp not null,
     amount numeric(15, 2) not null,
     deposit boolean not null,
-    atm boolean not null,
     user_id integer not null,
     wallet_id integer not null,
     user_method_id integer not null,
@@ -151,21 +113,12 @@ create table if not exists public.transfers (
     deleted_at timestamp
 );
 
-create table if not exists public.products (
-    id serial primary key,
-    name varchar(255) not null,
-    price numeric(15, 2) not null,
-    created_at timestamp default CURRENT_TIMESTAMP not null,
-    updated_at timestamp default CURRENT_TIMESTAMP not null,
-    deleted_at timestamp
-);
-
 create table if not exists public.assets (
     id serial primary key,
     wallet_id integer not null,
     name varchar(255) not null,
     ticker varchar(50),
-    type varchar(50) not null,
+    asset_type_id integer not null,
     quantity numeric(15, 4) not null,
     currency varchar(10) not null,
     avg_buy_price numeric(15, 2),
@@ -176,11 +129,92 @@ create table if not exists public.assets (
     deleted_at timestamp
 );
 
+create table if not exists public.asset_types (
+    id serial primary key,
+    name varchar(255) not null,
+    created_at timestamp default CURRENT_TIMESTAMP not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp
+);
+
+create table if not exists public.categories (
+    id serial primary key,
+    name varchar(255) not null,
+    income boolean not null,
+    outcome boolean not null,
+    category_type_id integer not null,
+    created_at timestamp default CURRENT_TIMESTAMP not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp
+);
+
+create table if not exists public.category_types (
+    id serial primary key,
+    name varchar(255) not null,
+    created_at timestamp default CURRENT_TIMESTAMP not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp
+);
+
+create table if not exists public.methods (
+    id serial primary key,
+    name varchar(255) not null,
+    cash boolean not null,
+    bank boolean not null,
+    created_at timestamp default CURRENT_TIMESTAMP not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp
+);
+
+create table if not exists public.subjects (
+    id serial primary key,
+    user_id integer not null,
+    name varchar(255) not null,
+    address varchar(255),
+    subject_type_id integer not null,
+    created_at timestamp default CURRENT_TIMESTAMP not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp
+);
+
+create table if not exists public.subject_types (
+    id serial primary key,
+    name varchar(255) not null,
+    created_at timestamp default CURRENT_TIMESTAMP not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp
+);
+
+create table if not exists public.loans (
+    id serial primary key,
+    user_id integer not null,
+    subject_id integer not null,
+    name varchar(255),
+    total_amount numeric(15, 2) not null,
+    paid_amount numeric(15, 2) default 0 not null,
+    is_given boolean not null,
+    currency varchar(10) default 'PLN' not null,
+    status varchar(50) default 'active' not null,
+    created_at timestamp default CURRENT_TIMESTAMP not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp
+);
+
+create table if not exists public.products (
+    id serial primary key,
+    name varchar(255) not null,
+    price numeric(15, 2) not null,
+    created_at timestamp default CURRENT_TIMESTAMP not null,
+    updated_at timestamp default CURRENT_TIMESTAMP not null,
+    deleted_at timestamp
+);
+
 -- Triggers for updated_at
 create trigger update_users_updated_at before update on public.users for each row execute procedure update_updated_at_column();
 create trigger update_wallet_types_updated_at before update on public.wallet_types for each row execute procedure update_updated_at_column();
+create trigger update_asset_types_updated_at before update on public.asset_types for each row execute procedure update_updated_at_column();
 create trigger update_wallets_updated_at before update on public.wallets for each row execute procedure update_updated_at_column();
-create trigger update_super_categories_updated_at before update on public.super_categories for each row execute procedure update_updated_at_column();
+create trigger update_category_types_updated_at before update on public.category_types for each row execute procedure update_updated_at_column();
 create trigger update_categories_updated_at before update on public.categories for each row execute procedure update_updated_at_column();
 create trigger update_methods_updated_at before update on public.methods for each row execute procedure update_updated_at_column();
 create trigger update_subjects_updated_at before update on public.subjects for each row execute procedure update_updated_at_column();
@@ -191,12 +225,14 @@ create trigger update_trades_updated_at before update on public.trades for each 
 create trigger update_transfers_updated_at before update on public.transfers for each row execute procedure update_updated_at_column();
 create trigger update_products_updated_at before update on public.products for each row execute procedure update_updated_at_column();
 create trigger update_assets_updated_at before update on public.assets for each row execute procedure update_updated_at_column();
+create trigger update_bank_details_updated_at before update on public.wallet_bank_details for each row execute procedure update_updated_at_column();
+create trigger update_goal_details_updated_at before update on public.wallet_goal_details for each row execute procedure update_updated_at_column();
 
 -- Foreign Key Constraints
 alter table public.wallets add foreign key (user_id) references public.users(id);
 alter table public.wallets add foreign key (wallet_type_id) references public.wallet_types(id);
 
-alter table public.categories add foreign key (super_category_id) references public.super_categories(id);
+alter table public.categories add foreign key (category_type_id) references public.category_types(id);
 
 alter table public.subjects add foreign key (user_id) references public.users(id);
 
@@ -223,11 +259,14 @@ alter table public.transfers add foreign key (from_wallet_id) references public.
 alter table public.transfers add foreign key (to_wallet_id) references public.wallets(id);
 
 alter table public.assets add foreign key (wallet_id) references public.wallets(id);
+alter table public.assets add foreign key (asset_type_id) references public.asset_types(id);
+alter table public.wallet_bank_details add foreign key (wallet_id) references public.wallets(id);
+alter table public.wallet_goal_details add foreign key (wallet_id) references public.wallets(id);
 
 -- Indexes for Foreign Keys
 create index idx_wallets_user_id on public.wallets(user_id);
 create index idx_wallets_wallet_type_id on public.wallets(wallet_type_id);
-create index idx_categories_super_category_id on public.categories(super_category_id);
+create index idx_categories_category_type_id on public.categories(category_type_id);
 create index idx_subjects_user_id on public.subjects(user_id);
 create index idx_loans_user_id on public.loans(user_id);
 create index idx_loans_subject_id on public.loans(subject_id);
@@ -256,37 +295,39 @@ insert into public.users (name, email, password) values
 ('Iza Kawka', 'iza@gmail.com', '$2b$10$KV/dnPMobmqZBvje.QYGf.9qqEks5wp1bceSIDhbyKolrByUWX0VG'),
 ('Olaf Konieczny', 'olaf@gmail.com', '$2b$10$KV/dnPMobmqZBvje.QYGf.9qqEks5wp1bceSIDhbyKolrByUWX0VG');
 
-insert into public.super_categories (name, income, outcome) values 
-('codzienne', false, true),
-('transport', false, true),
-('osobiste', false, true),
-('domowe', false, true),
-('dzieci', false, true),
-('rozrywka', false, true),
-('płatności', false, true),
-('oszczędności', true, true),
-('inwestycje', true, true),
-('wpływy', true, false);
+insert into public.category_types (name) values 
+('codzienne'),
+('transport'),
+('osobiste'),
+('domowe'),
+('dzieci'),
+('rozrywka'),
+('płatności'),
+('oszczędności'),
+('inwestycje'),
+('wpływy');
 
-insert into public.categories (name, super_category_id) values 
-('jedzenie poza domem', 1), ('zwierzęta', 1), ('żywność', 1), ('chemia domowa', 1),
-('paliwo', 2), ('parking', 2), ('przejazd', 2), ('serwis', 2), ('sprzątanie', 2), ('ubezpieczenie', 2),
-('rozwój', 3), ('elektronika', 3), ('multimedia', 3), ('odzież i obuwie', 3), ('prezenty i wsparcie', 3), ('zdrowie i uroda', 3),
-('czynsz', 4), ('woda i kanalizacja', 4), ('gaz', 4), ('prąd', 4), ('ogrzewanie', 4), ('telewizja', 4), ('internet', 4), ('telefon', 4), ('opłaty', 4), ('podatki', 4), ('raty', 4), ('ubezpieczenia', 4),
-('zabawki', 5), ('przedszkole', 5), ('szkoła', 5), ('zajęcia', 5),
-('podróż', 6), ('wyjazd', 6), ('sport', 6), ('hobby', 6), ('wyjście', 6), ('wydarzenie', 6),
-('wyposażenie', 7), ('remont', 7), ('ubezpieczenie', 7), ('usługi', 7),
-('ogólne', 8), ('skarbonki', 8), ('cele', 8),
-('akcje', 9), ('etf', 9), ('fundusz', 9), ('lokata', 9), ('zakład', 9), ('waluta', 9), ('kryptowaluta', 9), ('surowce', 9),
-('wynagrodzenie', 10), ('premia', 10), ('pożyczenie', 10), ('kredyt', 10), ('kieszonkowe', 10), ('wstępne', 10);
+insert into public.categories (name, income, outcome, category_type_id) values 
+('jedzenie poza domem', false, true, 1), ('zwierzęta', false, true, 1), ('żywność', false, true, 1), ('chemia domowa', false, true, 1),
+('paliwo', false, true, 2), ('parking', false, true, 2), ('przejazd', false, true, 2), ('serwis', false, true, 2), ('sprzątanie', false, true, 2), ('ubezpieczenie', false, true, 2),
+('rozwój', false, true, 3), ('elektronika', false, true, 3), ('multimedia', false, true, 3), ('odzież i obuwie', false, true, 3), ('prezenty i wsparcie', false, true, 3), ('zdrowie i uroda', false, true, 3),
+('czynsz', false, true, 4), ('woda i kanalizacja', false, true, 4), ('gaz', false, true, 4), ('prąd', false, true, 4), ('ogrzewanie', false, true, 4), ('telewizja', false, true, 4), ('internet', false, true, 4), ('telefon', false, true, 4), ('opłaty', false, true, 4), ('podatki', false, true, 4), ('raty', false, true, 4), ('ubezpieczenia', false, true, 4),
+('zabawki', false, true, 5), ('przedszkole', false, true, 5), ('szkoła', false, true, 5), ('zajęcia', false, true, 5),
+('podróż', false, true, 6), ('wyjazd', false, true, 6), ('sport', false, true, 6), ('hobby', false, true, 6), ('wyjście', false, true, 6), ('wydarzenie', false, true, 6),
+('wyposażenie', false, true, 7), ('remont', false, true, 7), ('ubezpieczenie', false, true, 7), ('usługi', false, true, 7),
+('ogólne', true, true, 8), ('skarbonki', true, true, 8), ('cele', true, true, 8),
+('akcje', true, true, 9), ('etf', true, true, 9), ('fundusz', true, true, 9), ('lokata', true, true, 9), ('zakład', true, true, 9), ('waluta', true, true, 9), ('kryptowaluta', true, true, 9), ('surowce', true, true, 9),
+('wynagrodzenie', true, false, 10), ('premia', true, false, 10), ('pożyczenie', true, false, 10), ('kredyt', true, false, 10), ('kieszonkowe', true, false, 10), ('wstępne', true, false, 10);
 
 insert into public.wallet_types (name) values 
 ('gotówka'), 
 ('konto'), 
-('należności'), 
 ('oszczędności'), 
 ('skarbonka'),
 ('cel'), 
+('inwestycje');
+
+insert into public.asset_types (name) values 
 ('akcje'), 
 ('etf'), 
 ('fundusz'), 
@@ -296,9 +337,9 @@ insert into public.wallet_types (name) values
 ('kryptowaluta'), 
 ('surowiec');
 
-insert into public.wallets (user_id, balance, wallet_type_id) values (1, 40, 1), (1, 100, 3);
+insert into public.wallets (user_id, balance, wallet_type_id) values (1, 40, 1);
 insert into public.wallets (user_id, name, balance, wallet_type_id) values (1, 'mBank', 70, 2), (1, 'iPKO', 0, 2);
-insert into public.wallets (user_id, balance, wallet_type_id) values (4, 3.14, 1), (4, 0, 3);
+insert into public.wallets (user_id, balance, wallet_type_id) values (4, 3.14, 1);
 insert into public.wallets (user_id, name, balance, wallet_type_id) values (4, 'mBank', 4, 2);
 
 insert into public.methods (name, cash, bank) values 
@@ -316,16 +357,21 @@ insert into public.transaction_types (name) values
 ('przyszła'),
 ('wstępna');
 
-insert into public.subjects (user_id, name, normal, atm) values (1, 'Tata', true, false), (1, 'Mama', true, false), (1, 'Ola Kawka', true, false), (1, 'Bankomat', false, true), (1, 'Ty', true, false);
+insert into public.subject_types (name) values 
+('osoba'),
+('bankomat');
+
+insert into public.subjects (user_id, name, subject_type_id) values 
+(1, 'Tata', 1), (1, 'Mama', 1), (1, 'Ola Kawka', 1), (1, 'Bankomat', 2), (1, 'Ty', 1);
 
 insert into public.transactions (date, amount, description, category_id, subject_id, income, important, user_id, wallet_id, method_id, transaction_type_id) values 
 ('2025-04-01 12:00:00', 10, 'kieszonkowe', 58, 1, true, true, 1, 1, 1, 1),
 ('2025-04-01 12:00:00', 100, 'kieszonkowe', 58, 1, true, true, 1, 3, 4, 1),
 ('2025-04-01 12:00:00', 100, 'wypłata', 58, 1, true, true, 1, 1, 1, 1);
 
-insert into public.trades (date, amount, deposit, atm, user_id, wallet_id, user_method_id, subject_id, subject_method_id) values 
-('2025-04-02 12:00:00', 40, false, true, 1, 3, 1, 4, 3),
-('2025-04-02 13:00:00', 10, true, false, 1, 3, 1, 3, 4);
+insert into public.trades (date, amount, deposit, user_id, wallet_id, user_method_id, subject_id, subject_method_id) values 
+('2025-04-02 12:00:00', 40, false, 1, 3, 1, 4, 3),
+('2025-04-02 13:00:00', 10, true, 1, 3, 1, 3, 4);
 
 insert into public.transfers (date, amount, user_id, method_id, from_wallet_id, to_wallet_id) values 
 ('2025-04-03 12:00:00', 100, 1, 1, 1, 2);

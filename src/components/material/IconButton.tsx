@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { createComponent } from "@lit/react";
 import { MdIconButton } from "@material/web/iconbutton/icon-button";

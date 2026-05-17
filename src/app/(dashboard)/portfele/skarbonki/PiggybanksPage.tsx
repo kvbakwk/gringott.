@@ -1,12 +1,12 @@
 "use client";
 
-import { WalletT } from "@utils/db-actions/wallet";
-import { TransactionT } from "@utils/db-actions/transaction";
-import { MethodT } from "@utils/db-actions/method";
+import { useState, useRef, useEffect } from "react";
+
+import { WalletT } from "@/types/wallet";
+
+import { useData } from "@context/DataContext";
 import WalletsGridLayout from "@components/layouts/WalletsGridLayout";
 import PiggybankCard from "@components/features/piggybanks/PiggybankCard";
-import { useState, useRef, useEffect } from "react";
-import { useData } from "@context/DataContext";
 import NewPiggybankForm from "@components/forms/wallets/NewPiggybankForm";
 import NewPiggybankDepositForm from "@components/forms/transfers/NewPiggybankDepositForm";
 import NewPiggybankWithdrawalForm from "@components/forms/transfers/NewPiggybankWithdrawalForm";
@@ -14,14 +14,22 @@ import DeletePiggybankForm from "@components/forms/wallets/DeletePiggybankForm";
 import EditPiggybankForm from "@components/forms/wallets/EditPiggybankForm";
 
 export default function PiggybanksPage() {
-  const { user, wallets, isReady, transactions, methods, reloadWallets, reloadTransfers } = useData();
+  const {
+    user,
+    wallets,
+    isReady,
+    transactions,
+    methods,
+    reloadWallets,
+    reloadTransfers,
+  } = useData();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [showWithdrawalModal, setShowWithdrawalModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [targetWallet, setTargetWallet] = useState<WalletT | null>(null);
-  
+
   const addModalEl = useRef<HTMLDivElement>(null);
   const depositModalEl = useRef<HTMLDivElement>(null);
   const withdrawalModalEl = useRef<HTMLDivElement>(null);
@@ -32,7 +40,10 @@ export default function PiggybanksPage() {
   const totalBalance = piggybanks.reduce((a, b) => a + b.balance, 0);
 
   // Generic modal animation helper
-  const animateModal = (show: boolean, ref: React.RefObject<HTMLDivElement>) => {
+  const animateModal = (
+    show: boolean,
+    ref: React.RefObject<HTMLDivElement>,
+  ) => {
     if (show) {
       ref.current?.classList.remove("hidden");
       ref.current?.classList.add("flex");
@@ -49,10 +60,19 @@ export default function PiggybanksPage() {
   };
 
   useEffect(() => animateModal(showAddModal, addModalEl), [showAddModal]);
-  useEffect(() => animateModal(showDepositModal, depositModalEl), [showDepositModal]);
-  useEffect(() => animateModal(showWithdrawalModal, withdrawalModalEl), [showWithdrawalModal]);
+  useEffect(
+    () => animateModal(showDepositModal, depositModalEl),
+    [showDepositModal],
+  );
+  useEffect(
+    () => animateModal(showWithdrawalModal, withdrawalModalEl),
+    [showWithdrawalModal],
+  );
   useEffect(() => animateModal(showEditModal, editModalEl), [showEditModal]);
-  useEffect(() => animateModal(showDeleteModal, deleteModalEl), [showDeleteModal]);
+  useEffect(
+    () => animateModal(showDeleteModal, deleteModalEl),
+    [showDeleteModal],
+  );
 
   const handleAddSuccess = () => {
     setShowAddModal(false);
@@ -106,7 +126,9 @@ export default function PiggybanksPage() {
   };
 
   // Determine active state for card highlighting
-  const getActiveState = (walletId: number): "deposit" | "withdraw" | "edit" | "delete" | null => {
+  const getActiveState = (
+    walletId: number,
+  ): "deposit" | "withdraw" | "edit" | "delete" | null => {
     if (targetWallet?.id !== walletId) return null;
     if (showDepositModal) return "deposit";
     if (showWithdrawalModal) return "withdraw";
@@ -145,10 +167,10 @@ export default function PiggybanksPage() {
         ref={addModalEl}
         className="fixed inset-0 hidden justify-center items-center bg-black/50 z-50 opacity-0 transition-opacity duration-200 backdrop-blur-sm"
       >
-        <NewPiggybankForm 
-            userId={user?.id}
-            successOperation={handleAddSuccess}
-            cancelOperation={() => setShowAddModal(false)}
+        <NewPiggybankForm
+          userId={user?.id}
+          successOperation={handleAddSuccess}
+          cancelOperation={() => setShowAddModal(false)}
         />
       </div>
 
@@ -158,16 +180,16 @@ export default function PiggybanksPage() {
         className="fixed inset-0 hidden justify-center items-center bg-black/50 z-50 opacity-0 transition-opacity duration-200 backdrop-blur-sm"
       >
         {targetWallet && showDepositModal && (
-          <NewPiggybankDepositForm 
-              userId={user?.id}
-              wallets={wallets}
-              methods={methods}
-              targetWallet={targetWallet}
-              successOperation={handleDepositSuccess}
-              cancelOperation={() => {
-                setShowDepositModal(false);
-                setTargetWallet(null);
-              }}
+          <NewPiggybankDepositForm
+            userId={user?.id}
+            wallets={wallets}
+            methods={methods}
+            targetWallet={targetWallet}
+            successOperation={handleDepositSuccess}
+            cancelOperation={() => {
+              setShowDepositModal(false);
+              setTargetWallet(null);
+            }}
           />
         )}
       </div>
@@ -178,16 +200,16 @@ export default function PiggybanksPage() {
         className="fixed inset-0 hidden justify-center items-center bg-black/50 z-50 opacity-0 transition-opacity duration-200 backdrop-blur-sm"
       >
         {targetWallet && showWithdrawalModal && (
-          <NewPiggybankWithdrawalForm 
-              userId={user?.id}
-              wallets={wallets}
-              methods={methods}
-              sourceWallet={targetWallet}
-              successOperation={handleWithdrawalSuccess}
-              cancelOperation={() => {
-                setShowWithdrawalModal(false);
-                setTargetWallet(null);
-              }}
+          <NewPiggybankWithdrawalForm
+            userId={user?.id}
+            wallets={wallets}
+            methods={methods}
+            sourceWallet={targetWallet}
+            successOperation={handleWithdrawalSuccess}
+            cancelOperation={() => {
+              setShowWithdrawalModal(false);
+              setTargetWallet(null);
+            }}
           />
         )}
       </div>
@@ -198,13 +220,13 @@ export default function PiggybanksPage() {
         className="fixed inset-0 hidden justify-center items-center bg-black/50 z-50 opacity-0 transition-opacity duration-200 backdrop-blur-sm"
       >
         {targetWallet && showEditModal && (
-          <EditPiggybankForm 
-              wallet={targetWallet}
-              successOperation={handleEditSuccess}
-              cancelOperation={() => {
-                setShowEditModal(false);
-                setTargetWallet(null);
-              }}
+          <EditPiggybankForm
+            wallet={targetWallet}
+            successOperation={handleEditSuccess}
+            cancelOperation={() => {
+              setShowEditModal(false);
+              setTargetWallet(null);
+            }}
           />
         )}
       </div>
@@ -215,13 +237,13 @@ export default function PiggybanksPage() {
         className="fixed inset-0 hidden justify-center items-center bg-black/50 z-50 opacity-0 transition-opacity duration-200 backdrop-blur-sm"
       >
         {targetWallet && showDeleteModal && (
-          <DeletePiggybankForm 
-              wallet={targetWallet}
-              successOperation={handleDeleteSuccess}
-              cancelOperation={() => {
-                setShowDeleteModal(false);
-                setTargetWallet(null);
-              }}
+          <DeletePiggybankForm
+            wallet={targetWallet}
+            successOperation={handleDeleteSuccess}
+            cancelOperation={() => {
+              setShowDeleteModal(false);
+              setTargetWallet(null);
+            }}
           />
         )}
       </div>

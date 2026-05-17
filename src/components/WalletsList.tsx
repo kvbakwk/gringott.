@@ -1,14 +1,11 @@
 "use client";
 
-import { WalletT } from "@utils/db-actions/wallet";
-
 import { useEffect, useState } from "react";
-import Link from "next/link";
+
+import { WalletT } from "@/types/wallet";
 
 import { parseMoney } from "@utils/parser";
-import { Icon } from "./material/Icon";
-import { CircularProgress } from "./material/Progress";
-import { RouteSegments } from "@utils/routes";
+import { CircularProgress } from "@/components/material/Progress";
 
 export default function WalletsList({
   wallets,
@@ -27,12 +24,12 @@ export default function WalletsList({
         wallets
           .filter(
             (wallet) =>
-              wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2
+              wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2,
           )
-          .reduce((a, b) => a + b.balance, 0)
+          .reduce((a, b) => a + b.balance, 0),
       );
       setCashBalance(
-        wallets.find((wallet) => wallet.wallet_type_id === 1)?.balance || 0
+        wallets.find((wallet) => wallet.wallet_type_id === 1)?.balance || 0,
       );
     }
   }, [wallets, isReady]);
@@ -45,10 +42,14 @@ export default function WalletsList({
             <WalletItem
               name="gotówka"
               balance={
-                wallets.find((wallet) => wallet.wallet_type_id === 1)?.balance || 0
+                wallets.find((wallet) => wallet.wallet_type_id === 1)
+                  ?.balance || 0
               }
               show
-              key={wallets.find((wallet) => wallet.wallet_type_id === 1)?.id || 'cash'}
+              key={
+                wallets.find((wallet) => wallet.wallet_type_id === 1)?.id ||
+                "cash"
+              }
             />
             {wallets
               .filter((wallet) => wallet.wallet_type_id === 2)

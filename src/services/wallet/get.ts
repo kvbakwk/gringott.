@@ -1,6 +1,6 @@
 "use server";
 
-import { WalletT } from "@utils/db-actions/wallet";
+import { WalletT } from "@/types/wallet";
 
 import { getWalletsByUserId } from "@utils/db-actions/wallet";
 import { verifySession } from "@utils/session";

@@ -1,22 +1,17 @@
 "use client";
 
-import { WalletT } from "@utils/db-actions/wallet";
-import { TradeT } from "@utils/db-actions/trade";
-import { MethodT } from "@utils/db-actions/method";
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { getTrade } from "@services/trade/get";
-import { getWallets } from "@services/wallet/get";
-import { getMethods } from "@utils/db-actions/method";
-import { SelectOption, SelectOutlined } from "../../material/Select";
-import { TextFieldOutlined } from "../../material/TextField";
-import { FilledButton, OutlinedButton } from "../../material/Button";
+import { WalletT } from "@/types/wallet";
+import { TradeT } from "@/types/trade";
+import { MethodT } from "@/types/method";
+import { SubjectT } from "@/types/subject";
+
+import { SelectOption, SelectOutlined } from "@components/material/Select";
+import { TextFieldOutlined } from "@components/material/TextField";
+import { FilledButton, OutlinedButton } from "@components/material/Button";
 import { Icon } from "@components/material/Icon";
-import { getSubjects } from "@services/subject/get";
-import { SubjectT } from "@utils/db-actions/subject";
-import Loading from "@components/Loading";
 import {
   validateTradeAmount,
   validateTradeAtm,
@@ -47,28 +42,29 @@ export default function EditTradeForm({
   const [tempWallets, setTempWallets] = useState<WalletT[]>(
     wallets.length
       ? wallets.filter(
-          (wallet) => wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2
+          (wallet) =>
+            wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2,
         )
-      : []
+      : [],
   );
   const [cashMethods, setCashMethods] = useState<MethodT[]>(
-    wallets.length ? methods.filter((method) => method.cash) : []
+    wallets.length ? methods.filter((method) => method.cash) : [],
   );
   const [bankMethods, setBankMethods] = useState<MethodT[]>(
-    wallets.length ? methods.filter((method) => method.bank) : []
+    wallets.length ? methods.filter((method) => method.bank) : [],
   );
   const [tempSubjects, setTempSubjects] = useState<SubjectT[]>(
-    subjects.sort((a, b) => a.name.localeCompare(b.name))
+    subjects.sort((a, b) => a.name.localeCompare(b.name)),
   );
 
-  const [atm, setAtm] = useState<boolean>(trade.atm);
+  const [atm, setAtm] = useState<boolean>(trade.subject.subject_type_id === 2);
   const [walletId, setWalletId] = useState<number>(trade.wallet_id);
   const [deposit, setDeposit] = useState<boolean>(trade.deposit);
   const [userMethodId, setUserMethodId] = useState<number>(
-    trade.user_method_id
+    trade.user_method_id,
   );
   const [subjectMethodId, setSubjectMethodId] = useState<number>(
-    trade.subject_method_id
+    trade.subject_method_id,
   );
 
   const [success, setSuccess] = useState<boolean>(false);
@@ -91,7 +87,7 @@ export default function EditTradeForm({
   }, [wallets, walletId]);
 
   const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
+    e: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     e.preventDefault();
 
@@ -100,16 +96,16 @@ export default function EditTradeForm({
     const atm: boolean = Boolean(parseInt(formData.get("atm")?.toString()));
     const walletId: number = parseInt(formData.get("walletId")?.toString());
     const deposit: boolean = Boolean(
-      parseInt(formData.get("deposit")?.toString())
+      parseInt(formData.get("deposit")?.toString()),
     );
     const userMethodId: number = parseInt(
-      formData.get("userMethodId")?.toString()
+      formData.get("userMethodId")?.toString(),
     );
     const date: Date = new Date(formData.get("date").toString());
     const amount: number = parseFloat(formData.get("amount").toString());
     const subjectId: number = parseInt(formData.get("subjectId")?.toString());
     const subjectMethodId: number = parseInt(
-      formData.get("subjectMethodId")?.toString()
+      formData.get("subjectMethodId")?.toString(),
     );
 
     if (
@@ -128,7 +124,7 @@ export default function EditTradeForm({
         amount,
         subjectId,
         subjectMethodId,
-        userId
+        userId,
       )
         .then((res) => {
           setSuccess(res.editTrade);
@@ -163,7 +159,8 @@ export default function EditTradeForm({
   return (
     <form
       className="flex justify-center items-center w-fit h-fit px-[90px] py-[60px] bg-surface border-1 border-yellow-500 rounded-2xl shadow-lg"
-      onSubmit={handleSubmit}>
+      onSubmit={handleSubmit}
+    >
       <div className="flex flex-col justify-center items-center gap-[30px] w-fit h-fit">
         <SelectOutlined
           className="w-[300px]"
@@ -174,7 +171,8 @@ export default function EditTradeForm({
           }
           value={atm ? "1" : "0"}
           error={atmErr}
-          errorText="wybierz typ wymiany">
+          errorText="wybierz typ wymiany"
+        >
           {atm ? (
             <Icon className="fill" slot="leading-icon">
               atm
@@ -199,7 +197,8 @@ export default function EditTradeForm({
               name="walletId"
               value={walletId.toString()}
               error={walletIdErr}
-              errorText="wybierz portfel">
+              errorText="wybierz portfel"
+            >
               <Icon className="fill" slot="leading-icon">
                 wallet
               </Icon>
@@ -220,7 +219,8 @@ export default function EditTradeForm({
               }
               value={deposit ? "1" : "0"}
               error={depositErr}
-              errorText="wybierz rodzaj wymiany">
+              errorText="wybierz rodzaj wymiany"
+            >
               <Icon className="fill" slot="leading-icon">
                 swap_vert
               </Icon>
@@ -238,7 +238,8 @@ export default function EditTradeForm({
               value={userMethodId.toString()}
               error={userMethodIdErr}
               errorText="wybierz swoją metodę"
-              disabled={atm}>
+              disabled={atm}
+            >
               <Icon className="fill" slot="leading-icon">
                 tactic
               </Icon>
@@ -265,7 +266,8 @@ export default function EditTradeForm({
                 .toISOString()
                 .slice(0, 16)}
               error={dateErr}
-              errorText="wybierz datę">
+              errorText="wybierz datę"
+            >
               <Icon slot="leading-icon">event</Icon>
             </TextFieldOutlined>
             <TextFieldOutlined
@@ -278,7 +280,8 @@ export default function EditTradeForm({
               suffixText="zł"
               value={trade.amount.toString()}
               error={amountErr}
-              errorText="wpisz poprawną kwotę">
+              errorText="wpisz poprawną kwotę"
+            >
               <Icon slot="leading-icon">toll</Icon>
             </TextFieldOutlined>
           </div>
@@ -289,12 +292,17 @@ export default function EditTradeForm({
               name="subjectId"
               value={trade.subject_id.toString()}
               error={subjectIdErr}
-              errorText="wybierz drugą stronę">
+              errorText="wybierz drugą stronę"
+            >
               <Icon className="fill" slot="leading-icon">
                 person
               </Icon>
               {subjects
-                .filter((subject) => (atm ? subject.atm : subject.normal))
+                .filter((subject) =>
+                  atm
+                    ? subject.subject_type_id === 2
+                    : subject.subject_type_id !== 2,
+                )
                 .map((subject) => (
                   <SelectOption key={subject.id} value={subject.id.toString()}>
                     <div slot="headline">{subject.name}</div>
@@ -308,7 +316,8 @@ export default function EditTradeForm({
               value={subjectMethodId.toString()}
               error={subjectMethodIdErr}
               errorText="wybierz metodę drugiej strony"
-              disabled={atm}>
+              disabled={atm}
+            >
               <Icon className="fill" slot="leading-icon">
                 tactic
               </Icon>

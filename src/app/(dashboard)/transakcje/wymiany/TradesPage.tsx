@@ -1,24 +1,32 @@
 "use client";
 
-import { WalletT } from "@utils/db-actions/wallet";
-import { TradeT } from "@utils/db-actions/trade";
-
 import { useEffect, useRef, useState } from "react";
 
+import { WalletT } from "@/types/wallet";
+import { TradeT } from "@/types/trade";
+
+import { useData } from "@context/DataContext";
 import { parseDate, parseMoney, parseTime } from "@utils/parser";
+
 import { CircularProgress } from "@components/material/Progress";
-import { Fab } from "@components/material/Fab";
 import { Icon } from "@components/material/Icon";
 import { IconButton } from "@components/material/IconButton";
 import WalletsList from "@components/WalletsList";
-import { SubjectT } from "@utils/db-actions/subject";
-import { useData } from "@context/DataContext";
 import NewTradeForm from "@components/forms/trades/NewTradeForm";
 import EditTradeForm from "@components/forms/trades/EditTradeForm";
 import DeleteTradeForm from "@components/forms/trades/DeleteTradeForm";
 
 export default function TradesPage() {
-  const { user, wallets, trades, methods, subjects, isReady, reloadWallets, reloadTrades } = useData();
+  const {
+    user,
+    wallets,
+    trades,
+    methods,
+    subjects,
+    isReady,
+    reloadWallets,
+    reloadTrades,
+  } = useData();
   const formEl = useRef(null);
   const newTradeEl = useRef(null);
 
@@ -53,8 +61,8 @@ export default function TradesPage() {
         operation === "new"
           ? focusEl.classList.add("border-green-700")
           : operation === "edit"
-          ? focusEl.classList.add("border-yellow-500")
-          : focusEl.classList.add("border-error");
+            ? focusEl.classList.add("border-yellow-500")
+            : focusEl.classList.add("border-error");
       }
     }
   }, [operation, focusEl]);
@@ -98,68 +106,67 @@ export default function TradesPage() {
           onClick={() => {
             setOperation("new");
             setFocusEl(newTradeEl.current);
-          }}>
+          }}
+        >
           <Icon slot="icon">add</Icon>
           <div className="text-on-surface-variant">nowa wymiana</div>
         </div>
         <WalletsList wallets={wallets} isReady={isReady} />
       </div>
-      <div className="flex flex-col w-[calc(100%-50px)] h-full">
-        <div className="flex justify-center items-end gap-[20px] font-bold text-primary text-md w-full h-[50px] pb-[10px]">
-          <div className="flex justify-center items-center w-[200px]">data</div>
-          <div className="flex justify-center items-center w-[160px]">
-            kwota
+      <div className="flex flex-col w-full h-full overflow-x-auto">
+        <div className="flex flex-col min-w-[1500px] h-full">
+          <div className="flex justify-center items-end gap-[20px] font-bold text-primary text-md w-full h-[50px] pb-[10px]">
+            <div className="flex justify-center items-center w-[200px]">data</div>
+            <div className="flex justify-center items-center w-[160px]">
+              kwota
+            </div>
+            <div className="flex justify-center items-center w-[200px]">
+              konto
+            </div>
+            <div className="flex justify-center items-center w-[200px]">
+              metoda
+            </div>
+            <div className="flex justify-center items-center w-[200px]">
+              druga strona
+            </div>
+            <div className="flex justify-center items-center w-[200px]">
+              metoda
+            </div>
           </div>
-          <div className="flex justify-center items-center w-[200px]">
-            konto
-          </div>
-          <div className="flex justify-center items-center w-[200px]">
-            metoda
-          </div>
-          <div className="flex justify-center items-center w-[200px]">
-            druga strona
-          </div>
-          <div className="flex justify-center items-center w-[200px]">
-            metoda
-          </div>
-        </div>
-        <div
-          className={`flex w-full h-[calc(100vh-160px)] px-[20px] pb-[30px] overflow-y-auto scroll-none ${
-            isReady
-              ? "flex-col"
-              : "justify-center items-center"
-          }`}>
-          {isReady &&
-            trades
-              .sort((a, b) => b.date.getTime() - a.date.getTime())
-              .map((trade) => (
-                <Trade
-                  trade={trade}
-                  wallets={wallets}
-                  key={trade.id}
-                  setOperation={setOperation}
-                  setId={setId}
-                  setFocusEl={setFocusEl}
-                />
-              ))}
           <div
-            className={`${
-              isReady &&
-              " hidden"
-            }`}>
-            <CircularProgress indeterminate />
+            className={`flex w-full flex-1 min-h-0 px-[20px] pb-[20px] overflow-y-auto scroll-none ${
+              isReady ? "flex-col" : "justify-center items-center"
+            }`}
+          >
+            {isReady &&
+              trades
+                .sort((a, b) => b.date.getTime() - a.date.getTime())
+                .map((trade) => (
+                  <Trade
+                    trade={trade}
+                    wallets={wallets}
+                    key={trade.id}
+                    setOperation={setOperation}
+                    setId={setId}
+                    setFocusEl={setFocusEl}
+                  />
+                ))}
+            <div className={`${isReady && " hidden"}`}>
+              <CircularProgress indeterminate />
+            </div>
           </div>
         </div>
       </div>
       <div
         ref={formEl}
-        className="absolute hidden justify-center items-center w-full h-full opacity-0 transition-all">
+        className="absolute hidden justify-center items-center w-full h-full opacity-0 transition-all"
+      >
         {operation === "new" ? (
           <NewTradeForm
             userId={user?.id}
             wallets={wallets.filter(
               (wallet) =>
-                wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2
+                wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2,
             )}
             methods={methods}
             subjects={subjects}
@@ -171,7 +178,7 @@ export default function TradesPage() {
             userId={user?.id}
             wallets={wallets.filter(
               (wallet) =>
-                wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2
+                wallet.wallet_type_id === 1 || wallet.wallet_type_id === 2,
             )}
             trade={trades.find((trade) => trade.id === id)}
             methods={methods}
@@ -223,7 +230,8 @@ export function Trade({
       className={`flex justify-center items-center gap-[20px] font-normal text-on-surface-variant text-base w-full h-[30px] rounded-lg hover:shadow-sm hover:bg-surface`}
       key={trade.id}
       onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}>
+      onMouseLeave={() => setHover(false)}
+    >
       <div className="w-[100px] h-full"></div>
       <div className="flex justify-center items-center gap-[6px] w-[200px]">
         <div>{parseDate(trade.date)}</div>
@@ -231,7 +239,8 @@ export function Trade({
       </div>
       <div
         ref={amountEl}
-        className="flex justify-center items-center font-semibold text-lg w-[160px]">
+        className="flex justify-center items-center font-semibold text-lg w-[160px]"
+      >
         {parseMoney(trade.amount)} zł
       </div>
       <div className="flex justify-center items-center truncate w-[200px]">
@@ -241,25 +250,27 @@ export function Trade({
         }
       </div>
       <div className="flex justify-center items-center w-[200px]">
-        {trade.atm ? "-" : trade.user_method_name}
+        {trade.subject.subject_type_id === 2 ? "-" : trade.user_method_name}
       </div>
       <div className="flex justify-center items-center truncate w-[200px]">
-        {trade.subject_name}
+        {trade.subject.name}
       </div>
       <div className="flex justify-center items-center w-[200px]">
-        {trade.atm ? "-" : trade.subject_method_name}
+        {trade.subject.subject_type_id === 2 ? "-" : trade.subject_method_name}
       </div>
       <div
         className={`flex justify-center items-center w-[100px] h-full transition-opacity ${
           hover ? "opacity-100" : "opacity-0"
-        }`}>
+        }`}
+      >
         <IconButton
           className="mini"
           onClick={() => {
             setOperation("edit");
             setId(trade.id);
             setFocusEl(tradeEl.current);
-          }}>
+          }}
+        >
           <Icon>edit</Icon>
         </IconButton>
         <IconButton
@@ -268,7 +279,8 @@ export function Trade({
             setOperation("delete");
             setId(trade.id);
             setFocusEl(tradeEl.current);
-          }}>
+          }}
+        >
           <Icon>delete</Icon>
         </IconButton>
       </div>

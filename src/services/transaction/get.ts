@@ -1,6 +1,6 @@
 "use server";
 
-import { TransactionT } from "@utils/db-actions/transaction";
+import { TransactionT } from "@/types/transaction";
 
 import {
   getTransactionById,
@@ -9,7 +9,7 @@ import {
 import { verifySession } from "@utils/session";
 
 export async function getTransaction(
-  transactionId: number
+  transactionId: number,
 ): Promise<TransactionT> {
   if (!(await verifySession()).isAuth) return null;
   return await getTransactionById(transactionId);

@@ -2,8 +2,8 @@
 
 import { FormEvent, useState, useMemo } from "react";
 
-import { WalletT } from "@utils/db-actions/wallet";
-import { MethodT } from "@utils/db-actions/method";
+import { WalletT } from "@/types/wallet";
+import { MethodT } from "@/types/method";
 import { FormState } from "@utils/definitions";
 
 import createTransferAPI from "@services/transfer/create";
@@ -32,9 +32,14 @@ export default function NewWithdrawalForm({
   // Default source to 3 (Savings)
   const [fromType, setFromType] = useState<number>(3);
   const [toType, setToType] = useState<number>(null);
-  
-  const savingsWallet = useMemo(() => wallets.find(w => w.wallet_type_id === 3), [wallets]);
-  const [fromWalletId, setFromWalletId] = useState<string>(savingsWallet?.id.toString() || "");
+
+  const savingsWallet = useMemo(
+    () => wallets.find((w) => w.wallet_type_id === 3),
+    [wallets],
+  );
+  const [fromWalletId, setFromWalletId] = useState<string>(
+    savingsWallet?.id.toString() || "",
+  );
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -61,7 +66,9 @@ export default function NewWithdrawalForm({
             label="portfel"
             value={fromWalletId}
             error={state?.errors?.fromWalletId ? true : false}
-            errorText={state?.errors?.fromWalletId ? state.errors.fromWalletId[0] : ""}
+            errorText={
+              state?.errors?.fromWalletId ? state.errors.fromWalletId[0] : ""
+            }
             disabled={true}
           >
             <Icon className="fill" slot="leading-icon">
@@ -117,8 +124,8 @@ export default function NewWithdrawalForm({
                 fromType === 0 || toType === 0
                   ? method.cash
                   : fromType === 1 || toType === 1
-                  ? method.bank
-                  : method.cash || method.bank
+                    ? method.bank
+                    : method.cash || method.bank,
               )
               .map((method) => (
                 <SelectOption key={method.id} value={method.id.toString()}>
@@ -136,7 +143,9 @@ export default function NewWithdrawalForm({
             label="portfel"
             name="toWalletId"
             error={state?.errors?.toWalletId ? true : false}
-            errorText={state?.errors?.toWalletId ? state.errors.toWalletId[0] : ""}
+            errorText={
+              state?.errors?.toWalletId ? state.errors.toWalletId[0] : ""
+            }
             disabled={toType === null}
           >
             <Icon className="fill" slot="leading-icon">
@@ -172,12 +181,11 @@ export default function NewWithdrawalForm({
             {[
               { name: "gotówka", id: 0 },
               { name: "konto", id: 1 },
-            ]
-              .map((type) => (
-                <SelectOption key={type.id} value={type.id.toString()}>
-                  <div slot="headline">{type.name}</div>
-                </SelectOption>
-              ))}
+            ].map((type) => (
+              <SelectOption key={type.id} value={type.id.toString()}>
+                <div slot="headline">{type.name}</div>
+              </SelectOption>
+            ))}
           </SelectOutlined>
         </div>
       </div>

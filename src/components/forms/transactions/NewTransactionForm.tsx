@@ -1,12 +1,11 @@
 "use client";
 
-import { WalletT } from "@utils/db-actions/wallet";
-import { MethodT } from "@utils/db-actions/method";
-import { SubjectT } from "@utils/db-actions/subject";
-import { SuperCategoryT } from "@utils/db-actions/super_category";
-import { CategoryT } from "@utils/db-actions/category";
-
 import { useEffect, useState } from "react";
+
+import { WalletT } from "@/types/wallet";
+import { MethodT } from "@/types/method";
+import { SubjectT } from "@/types/subject";
+import { CategoryT, CategoryTypeT } from "@/types/category";
 
 import { createTransactionAPI } from "@services/transaction/create";
 import {
@@ -27,7 +26,7 @@ export default function NewTransactionForm({
   wallets,
   methods,
   subjects,
-  superCategories,
+  categoryTypes,
   categories,
   successOperation,
   cancelOperation,
@@ -36,16 +35,16 @@ export default function NewTransactionForm({
   wallets: WalletT[];
   methods: MethodT[];
   subjects: SubjectT[];
-  superCategories: SuperCategoryT[];
   categories: CategoryT[];
+  categoryTypes: CategoryTypeT[];
   successOperation: () => void;
   cancelOperation: () => void;
 }) {
   const [income, setIncome] = useState<boolean>(false);
   const [walletId, setWalletId] = useState<number>(
-    wallets.find((wallet) => wallet.wallet_type_id === 1).id
+    wallets.find((wallet) => wallet.wallet_type_id === 1).id,
   );
-  const [superCategoryId, setSuperCategoryId] = useState<number>(0);
+  const [categoryTypeId, setCategoryTypeId] = useState<number>(0);
 
   const [tempMethods, setTempMethods] = useState<MethodT[]>(
     wallets.length
@@ -58,23 +57,25 @@ export default function NewTransactionForm({
             (walletId !== 0 &&
               method.bank &&
               wallets.filter((wallet) => wallet.id === walletId)[0]
-                .wallet_type_id === 2)
+                .wallet_type_id === 2),
         )
-      : []
+      : [],
   );
-  const [tempSuperCategories, setTempSuperCategories] = useState<
-    SuperCategoryT[]
-  >(
-    superCategories.filter(
-      (superCategory) =>
-        superCategory.income === Boolean(income) ||
-        superCategory.outcome === !income
-    )
+  const [tempCategoryTypes, setTempCategoryTypes] = useState<CategoryTypeT[]>(
+    categoryTypes.filter((type) =>
+      categories.some(
+        (cat) =>
+          cat.category_type_id === type.id &&
+          (income ? cat.income : cat.outcome),
+      ),
+    ),
   );
   const [tempCategories, setTempCategories] = useState<CategoryT[]>(
     categories.filter(
-      (category) => category.super_category_id === superCategoryId
-    )
+      (category) =>
+        category.category_type_id === categoryTypeId &&
+        (income ? category.income : category.outcome),
+    ),
   );
 
   const [success, setSuccess] = useState<boolean>(false);
@@ -98,37 +99,41 @@ export default function NewTransactionForm({
           (walletId !== 0 &&
             method.bank === true &&
             wallets.filter((wallet) => wallet.id === walletId)[0]
-              .wallet_type_id === 2)
-      )
+              .wallet_type_id === 2),
+      ),
     );
   }, [walletId]);
   useEffect(() => {
-    setTempSuperCategories(
-      superCategories.filter(
-        (superCategory) =>
-          superCategory.income === Boolean(income) ||
-          superCategory.outcome === !income
-      )
+    setTempCategoryTypes(
+      categoryTypes.filter((type) =>
+        categories.some(
+          (cat) =>
+            cat.category_type_id === type.id &&
+            (income ? cat.income : cat.outcome),
+        ),
+      ),
     );
-    setSuperCategoryId(0);
+    setCategoryTypeId(0);
   }, [income]);
   useEffect(() => {
     setTempCategories(
       categories.filter(
-        (category) => category.super_category_id === superCategoryId
-      )
+        (category) =>
+          category.category_type_id === categoryTypeId &&
+          (income ? category.income : category.outcome),
+      ),
     );
-  }, [superCategoryId]);
+  }, [categoryTypeId, income]);
 
   const handleSubmit = async (
-    e: React.FormEvent<HTMLFormElement>
+    e: React.FormEvent<HTMLFormElement>,
   ): Promise<void> => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
 
     const walletId: number = parseInt(formData.get("walletId")?.toString());
     const income: boolean = Boolean(
-      parseInt(formData.get("income").toString())
+      parseInt(formData.get("income").toString()),
     );
     const methodId: number = parseInt(formData.get("methodId")?.toString());
     const date: Date = new Date(formData.get("date").toString());
@@ -155,7 +160,7 @@ export default function NewTransactionForm({
         subjectId,
         important,
         userId,
-        1
+        1,
       )
         .then((res) => {
           setSuccess(res.createTransaction);
@@ -294,17 +299,17 @@ export default function NewTransactionForm({
         <SelectOutlined
           className="w-full"
           label="kategoria"
-          onChange={(e) => setSuperCategoryId(parseInt(e.currentTarget.value))}
+          onChange={(e) => setCategoryTypeId(parseInt(e.currentTarget.value))}
         >
           <Icon className="fill" slot="leading-icon">
             category
           </Icon>
-          {tempSuperCategories.map((superCategory) => (
+          {tempCategoryTypes.map((categoryType) => (
             <SelectOption
-              key={superCategory.id}
-              value={superCategory.id.toString()}
+              key={categoryType.id}
+              value={categoryType.id.toString()}
             >
-              <div slot="headline">{superCategory.name}</div>
+              <div slot="headline">{categoryType.name}</div>
             </SelectOption>
           ))}
         </SelectOutlined>
